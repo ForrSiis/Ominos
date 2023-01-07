@@ -3321,7 +3321,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         rect(BLOCK_SIZE * 2, 1),
         rotate(player.angle),
         origin("center"),
-        color(255, 0, 0),
+        color(0, 255, 255),
         area(),
         cleanup(),
         "laser",
