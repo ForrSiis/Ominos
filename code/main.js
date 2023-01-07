@@ -286,7 +286,7 @@ scene("main", () => {
     const BULLET_SPEED = BLOCK_SIZE * 5;
     const LASER_SPEED = BLOCK_SIZE * 8;
     const FALLING_SPEED = BLOCK_SIZE * 4;
-    const EXHAUST_SPEED = 12;
+    const EXHAUST_SPEED = BLOCK_SIZE;
 
     function spawnPlayerExhaust(cells) {
         // particles behind player, to denote movement direction
@@ -328,7 +328,7 @@ scene("main", () => {
     });
 
     onUpdate("exhaust", (ob) => {
-        if (chance(0.5)) {
+        if (chance(0.75)) {
             ob.move(ob.speedX, ob.speedY);
         }
         ob.destroyTimer += dt();

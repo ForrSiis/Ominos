@@ -3243,7 +3243,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     const BULLET_SPEED = BLOCK_SIZE * 5;
     const LASER_SPEED = BLOCK_SIZE * 8;
     const FALLING_SPEED = BLOCK_SIZE * 4;
-    const EXHAUST_SPEED = 12;
+    const EXHAUST_SPEED = BLOCK_SIZE;
     function spawnPlayerExhaust(cells) {
       let angle = player.angle + 180;
       cells.forEach((cell) => {
@@ -3279,7 +3279,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       spawnPlayerExhaust(player.cells);
     });
     onUpdate("exhaust", (ob) => {
-      if (chance(0.5)) {
+      if (chance(0.75)) {
         ob.move(ob.speedX, ob.speedY);
       }
       ob.destroyTimer += dt();
