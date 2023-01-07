@@ -255,6 +255,7 @@ scene("main", () => {
       getPlayerCells(player);
    };
 
+	// BEAKL
    onKeyDown("i", playerMoveLeft);
 
    onKeyDown("a", playerMoveRight);
@@ -266,6 +267,19 @@ scene("main", () => {
    onKeyPress("s", playerTurnLeft);
 
    onKeyPress("n", playerTurnRight);
+
+	// SHITTY
+   onKeyDown("x", playerMoveLeft);
+
+   onKeyDown("v", playerMoveRight);
+
+   onKeyDown("d", playerMoveUp);
+
+   onKeyDown("c", playerMoveDown);
+
+   onKeyPress("j", playerTurnLeft);
+
+   onKeyPress("l", playerTurnRight);
 
    const BULLET_SPEED = BLOCK_SIZE * 5;
    const LASER_SPEED = BLOCK_SIZE * 8;
