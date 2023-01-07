@@ -3025,9 +3025,11 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     high: 9,
     veryhigh: 12
   };
-  var directions = {
-    LEFT: "left",
-    RIGHT: "right"
+  var direction = {
+    LEFT: 0,
+    UP: 1,
+    RIGHT: 2,
+    DOWN: 3
   };
   no({
     background: [0, 0, 0],
@@ -3133,7 +3135,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     const PLAYER_ANGLE_START = -90;
     const PLAYER_ANGLE_TURN = 22.5;
     const PLAYER_START_SHAPE = choose(OMINO_SHAPES);
-    const PLAYER_START_COLOR = "green";
+    const PLAYER_START_COLOR = choose(OMINO_COLORS);
     function randomizePlayerOmino() {
       player.shape = choose(OMINO_SHAPES);
       player.ominocolor = choose(OMINO_COLORS);
@@ -3570,8 +3572,8 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     const ALIEN_SPEED_INC = 20;
     const POINTS_ALIEN_STRONGER = 1e3;
     function spawnAlien() {
-      let alienDirection = choose([directions.LEFT, directions.RIGHT]);
-      let xpos = alienDirection == directions.LEFT ? 0 : MAP_WIDTH - 22;
+      let alienDirection = choose([direction.LEFT, direction.RIGHT]);
+      let xpos = alienDirection == direction.LEFT ? 0 : MAP_WIDTH - 22;
       const points_speed_up = Math.floor(player.score / POINTS_ALIEN_STRONGER);
       const alien_speed = ALIEN_BASE_SPEED + points_speed_up * ALIEN_SPEED_INC;
       const new_alien_interval = 0.8 - points_speed_up / 20;
@@ -3579,11 +3581,12 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         sprite("alien"),
         pos(xpos, rand(0, MAP_HEIGHT - 30)),
         area(),
+        origin("center"),
         cleanup(),
         health(9),
         "alien",
         {
-          speedX: rand(alien_speed * 0.5, alien_speed * 1.5) * (alienDirection == directions.LEFT ? 1 : -1),
+          speedX: rand(alien_speed * 0.5, alien_speed * 1.5) * (alienDirection - 1) * -1,
           speedY: rand(alien_speed * 0.1, alien_speed * 0.5) * choose([-1, 1]),
           shootChance: 5e-3,
           touchDamage: "veryhigh",
@@ -3601,6 +3604,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         pos(rand(0, MAP_WIDTH - BLOCK_SIZE * 4), 0),
         scale(4),
         area(),
+        origin("center"),
         cleanup(),
         health(90),
         "elite",
