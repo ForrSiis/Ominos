@@ -3598,15 +3598,15 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     }
     __name(spawnAlien, "spawnAlien");
     spawnAlien();
-    const CHANCE_ELITE_SPAWN_UP = 0.75;
+    const CHANCE_ELITE_SPAWN_UP = 0.5;
     function spawnAlienElite() {
       let bUp = chance(CHANCE_ELITE_SPAWN_UP);
       let y = bUp ? 0 : MAP_HEIGHT;
-      let dir = bUp ? direction.UP : direction.DOWN;
-      let speedY = BLOCK_SIZE / 2 * (dir - 2) * -1;
+      let moveDirection = bUp ? direction.DOWN : direction.UP;
+      let speedY = BLOCK_SIZE / 2 * (moveDirection - 2);
       add([
         sprite("alien"),
-        pos(rand(0, MAP_WIDTH - BLOCK_SIZE * 4), y),
+        pos(rand(BLOCK_SIZE * 2, MAP_WIDTH - BLOCK_SIZE * 2), y),
         scale(4),
         area(),
         origin("center"),
@@ -3617,7 +3617,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         {
           speedX: 0,
           speedY,
-          shootChance: 0.125,
+          shootChance: 0.0625,
           touchDamage: "veryhigh",
           bulletDamage: "high",
           points: 240
