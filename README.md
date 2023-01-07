@@ -10,11 +10,10 @@ Your color is:
 = green = bouncy balls  
 = white = falling pieces  
 
-Touch the special symbols on the screen to change shape and color randomly. Use keyboard to move and turn. Your ship will autofire.
+Eat the special symbols on the screen to change shape and color randomly; also to heal and gain points. Use keyboard to move and turn. Your ship will autofire.
 
 Hosted @  https://replit.com/@Amuseum/TetraShmup
 
 Using kaboom.js engine
 
-https://youtube.com/video/sphnDwwyuaY
-
+Demo video @ https://youtube.com/video/sphnDwwyuaY
