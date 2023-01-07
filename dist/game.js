@@ -3859,7 +3859,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       }
     }
     __name(playerGemsBoost, "playerGemsBoost");
-    const CHANCE_SPAWN_OBSTACLES = 1e-4;
+    const CHANCE_SPAWN_OBSTACLES = 6e-4;
     const MAX_OBSTACLES_W = 5;
     const MAX_OBSTACLES_H = 5;
     onUpdate(() => {
