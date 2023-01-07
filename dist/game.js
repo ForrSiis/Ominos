@@ -3243,6 +3243,29 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     const BULLET_SPEED = BLOCK_SIZE * 5;
     const LASER_SPEED = BLOCK_SIZE * 8;
     const FALLING_SPEED = BLOCK_SIZE * 4;
+    const EXHAUST_SPEED = 12;
+    function spawnPlayerExhaust(cells) {
+      let angle = player.angle + 180;
+      cells.forEach((cell) => {
+        let x = player.pos.x + cell.x + Math.cos(Math.d2r(angle)) * 12 * player.omino.cols / 2;
+        let y = player.pos.y + cell.y + Math.sin(Math.d2r(angle)) * 12 * player.omino.rows / 2;
+        add([
+          pos(x, y),
+          rect(1, 1),
+          scale(3),
+          color(0, 255, 255),
+          rotate(angle),
+          "exhaust",
+          {
+            speedX: Math.cos(Math.d2r(angle)) * EXHAUST_SPEED,
+            speedY: Math.sin(Math.d2r(angle)) * EXHAUST_SPEED,
+            destroyDelay: 0.125,
+            destroyTimer: 0
+          }
+        ]);
+      });
+    }
+    __name(spawnPlayerExhaust, "spawnPlayerExhaust");
     player.onUpdate(() => {
       let deltaTime = dt();
       player.shootTimer += deltaTime;
@@ -3252,6 +3275,16 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
           playerShootsLogic(player.cells);
         }
         player.shootTimer = 0;
+      }
+      spawnPlayerExhaust(player.cells);
+    });
+    onUpdate("exhaust", (ob) => {
+      if (chance(0.5)) {
+        ob.move(ob.speedX, ob.speedY);
+      }
+      ob.destroyTimer += dt();
+      if (ob.destroyTimer >= ob.destroyDelay) {
+        destroy(ob);
       }
     });
     function playerShootsLogic(cells) {
