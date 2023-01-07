@@ -84,7 +84,7 @@ scene("title", () => {
       ]);
 
    add([
-         text(" Move:\n O\n I A\nE", {
+         text(" Move:\n O     D\n I A   X V\nE     C", {
             size: 20,
             font: "sink"
          }),
@@ -94,7 +94,7 @@ scene("title", () => {
       ]);
 
    add([
-         text(" Turn:\n<S N>", {
+         text(" Turn:\n<S N>  <J L>", {
             size: 20,
             font: "sink"
          }),
@@ -255,7 +255,7 @@ scene("main", () => {
       getPlayerCells(player);
    };
 
-	// BEAKL
+   // BEAKL
    onKeyDown("i", playerMoveLeft);
 
    onKeyDown("a", playerMoveRight);
@@ -268,7 +268,7 @@ scene("main", () => {
 
    onKeyPress("n", playerTurnRight);
 
-	// SHITTY
+   // SHITTY
    onKeyDown("x", playerMoveLeft);
 
    onKeyDown("v", playerMoveRight);

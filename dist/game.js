@@ -3066,7 +3066,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       layer("ui")
     ]);
     add([
-      text(" Move:\n O\n I A\nE", {
+      text(" Move:\n O     D\n I A   X V\nE     C", {
         size: 20,
         font: "sink"
       }),
@@ -3075,7 +3075,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       layer("ui")
     ]);
     add([
-      text(" Turn:\n<S N>", {
+      text(" Turn:\n<S N>  <J L>", {
         size: 20,
         font: "sink"
       }),
