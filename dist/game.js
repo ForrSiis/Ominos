@@ -3826,6 +3826,44 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       }
     }
     __name(playerGemsBoost, "playerGemsBoost");
+    const CHANCE_SPAWN_OBSTACLES = 1e-4;
+    const MAX_OBSTACLES_W = 5;
+    const MAX_OBSTACLES_H = 5;
+    onUpdate(() => {
+      if (!chance(CHANCE_SPAWN_OBSTACLES)) {
+        return;
+      }
+      let bUp = chance(0.5);
+      let y = bUp ? 0 : MAP_HEIGHT;
+      let moveDirection = bUp ? direction.DOWN : direction.UP;
+      let speedY = BLOCK_SIZE * (moveDirection - 2);
+      let x = rand(MAP_WIDTH - BLOCK_SIZE * MAX_OBSTACLES_W);
+      for (let i = MAX_OBSTACLES_W; i; i--) {
+        for (let j = MAX_OBSTACLES_H; j; j--) {
+          if (!chance(0.5)) {
+            continue;
+          }
+          add([
+            pos(x, -j * BLOCK_SIZE),
+            rect(BLOCK_SIZE, BLOCK_SIZE),
+            color(205, 127, 50),
+            area(),
+            solid(),
+            "obstacle",
+            {
+              speedX: 0,
+              speedY: BLOCK_SIZE / 2
+            }
+          ]);
+        }
+      }
+    });
+    onUpdate("obstacle", (ob) => {
+      ob.move(ob.speedX, ob.speedY);
+      if (ob.pos.y > MAP_HEIGHT) {
+        destroy(ob);
+      }
+    });
   });
   function makeExplosion(p, n, rad, size, colour = Color.YELLOW) {
     for (let i = 0; i < n; i++) {
