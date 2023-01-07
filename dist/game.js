@@ -3533,7 +3533,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         pos(bulletpos),
         circle(4),
         origin("center"),
-        color(0, 255, 0),
+        color(255, 128, 0),
         area({
           width: 8,
           height: 8

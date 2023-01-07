@@ -582,7 +582,7 @@ scene("main", () => {
             pos(bulletpos),
             circle(4),
             origin("center"),
-            color(0, 255, 0),
+            color(255, 128, 0),
             area({
                width: 8,
                height: 8
