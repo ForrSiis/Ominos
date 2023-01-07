@@ -2,7 +2,7 @@ Ominos is a shooter where you, the player, is a tetromino (Tetris piece). Shoots
 
 play @ https://TetraShmup.amuseum.repl.co
 
-Your color is:
+Your color is:  
 = red = round pellets  
 = blue = laser beams  
 = yellow = exploding missiles  
