@@ -3014,7 +3014,6 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     let spot = vec2((a2.x + b2.x) / 2, (a2.y + b2.y) / 2);
     return spot;
   };
-  var GAME_TITLE = "OMINOS";
   var BLOCK_SIZE = 24;
   var CELL_SIZE = 12;
   var MAP_WIDTH = 360;
@@ -3065,22 +3064,79 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     });
   }
   __name(loadOminos, "loadOminos");
-  scene("title", () => {
+  function createTitle() {
+    let x = 36;
+    let y = 84;
     add([
-      text(GAME_TITLE, {
-        size: 40,
-        font: "sink"
-      }),
-      pos(MAP_WIDTH / 2, MAP_HEIGHT * 2 / 12),
-      origin("center"),
-      layer("ui")
+      sprite("omino_o_red"),
+      pos(x, y)
     ]);
+    x += 36;
+    y -= 12;
+    add([
+      sprite("omino_i_yellow"),
+      pos(x, y)
+    ]);
+    x += 48;
+    add([
+      sprite("omino_t_magenta"),
+      pos(x, y),
+      rotate(90)
+    ]);
+    add([
+      sprite("omino_i_green"),
+      pos(x, y)
+    ]);
+    x += 60;
+    add([
+      sprite("omino_t_white"),
+      pos(x, y),
+      rotate(90)
+    ]);
+    x -= 36;
+    y += 48;
+    add([
+      sprite("omino_t_red"),
+      pos(x, y),
+      rotate(-90)
+    ]);
+    x += 72;
+    y -= 12;
+    add([
+      sprite("omino_j_cyan"),
+      pos(x, y),
+      rotate(180)
+    ]);
+    x += 24;
+    add([
+      sprite("omino_l_yellow"),
+      pos(x, y),
+      rotate(180)
+    ]);
+    x += 12;
+    y -= 24;
+    add([
+      sprite("omino_o_magenta"),
+      pos(x, y)
+    ]);
+    x += 50;
+    y += 12;
+    add([
+      sprite("omino_s_green"),
+      pos(x, y),
+      rotate(-45),
+      origin("center")
+    ]);
+  }
+  __name(createTitle, "createTitle");
+  scene("title", () => {
+    createTitle();
     add([
       text(" Move:\n O     D\n I A   X V\nE     C", {
         size: 20,
         font: "sink"
       }),
-      pos(MAP_WIDTH / 2, MAP_HEIGHT * 5 / 12),
+      pos(MAP_WIDTH / 2, MAP_HEIGHT * 6 / 12),
       origin("center"),
       layer("ui")
     ]);
@@ -3089,7 +3145,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         size: 20,
         font: "sink"
       }),
-      pos(MAP_WIDTH / 2, MAP_HEIGHT * 7 / 12),
+      pos(MAP_WIDTH / 2, MAP_HEIGHT * 8 / 12),
       origin("center"),
       layer("ui")
     ]);
@@ -3951,7 +4007,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       }
     }
     __name(playerGemsBoost, "playerGemsBoost");
-    const CHANCE_SPAWN_OBSTACLES = 2e-3;
+    const CHANCE_SPAWN_OBSTACLES = 1e-3;
     const MAX_OBSTACLES_W = 5;
     const MAX_OBSTACLES_H = 3;
     function spawnObstacles() {
