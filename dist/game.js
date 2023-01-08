@@ -3014,6 +3014,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     let spot = vec2((a2.x + b2.x) / 2, (a2.y + b2.y) / 2);
     return spot;
   };
+  var log = console.log;
   var BLOCK_SIZE = 24;
   var CELL_SIZE = 12;
   var MAP_WIDTH = 360;
@@ -3734,32 +3735,36 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     __name(spawnAlienSpider, "spawnAlienSpider");
     spawnAlienSpider();
     function spawnAlienWasp() {
-      let alienDirection = choose([direction.LEFT, direction.RIGHT]);
-      let xpos = alienDirection == direction.LEFT ? 0 : MAP_WIDTH - 22;
-      const points_speed_up = Math.floor(player.score / POINTS_ALIEN_STRONGER);
-      const alienSpeed = ALIEN_BASE_SPEED + points_speed_up * ALIEN_SPEED_INC;
-      let angle = alienDirection == direction.LEFT ? rand(45, -45) : rand(-135, -225);
+      let xpos = choose([0, MAP_WIDTH]);
+      let ypos = choose([0, MAP_HEIGHT]);
+      let angle = xpos == MAP_WIDTH ? 135 : 45;
+      angle *= ypos == MAP_HEIGHT ? -1 : 1;
+      log(xpos, ypos, angle);
       add([
         sprite("wasp"),
-        pos(xpos, rand(0, MAP_HEIGHT - 30)),
+        pos(xpos, ypos),
         area(),
         origin("center"),
-        rotate(angle + 90),
+        rotate(angle),
         cleanup(),
-        health(9),
+        health(18),
         "wasp",
         "alien",
         {
-          speedX: Math.cos(Math.d2r(angle)) * alienSpeed,
-          speedY: Math.sin(Math.d2r(angle)) * alienSpeed,
-          shootChance: 5e-3,
+          shootChance: 0.01,
           touchDamage: "veryhigh",
-          points: 10
+          points: 20
         }
       ]);
     }
     __name(spawnAlienWasp, "spawnAlienWasp");
     wait(0, spawnAlienWasp);
+    onUpdate("wasp", (wasp) => {
+      let dT = dt();
+      let dx = Math.cos(Math.d2r(wasp.angle + dT)) * ALIEN_BASE_SPEED;
+      let dy = Math.sin(Math.d2r(wasp.angle + dT)) * ALIEN_BASE_SPEED;
+      wasp.move(dx, dy);
+    });
     const CHANCE_SPAWN_ALIENSHOOTER = 25e-4;
     function spawnAlienShooters() {
       let alienDirection = choose([direction.LEFT, direction.RIGHT]);
@@ -3910,7 +3915,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       wait(rand(12, 24), spawnAlienElite);
     });
     on("destroy", "wasp", (alien) => {
-      wait(rand(6, 12), spawnAlienWasp);
+      wait(rand(1), spawnAlienWasp);
     });
     add([
       text("SCORE: ", {
