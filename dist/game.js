@@ -3653,7 +3653,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       let xpos = alienDirection == direction.LEFT ? 0 : MAP_WIDTH - 22;
       const points_speed_up = Math.floor(player.score / POINTS_ALIEN_STRONGER);
       const alien_speed = ALIEN_BASE_SPEED + points_speed_up * ALIEN_SPEED_INC;
-      const new_alien_interval = 0.8 - points_speed_up / 20;
+      const new_alien_interval = 1 - points_speed_up / 20;
       let angle = alienDirection == direction.LEFT ? rand(45, -45) : rand(-135, -225);
       add([
         sprite("alien"),
@@ -3676,7 +3676,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     }
     __name(spawnAlien, "spawnAlien");
     spawnAlien();
-    const CHANCE_SPAWN_ALIENSHOOTER = 75e-4;
+    const CHANCE_SPAWN_ALIENSHOOTER = 25e-4;
     function spawnAlienShooters() {
       let alienDirection = choose([direction.LEFT, direction.RIGHT]);
       let spriteSize = 40;
@@ -3701,7 +3701,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
           {
             speedX: (alienDirection == direction.LEFT ? spriteSize : -spriteSize) / 2,
             speedY: 0,
-            shootChance: 0.02,
+            shootChance: 0.01618,
             touchDamage: "veryhigh",
             points: 30,
             destroyX: alienDirection == direction.LEFT ? MAP_WIDTH : 0
@@ -3753,7 +3753,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     spawnAlienElite();
     onUpdate("alien", (alien) => {
       alien.move(alien.speedX, alien.speedY);
-      if (chance(alien.shootChance)) {
+      if (alien.bulletDamage && chance(alien.shootChance)) {
         spawnAlienBullet(alien.pos);
       }
     });
@@ -3821,7 +3821,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         updateScore(alien.points);
         destroy(alien);
         if (alien.is("elite")) {
-          wait(rand(10, 20), spawnAlienElite);
+          wait(rand(12, 24), spawnAlienElite);
         }
       }
     });
@@ -3951,7 +3951,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       }
     }
     __name(playerGemsBoost, "playerGemsBoost");
-    const CHANCE_SPAWN_OBSTACLES = 75e-4;
+    const CHANCE_SPAWN_OBSTACLES = 5e-4;
     const MAX_OBSTACLES_W = 3;
     const MAX_OBSTACLES_H = 3;
     function spawnObstacles() {
