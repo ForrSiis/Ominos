@@ -3710,7 +3710,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       let xpos = alienDirection == direction.LEFT ? 0 : MAP_WIDTH - 22;
       const points_speed_up = Math.floor(player.score / POINTS_ALIEN_STRONGER);
       const alienSpeed = ALIEN_BASE_SPEED + points_speed_up * ALIEN_SPEED_INC;
-      const newAlienInterval = 1 - points_speed_up / 20;
+      const newAlienInterval = 2 - points_speed_up / 10;
       let angle = alienDirection == direction.LEFT ? rand(45, -45) : rand(-135, -225);
       add([
         sprite("alien"),
@@ -3762,7 +3762,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       ]);
     }
     __name(spawnAlienWasp, "spawnAlienWasp");
-    wait(0, spawnAlienWasp);
+    wait(rand(6, 12), spawnAlienWasp);
     onUpdate("wasp", (wasp) => {
       wasp.timer += dt();
       let cos = Math.cos(Math.d2r(wasp.angle));
@@ -3846,7 +3846,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       ]);
     }
     __name(spawnAlienElite, "spawnAlienElite");
-    spawnAlienElite();
+    wait(rand(10, 10), spawnAlienElite);
     onUpdate("alien", (alien) => {
       alien.move(alien.speedX, alien.speedY);
       if (alien.bulletDamage && chance(alien.shootChance)) {
@@ -3922,7 +3922,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       wait(rand(12, 24), spawnAlienElite);
     });
     on("destroy", "wasp", (alien) => {
-      wait(rand(1), spawnAlienWasp);
+      wait(rand(6, 12), spawnAlienWasp);
     });
     add([
       text("SCORE: ", {

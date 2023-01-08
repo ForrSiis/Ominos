@@ -809,7 +809,7 @@ scene("main", () => {
 
         const points_speed_up = Math.floor(player.score / POINTS_ALIEN_STRONGER);
         const alienSpeed = ALIEN_BASE_SPEED + (points_speed_up * ALIEN_SPEED_INC);
-        const newAlienInterval = 1.0 - (points_speed_up / 20);
+        const newAlienInterval = 2.0 - (points_speed_up / 10);
         let angle = alienDirection == direction.LEFT ? rand(45, -45) : rand(-135, -225);
 
         add([
@@ -862,7 +862,7 @@ scene("main", () => {
         ]);
     }
 
-    wait(0, spawnAlienWasp);
+    wait(rand(6, 12), spawnAlienWasp);
 
     onUpdate("wasp", (wasp) => {
         // move like sine wave
@@ -954,7 +954,7 @@ scene("main", () => {
         ]);
     }
 
-    spawnAlienElite();
+    wait(rand(10, 10), spawnAlienElite);
 
     onUpdate("alien", (alien) => {
         alien.move(alien.speedX, alien.speedY);
@@ -1041,7 +1041,7 @@ scene("main", () => {
     });
 
     on("destroy", "wasp", (alien) => {
-        wait(rand(1), spawnAlienWasp);
+        wait(rand(6, 12), spawnAlienWasp);
     });
 
     add([
