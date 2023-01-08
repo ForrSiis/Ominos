@@ -3621,17 +3621,19 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       const points_speed_up = Math.floor(player.score / POINTS_ALIEN_STRONGER);
       const alien_speed = ALIEN_BASE_SPEED + points_speed_up * ALIEN_SPEED_INC;
       const new_alien_interval = 0.8 - points_speed_up / 20;
+      let angle = alienDirection == direction.LEFT ? rand(45, -45) : rand(-135, -225);
       add([
         sprite("alien"),
         pos(xpos, rand(0, MAP_HEIGHT - 30)),
         area(),
         origin("center"),
+        rotate(angle + 90),
         cleanup(),
         health(9),
         "alien",
         {
-          speedX: rand(alien_speed * 0.5, alien_speed * 1.5) * (alienDirection - 1) * -1,
-          speedY: rand(alien_speed * 0.1, alien_speed * 0.5) * choose([-1, 1]),
+          speedX: Math.cos(Math.d2r(angle)) * alien_speed,
+          speedY: Math.sin(Math.d2r(angle)) * alien_speed,
           shootChance: 5e-3,
           touchDamage: "veryhigh",
           bulletDamage: "high",
