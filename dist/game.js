@@ -3014,6 +3014,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     let spot = vec2((a2.x + b2.x) / 2, (a2.y + b2.y) / 2);
     return spot;
   };
+  var log = console.log;
   var BLOCK_SIZE = 24;
   var CELL_SIZE = 12;
   var MAP_WIDTH = 360;
@@ -3070,7 +3071,11 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     let y = 84;
     add([
       sprite("omino_o_red"),
-      pos(x, y)
+      pos(x, y),
+      "o",
+      {
+        step: 12
+      }
     ]);
     x += 36;
     y -= 12;
@@ -3118,7 +3123,11 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     y -= 24;
     add([
       sprite("omino_o_magenta"),
-      pos(x, y)
+      pos(x, y),
+      "o",
+      {
+        step: 24
+      }
     ]);
     x += 50;
     y += 12;
@@ -3126,12 +3135,26 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       sprite("omino_s_green"),
       pos(x, y),
       rotate(-45),
-      origin("center")
+      origin("center"),
+      "s"
     ]);
   }
   __name(createTitle, "createTitle");
+  function animateTitle(frame) {
+    let dy = frame % 3 - 1;
+    log(dy);
+    every("o", (ob) => {
+      ob.move(0, dy * ob.step);
+    });
+    every("s", (ob) => {
+      ob.angle += 45;
+    });
+    setTimeout(animateTitle, 1e3, ++frame);
+  }
+  __name(animateTitle, "animateTitle");
   scene("title", () => {
     createTitle();
+    setTimeout(animateTitle, 1e3, 2);
     add([
       text(" Move:\n O     D\n I A   X V\nE     C", {
         size: 20,

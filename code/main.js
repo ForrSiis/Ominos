@@ -96,6 +96,10 @@ function createTitle() {
     add([
         sprite("omino_o_red"),
         pos(x, y),
+        "o",
+        {
+            step: 12
+        },
     ]);
 
     // M
@@ -156,6 +160,10 @@ function createTitle() {
     add([
         sprite("omino_o_magenta"),
         pos(x, y),
+        "o",
+        {
+            step: 24,
+        },
     ]);
 
     // S
@@ -166,22 +174,26 @@ function createTitle() {
         pos(x, y),
         rotate(-45),
         origin("center"),
+        "s"
     ]);
 }
 
+function animateTitle(frame) {
+    let dy = (frame % 3) - 1; // [-1, 0, 1]
+    log(dy);
+    every("o", (ob) => {
+        ob.move(0, dy * ob.step);
+    });
+    every("s", (ob) => {
+        ob.angle += 45;
+    });
+
+    setTimeout(animateTitle, 1000, ++frame);
+}
+
 scene("title", () => {
-    /*
-    add([
-    text(GAME_TITLE, {
-    size: 40,
-    font: "sink"
-    }),
-    pos(MAP_WIDTH / 2, MAP_HEIGHT * 2 / 12),
-    origin("center"),
-    layer("ui")
-    ]);
-    //*/
     createTitle();
+    setTimeout(animateTitle, 1000, 2);
 
     add([
         text(" Move:\n O     D\n I A   X V\nE     C", {
