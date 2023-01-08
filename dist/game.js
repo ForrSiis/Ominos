@@ -3870,7 +3870,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       }
     }
     __name(playerGemsBoost, "playerGemsBoost");
-    const CHANCE_SPAWN_OBSTACLES = 0.025;
+    const CHANCE_SPAWN_OBSTACLES = 925e-5;
     const MAX_OBSTACLES_W = 4;
     const MAX_OBSTACLES_H = 4;
     onUpdate(() => {
@@ -3888,8 +3888,9 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
             continue;
           }
           add([
-            pos(x, -j * BLOCK_SIZE),
             sprite("asteroid"),
+            pos(x, -j * BLOCK_SIZE),
+            origin("center"),
             area(),
             solid(),
             health(36),
@@ -3920,7 +3921,11 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     });
     onCollide("obstacle", "playerattack", (ob, attack) => {
       gotHurt(ob, attack.damage);
-      if (attack.is(["bullet", "missile"])) {
+      if (attack.is("missile")) {
+        destroy(attack);
+        spawnBomb(Math.midpoint(attack.pos, ob.pos));
+      }
+      if (attack.is("bomb") || attack.is("bullet")) {
         destroy(attack);
       }
     });
