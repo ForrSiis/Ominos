@@ -3011,7 +3011,6 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     let spot = vec2((a2.x + b2.x) / 2, (a2.y + b2.y) / 2);
     return spot;
   };
-  var log = console.log;
   var GAME_TITLE = "OMINOS";
   var BLOCK_SIZE = 24;
   var CELL_SIZE = 12;
@@ -3049,6 +3048,11 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
   loadSound("music", "music.mp3");
   loadSound("pandora", "pandora.mp3");
   loadSound("explosion", "explosion.wav");
+  function gotHurt(ob, damage) {
+    damage = DAMAGE_LEVEL[damage] || damage;
+    ob.hurt(damage);
+  }
+  __name(gotHurt, "gotHurt");
   function loadOminos() {
     OMINO_SHAPES.forEach((shape) => {
       OMINO_COLORS.forEach((color2) => {
@@ -3162,7 +3166,6 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       updatePlayerSprite(spriteName);
       player.omino = Omino.Shapes[shape];
       getPlayerCells(player);
-      log(player);
     }
     __name(loadPlayerOmino, "loadPlayerOmino");
     const player = add([
@@ -3331,6 +3334,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
           height: 8
         }),
         cleanup(),
+        "playerattack",
         "bullet",
         {
           speedX: Math.cos(Math.d2r(player.angle)) * BULLET_SPEED,
@@ -3365,6 +3369,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         color(0, 255, 255),
         area(),
         cleanup(),
+        "playerattack",
         "laser",
         {
           speedX: Math.cos(Math.d2r(player.angle)) * LASER_SPEED,
@@ -3397,6 +3402,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         scale(0.5),
         area(),
         cleanup(),
+        "playerattack",
         "missile",
         {
           speedX: Math.cos(Math.d2r(player.angle)) * BULLET_SPEED,
@@ -3424,6 +3430,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         }),
         color(Color.YELLOW),
         cleanup(),
+        "playerattack",
         "bomb",
         {
           damage: "high",
@@ -3459,6 +3466,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
           height: BLOCK_SIZE * 3
         }),
         cleanup(),
+        "playerattack",
         "field",
         {
           damage: "veryhigh",
@@ -3498,6 +3506,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
           height: BLOCK_SIZE / 2
         }),
         cleanup(),
+        "playerattack",
         "bouncer",
         {
           speedX: Math.cos(Math.d2r(player.angle)) * BULLET_SPEED,
@@ -3553,6 +3562,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         scale(0.5),
         area(),
         cleanup(),
+        "playerattack",
         "falling",
         {
           speedX: 0,
@@ -3859,7 +3869,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       }
     }
     __name(playerGemsBoost, "playerGemsBoost");
-    const CHANCE_SPAWN_OBSTACLES = 6e-4;
+    const CHANCE_SPAWN_OBSTACLES = 0.1;
     const MAX_OBSTACLES_W = 5;
     const MAX_OBSTACLES_H = 5;
     onUpdate(() => {
@@ -3882,10 +3892,12 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
             color(205, 127, 50),
             area(),
             solid(),
+            health(36),
             "obstacle",
             {
               speedX: 0,
-              speedY: BLOCK_SIZE / 2
+              speedY: BLOCK_SIZE / 2,
+              touchDamage: "high"
             }
           ]);
         }
@@ -3894,6 +3906,17 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     onUpdate("obstacle", (ob) => {
       ob.move(ob.speedX, ob.speedY);
       if (ob.pos.y > MAP_HEIGHT) {
+        destroy(ob);
+      }
+    });
+    onCollide("obstacle", "playerattack", (ob, attack) => {
+      gotHurt(ob, attack.damage);
+      if (attack.is(["bullet", "missile"])) {
+        destroy(attack);
+      }
+    });
+    on("hurt", "obstacle", (ob) => {
+      if (0 >= ob.hp()) {
         destroy(ob);
       }
     });
