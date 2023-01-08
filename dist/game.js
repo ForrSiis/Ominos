@@ -3872,9 +3872,9 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       }
     }
     __name(playerGemsBoost, "playerGemsBoost");
-    const CHANCE_SPAWN_OBSTACLES = 925e-5;
-    const MAX_OBSTACLES_W = 4;
-    const MAX_OBSTACLES_H = 4;
+    const CHANCE_SPAWN_OBSTACLES = 75e-4;
+    const MAX_OBSTACLES_W = 3;
+    const MAX_OBSTACLES_H = 3;
     onUpdate(() => {
       if (!chance(CHANCE_SPAWN_OBSTACLES)) {
         return;
@@ -3895,7 +3895,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
             origin("center"),
             area(),
             solid(),
-            health(36),
+            health(24),
             "obstacle",
             {
               speedX: 0,

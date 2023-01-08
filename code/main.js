@@ -965,9 +965,9 @@ scene("main", () => {
     }
 
     // random obstacles, of random size and speed
-    const CHANCE_SPAWN_OBSTACLES = 0.00925;
-    const MAX_OBSTACLES_W = 4;
-    const MAX_OBSTACLES_H = 4;
+    const CHANCE_SPAWN_OBSTACLES = 0.0075;
+    const MAX_OBSTACLES_W = 3;
+    const MAX_OBSTACLES_H = 3;
 
     onUpdate(() => {
         if (!chance(CHANCE_SPAWN_OBSTACLES)) {
@@ -990,7 +990,7 @@ scene("main", () => {
                     origin("center"),
                     area(),
                     solid(),
-                    health(36),
+                    health(24),
                     "obstacle", {
                         speedX: 0,
                         speedY: BLOCK_SIZE / 2,
