@@ -3467,7 +3467,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         {
           speedX: Math.cos(Math.d2r(player.angle)) * BULLET_SPEED,
           speedY: Math.sin(Math.d2r(player.angle)) * BULLET_SPEED,
-          damage: "low"
+          damage: "medium"
         }
       ]);
       play("shoot", {
@@ -3493,8 +3493,8 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         "playerattack",
         "bomb",
         {
-          damage: "high",
-          destroyDelay: 0.1,
+          damage: "veryhigh",
+          destroyDelay: 0.5,
           destroyTimer: 0
         }
       ]);
