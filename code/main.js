@@ -1053,8 +1053,8 @@ scene("main", () => {
    }
 
    // random obstacles, of random size and speed
-   const CHANCE_SPAWN_OBSTACLES = 0.0005;
-   const MAX_OBSTACLES_W = 3;
+   const CHANCE_SPAWN_OBSTACLES = 0.001;
+   const MAX_OBSTACLES_W = 5;
    const MAX_OBSTACLES_H = 3;
 
    function spawnObstacles() {
@@ -1065,12 +1065,12 @@ scene("main", () => {
       let x = rand(MAP_WIDTH - BLOCK_SIZE * MAX_OBSTACLES_W);
       for (let i = MAX_OBSTACLES_W; i; i--) {
          for (let j = MAX_OBSTACLES_H; j; j--) {
-            if (!chance(0.1618)) {
+            if (!chance(0.33)) {
                continue;
             }
             add([
                   sprite("asteroid"),
-                  pos(x, -j * BLOCK_SIZE),
+                  pos(x + i * BLOCK_SIZE, -j * BLOCK_SIZE),
                   origin("center"),
                   area(),
                   solid(),
