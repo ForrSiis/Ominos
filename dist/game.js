@@ -3041,6 +3041,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
   loadSprite("gem", "gem.png");
   loadSprite("spaceship", "spaceship.png");
   loadSprite("alien", "alien.png");
+  loadSprite("asteroid", "asteroid.png");
   loadOminos();
   loadRoot("sounds/");
   loadSound("shoot", "shoot.wav");
@@ -3870,8 +3871,8 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     }
     __name(playerGemsBoost, "playerGemsBoost");
     const CHANCE_SPAWN_OBSTACLES = 0.025;
-    const MAX_OBSTACLES_W = 5;
-    const MAX_OBSTACLES_H = 5;
+    const MAX_OBSTACLES_W = 4;
+    const MAX_OBSTACLES_H = 4;
     onUpdate(() => {
       if (!chance(CHANCE_SPAWN_OBSTACLES)) {
         return;
@@ -3883,13 +3884,12 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       let x = rand(MAP_WIDTH - BLOCK_SIZE * MAX_OBSTACLES_W);
       for (let i = MAX_OBSTACLES_W; i; i--) {
         for (let j = MAX_OBSTACLES_H; j; j--) {
-          if (!chance(0.5)) {
+          if (!chance(0.1618)) {
             continue;
           }
           add([
             pos(x, -j * BLOCK_SIZE),
-            rect(BLOCK_SIZE, BLOCK_SIZE),
-            color(205, 127, 50),
+            sprite("asteroid"),
             area(),
             solid(),
             health(36),
