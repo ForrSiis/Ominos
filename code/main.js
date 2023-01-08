@@ -381,6 +381,7 @@ scene("main", () => {
 
     const BULLET_SPEED = BLOCK_SIZE * 5;
     const LASER_SPEED = BLOCK_SIZE * 8;
+    const MISSILE_SPEED = BLOCK_SIZE * 6;
     const FALLING_SPEED = BLOCK_SIZE * 4;
     const EXHAUST_SPEED = BLOCK_SIZE;
 
@@ -556,8 +557,8 @@ scene("main", () => {
             cleanup(),
             "playerattack",
             "missile", {
-                speedX: Math.cos(Math.d2r(player.angle)) * BULLET_SPEED,
-                speedY: Math.sin(Math.d2r(player.angle)) * BULLET_SPEED,
+                speedX: Math.cos(Math.d2r(player.angle)) * MISSILE_SPEED,
+                speedY: Math.sin(Math.d2r(player.angle)) * MISSILE_SPEED,
                 damage: 'medium',
             }
         ]);
@@ -809,7 +810,7 @@ scene("main", () => {
 
         const points_speed_up = Math.floor(player.score / POINTS_ALIEN_STRONGER);
         const alienSpeed = ALIEN_BASE_SPEED + (points_speed_up * ALIEN_SPEED_INC);
-        const newAlienInterval = 2.0 - (points_speed_up / 10);
+        const newAlienInterval = 2.0 - (points_speed_up / 6.18);
         let angle = alienDirection == direction.LEFT ? rand(45, -45) : rand(-135, -225);
 
         add([
@@ -850,7 +851,7 @@ scene("main", () => {
             health(18),
             "wasp",
             "alien", {
-                shootChance: 0.1,
+                shootChance: 0.025,
                 bulletDamage: 'high',
                 touchDamage: 'veryhigh',
                 points: 20,

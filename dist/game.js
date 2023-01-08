@@ -3306,6 +3306,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     onKeyPress("l", playerTurnRight);
     const BULLET_SPEED = BLOCK_SIZE * 5;
     const LASER_SPEED = BLOCK_SIZE * 8;
+    const MISSILE_SPEED = BLOCK_SIZE * 6;
     const FALLING_SPEED = BLOCK_SIZE * 4;
     const EXHAUST_SPEED = BLOCK_SIZE;
     function spawnPlayerExhaust(cells) {
@@ -3466,8 +3467,8 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         "playerattack",
         "missile",
         {
-          speedX: Math.cos(Math.d2r(player.angle)) * BULLET_SPEED,
-          speedY: Math.sin(Math.d2r(player.angle)) * BULLET_SPEED,
+          speedX: Math.cos(Math.d2r(player.angle)) * MISSILE_SPEED,
+          speedY: Math.sin(Math.d2r(player.angle)) * MISSILE_SPEED,
           damage: "medium"
         }
       ]);
@@ -3710,7 +3711,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       let xpos = alienDirection == direction.LEFT ? 0 : MAP_WIDTH - 22;
       const points_speed_up = Math.floor(player.score / POINTS_ALIEN_STRONGER);
       const alienSpeed = ALIEN_BASE_SPEED + points_speed_up * ALIEN_SPEED_INC;
-      const newAlienInterval = 2 - points_speed_up / 10;
+      const newAlienInterval = 2 - points_speed_up / 6.18;
       let angle = alienDirection == direction.LEFT ? rand(45, -45) : rand(-135, -225);
       add([
         sprite("alien"),
@@ -3750,7 +3751,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         "wasp",
         "alien",
         {
-          shootChance: 0.1,
+          shootChance: 0.025,
           bulletDamage: "high",
           touchDamage: "veryhigh",
           points: 20,
