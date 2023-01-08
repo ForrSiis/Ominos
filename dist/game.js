@@ -3603,7 +3603,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       bullet.move(bullet.speedX, bullet.speedY);
     });
     player.onCollide("alienbullet", (bullet) => {
-      player.hurt(DAMAGE_LEVEL[bullet.damage]);
+      gotHurt(player, bullet.damage);
       destroy(bullet);
       makeExplosion(player.pos, 3, 3, 3, Color.YELLOW);
       play("explosion", {
@@ -3677,7 +3677,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     });
     onCollide("alien", "bullet", (alien, attacker) => {
       makeExplosion(Math.midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.GREEN);
-      alien.hurt(DAMAGE_LEVEL[attacker.damage]);
+      gotHurt(alien, attacker.damage);
       destroy(attacker);
       play("explosion", {
         volume: 0.0375,
@@ -3686,7 +3686,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     });
     onCollide("alien", "laser", (alien, attacker) => {
       makeExplosion(Math.midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.GREEN);
-      alien.hurt(DAMAGE_LEVEL[attacker.damage]);
+      gotHurt(alien, attacker.damage);
       play("explosion", {
         volume: 0.0375,
         detune: rand(0, 1200)
@@ -3694,7 +3694,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     });
     onCollide("alien", "missile", (alien, attacker) => {
       makeExplosion(Math.midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.GREEN);
-      alien.hurt(DAMAGE_LEVEL[attacker.damage]);
+      gotHurt(alien, attacker.damage);
       spawnBomb(attacker.pos);
       destroy(attacker);
       play("explosion", {
@@ -3704,7 +3704,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     });
     onCollide("alien", "bomb", (alien, attacker) => {
       makeExplosion(Math.midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.YELLOW);
-      alien.hurt(DAMAGE_LEVEL[attacker.damage]);
+      gotHurt(alien, attacker.damage);
       play("explosion", {
         volume: 0.0375,
         detune: rand(0, 1200)
@@ -3712,7 +3712,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     });
     onCollide("alien", "field", (alien, attacker) => {
       makeExplosion(Math.midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.GREEN);
-      alien.hurt(DAMAGE_LEVEL[attacker.damage]);
+      gotHurt(alien, attacker.damage);
       play("explosion", {
         volume: 0.0375,
         detune: rand(0, 1200)
@@ -3720,7 +3720,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     });
     onCollide("alien", "bouncer", (alien, attacker) => {
       makeExplosion(Math.midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.CYAN);
-      alien.hurt(DAMAGE_LEVEL[attacker.damage]);
+      gotHurt(alien, attacker.damage);
       play("explosion", {
         volume: 0.0375,
         detune: rand(0, 1200)
@@ -3728,7 +3728,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     });
     onCollide("alien", "falling", (alien, attacker) => {
       makeExplosion(Math.midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.GREEN);
-      alien.hurt(DAMAGE_LEVEL[attacker.damage]);
+      gotHurt(alien, attacker.damage);
       play("explosion", {
         volume: 0.0375,
         detune: rand(0, 1200)
@@ -3833,8 +3833,8 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         detune: -1200,
         volume: 0.0375
       });
-      player.hurt(DAMAGE_LEVEL[alien.touchDamage]);
-      alien.hurt(DAMAGE_LEVEL[player.touchDamage]);
+      gotHurt(player, alien.touchDamage);
+      gotHurt(alien, player.touchDamage);
     });
     function spawnGem() {
       let xpos = rand(BLOCK_SIZE, MAP_WIDTH - BLOCK_SIZE);
@@ -3869,7 +3869,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       }
     }
     __name(playerGemsBoost, "playerGemsBoost");
-    const CHANCE_SPAWN_OBSTACLES = 0.1;
+    const CHANCE_SPAWN_OBSTACLES = 0.025;
     const MAX_OBSTACLES_W = 5;
     const MAX_OBSTACLES_H = 5;
     onUpdate(() => {
@@ -3897,7 +3897,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
             {
               speedX: 0,
               speedY: BLOCK_SIZE / 2,
-              touchDamage: "high"
+              touchDamage: "medium"
             }
           ]);
         }
@@ -3908,6 +3908,15 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       if (ob.pos.y > MAP_HEIGHT) {
         destroy(ob);
       }
+    });
+    player.onCollide("obstacle", (ob) => {
+      gotHurt(player, ob.touchDamage);
+      gotHurt(ob, ob.touchDamage);
+      makeExplosion(Math.midpoint(ob.pos, player.pos), 4, 4, 4, Color.RED);
+      play("explosion", {
+        detune: -1200,
+        volume: 0.0375
+      });
     });
     onCollide("obstacle", "playerattack", (ob, attack) => {
       gotHurt(ob, attack.damage);
