@@ -3014,7 +3014,6 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     let spot = vec2((a2.x + b2.x) / 2, (a2.y + b2.y) / 2);
     return spot;
   };
-  var log = console.log;
   var BLOCK_SIZE = 24;
   var CELL_SIZE = 12;
   var MAP_WIDTH = 360;
@@ -3727,6 +3726,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
           speedY: Math.sin(Math.d2r(angle)) * alienSpeed,
           shootChance: 5e-3,
           touchDamage: "veryhigh",
+          bulletDamage: "high",
           points: 10
         }
       ]);
@@ -3739,7 +3739,6 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       let ypos = choose([0, MAP_HEIGHT]);
       let angle = xpos == MAP_WIDTH ? 135 : 45;
       angle *= ypos == MAP_HEIGHT ? -1 : 1;
-      log(xpos, ypos, angle);
       add([
         sprite("wasp"),
         pos(xpos, ypos),
@@ -3751,18 +3750,26 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         "wasp",
         "alien",
         {
-          shootChance: 0.01,
+          shootChance: 0.1,
+          bulletDamage: "high",
           touchDamage: "veryhigh",
-          points: 20
+          points: 20,
+          speed: ALIEN_BASE_SPEED,
+          amplitude: 3,
+          frequency: 45,
+          timer: 0
         }
       ]);
     }
     __name(spawnAlienWasp, "spawnAlienWasp");
     wait(0, spawnAlienWasp);
     onUpdate("wasp", (wasp) => {
-      let dT = dt();
-      let dx = Math.cos(Math.d2r(wasp.angle + dT)) * ALIEN_BASE_SPEED;
-      let dy = Math.sin(Math.d2r(wasp.angle + dT)) * ALIEN_BASE_SPEED;
+      wasp.timer += dt();
+      let cos = Math.cos(Math.d2r(wasp.angle));
+      let sin = Math.sin(Math.d2r(wasp.angle));
+      let wobble = wasp.amplitude * Math.cos(wasp.frequency * wasp.timer) * wasp.frequency;
+      let dx = cos * wasp.speed - sin * wobble;
+      let dy = sin * wasp.speed + cos * wobble;
       wasp.move(dx, dy);
     });
     const CHANCE_SPAWN_ALIENSHOOTER = 25e-4;

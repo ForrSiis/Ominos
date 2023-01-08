@@ -825,6 +825,7 @@ scene("main", () => {
                 speedY: Math.sin(Math.d2r(angle)) * alienSpeed,
                 shootChance: 0.005,
                 touchDamage: 'veryhigh',
+                bulletDamage: 'high',
                 points: 10,
             },
         ]);
@@ -839,8 +840,6 @@ scene("main", () => {
         let ypos = choose([0, MAP_HEIGHT]);
         let angle = xpos == MAP_WIDTH ? 135 : 45;
         angle *= ypos == MAP_HEIGHT ? -1 : 1;
-
-        log(xpos, ypos, angle);
         add([
             sprite("wasp"),
             pos(xpos, ypos),
@@ -851,9 +850,14 @@ scene("main", () => {
             health(18),
             "wasp",
             "alien", {
-                shootChance: 0.01,
+                shootChance: 0.1,
+                bulletDamage: 'high',
                 touchDamage: 'veryhigh',
                 points: 20,
+                speed: ALIEN_BASE_SPEED, // wavelength
+                amplitude: 3, // delta pixels
+                frequency: 45, // times / seconds
+                timer: 0,
             },
         ]);
     }
@@ -862,9 +866,12 @@ scene("main", () => {
 
     onUpdate("wasp", (wasp) => {
         // move like sine wave
-        let dT = dt();
-        let dx = Math.cos(Math.d2r(wasp.angle + dT)) * ALIEN_BASE_SPEED;
-        let dy = Math.sin(Math.d2r(wasp.angle + dT)) * ALIEN_BASE_SPEED;
+        wasp.timer += dt();
+        let cos = Math.cos(Math.d2r(wasp.angle));
+        let sin = Math.sin(Math.d2r(wasp.angle));
+        let wobble = wasp.amplitude * Math.cos(wasp.frequency * wasp.timer) * wasp.frequency;
+        let dx = cos * wasp.speed - sin * wobble;
+        let dy = sin * wasp.speed + cos * wobble;
         wasp.move(dx, dy);
     });
 
