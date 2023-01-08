@@ -61,6 +61,7 @@ loadSprite("stars", "stars.png");
 loadSprite("gem", "gem.png");
 loadSprite("spaceship", "spaceship.png");
 loadSprite("alien", "alien.png");
+loadSprite("wasp", "wasp.png");
 loadSprite("asteroid", "asteroid.png");
 loadOminos();
 
@@ -833,6 +834,35 @@ scene("main", () => {
 
     spawnAlienSpider();
 
+    function spawnAlienWasp() {
+        let alienDirection = choose([direction.LEFT, direction.RIGHT]);
+        let xpos = (alienDirection == direction.LEFT ? 0 : MAP_WIDTH - 22);
+
+        const points_speed_up = Math.floor(player.score / POINTS_ALIEN_STRONGER);
+        const alienSpeed = ALIEN_BASE_SPEED + (points_speed_up * ALIEN_SPEED_INC);
+        let angle = alienDirection == direction.LEFT ? rand(45, -45) : rand(-135, -225);
+
+        add([
+            sprite("wasp"),
+            pos(xpos, rand(0, MAP_HEIGHT - 30)),
+            area(),
+            origin("center"),
+            rotate(angle + 90),
+            cleanup(),
+            health(9),
+            "wasp",
+            "alien", {
+                speedX: Math.cos(Math.d2r(angle)) * alienSpeed,
+                speedY: Math.sin(Math.d2r(angle)) * alienSpeed,
+                shootChance: 0.005,
+                touchDamage: 'veryhigh',
+                points: 10,
+            },
+        ]);
+    }
+
+    wait(0, spawnAlienWasp);
+
     const CHANCE_SPAWN_ALIENSHOOTER = 0.0025;
 
     function spawnAlienShooters() {
@@ -992,10 +1022,15 @@ scene("main", () => {
             updateScore(alien.points);
             destroy(alien);
 
-            if (alien.is("elite")) {
-                wait(rand(12, 24), spawnAlienElite);
-            }
         }
+    });
+
+    on("destroy", "elite", (alien) => {
+        wait(rand(12, 24), spawnAlienElite);
+    });
+
+    on("destroy", "wasp", (alien) => {
+        wait(rand(6, 12), spawnAlienWasp);
     });
 
     add([
