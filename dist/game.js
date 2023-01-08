@@ -3007,6 +3007,9 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
   Math.d2r = function(degrees) {
     return degrees * Math.PI / 180;
   };
+  Math.r2d = function(radians) {
+    return radians * 180 / Math.PI;
+  };
   Math.midpoint = function(a2, b2) {
     let spot = vec2((a2.x + b2.x) / 2, (a2.y + b2.y) / 2);
     return spot;
@@ -3580,9 +3583,9 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     onUpdate("falling", (b2) => {
       b2.move(b2.speedX, b2.speedY);
     });
-    function spawnAlienBullet(bulletpos) {
+    function spawnAlienBullet(spot) {
       add([
-        pos(bulletpos),
+        pos(spot),
         circle(4),
         origin("center"),
         color(255, 128, 0),
@@ -3593,19 +3596,49 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         cleanup(),
         "alienbullet",
         {
-          speedX: Math.cos(Math.atan2(player.pos.y - bulletpos.y, player.pos.x - bulletpos.x)) * BULLET_SPEED,
-          speedY: Math.sin(Math.atan2(player.pos.y - bulletpos.y, player.pos.x - bulletpos.x)) * BULLET_SPEED,
+          speedX: Math.cos(Math.atan2(player.pos.y - spot.y, player.pos.x - spot.x)) * BULLET_SPEED,
+          speedY: Math.sin(Math.atan2(player.pos.y - spot.y, player.pos.x - spot.x)) * BULLET_SPEED,
           damage: "medium"
         }
       ]);
     }
     __name(spawnAlienBullet, "spawnAlienBullet");
-    onUpdate("alienbullet", (bullet) => {
-      bullet.move(bullet.speedX, bullet.speedY);
+    onUpdate("alienbullet", (attack) => {
+      attack.move(attack.speedX, attack.speedY);
     });
-    player.onCollide("alienbullet", (bullet) => {
-      gotHurt(player, bullet.damage);
-      destroy(bullet);
+    player.onCollide("alienbullet", (attack) => {
+      gotHurt(player, attack.damage);
+      destroy(attack);
+      makeExplosion(player.pos, 3, 3, 3, Color.YELLOW);
+      play("explosion", {
+        volume: 0.0375,
+        detune: rand(0, 1200)
+      });
+    });
+    function spawnAlienLaser(spot) {
+      let angle = Math.atan2(player.pos.y - spot.y, player.pos.x - spot.x);
+      add([
+        pos(spot),
+        rect(BLOCK_SIZE * 2, 1),
+        rotate(Math.r2d(angle)),
+        origin("center"),
+        color(255, 128, 0),
+        area(),
+        cleanup(),
+        "alienlaser",
+        {
+          speedX: Math.cos(angle) * LASER_SPEED,
+          speedY: Math.sin(angle) * LASER_SPEED,
+          damage: "low"
+        }
+      ]);
+    }
+    __name(spawnAlienLaser, "spawnAlienLaser");
+    onUpdate("alienlaser", (attack) => {
+      attack.move(attack.speedX, attack.speedY);
+    });
+    player.onCollide("alienlaser", (attack) => {
+      gotHurt(player, attack.damage);
       makeExplosion(player.pos, 3, 3, 3, Color.YELLOW);
       play("explosion", {
         volume: 0.0375,
@@ -3636,7 +3669,6 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
           speedY: Math.sin(Math.d2r(angle)) * alien_speed,
           shootChance: 5e-3,
           touchDamage: "veryhigh",
-          bulletDamage: "high",
           points: 10
         }
       ]);
@@ -3644,6 +3676,53 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     }
     __name(spawnAlien, "spawnAlien");
     spawnAlien();
+    const CHANCE_SPAWN_ALIENSHOOTER = 75e-4;
+    function spawnAlienShooters() {
+      let alienDirection = choose([direction.LEFT, direction.RIGHT]);
+      let spriteSize = 40;
+      let xpos = [
+        alienDirection == direction.LEFT ? -spriteSize / 2 : MAP_WIDTH + spriteSize / 2,
+        alienDirection == direction.LEFT ? 0 : MAP_WIDTH,
+        alienDirection == direction.LEFT ? -spriteSize / 2 : MAP_WIDTH + spriteSize / 2
+      ];
+      let ypos = rand(spriteSize, MAP_HEIGHT - spriteSize * 3);
+      let angle = alienDirection == direction.LEFT ? 0 : 180;
+      for (let i = 0; i < 3; i++) {
+        add([
+          sprite("spaceship"),
+          pos(xpos[i], ypos + i * spriteSize),
+          area(),
+          origin("center"),
+          rotate(angle),
+          cleanup(),
+          health(18),
+          "alienshooter",
+          "alien",
+          {
+            speedX: (alienDirection == direction.LEFT ? spriteSize : -spriteSize) / 2,
+            speedY: 0,
+            shootChance: 0.02,
+            touchDamage: "veryhigh",
+            points: 30,
+            destroyX: alienDirection == direction.LEFT ? MAP_WIDTH : 0
+          }
+        ]);
+      }
+    }
+    __name(spawnAlienShooters, "spawnAlienShooters");
+    onUpdate("alienshooter", (alien) => {
+      alien.move(alien.speedX, alien.speedY);
+      if (alien.destroyX) {
+        if (alien.destroyX <= alien.pos.x) {
+          destroy(alien);
+        }
+      } else if (0 >= alien.pos.x) {
+        destroy(alien);
+      }
+      if (chance(alien.shootChance)) {
+        spawnAlienLaser(alien.pos);
+      }
+    });
     const CHANCE_ELITE_SPAWN_UP = 0.5;
     function spawnAlienElite() {
       let bUp = chance(CHANCE_ELITE_SPAWN_UP);
@@ -3875,10 +3954,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     const CHANCE_SPAWN_OBSTACLES = 75e-4;
     const MAX_OBSTACLES_W = 3;
     const MAX_OBSTACLES_H = 3;
-    onUpdate(() => {
-      if (!chance(CHANCE_SPAWN_OBSTACLES)) {
-        return;
-      }
+    function spawnObstacles() {
       let bUp = chance(0.5);
       let y = bUp ? 0 : MAP_HEIGHT;
       let moveDirection = bUp ? direction.DOWN : direction.UP;
@@ -3905,6 +3981,15 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
             }
           ]);
         }
+      }
+    }
+    __name(spawnObstacles, "spawnObstacles");
+    onUpdate(() => {
+      if (chance(CHANCE_SPAWN_OBSTACLES)) {
+        spawnObstacles();
+      }
+      if (chance(CHANCE_SPAWN_ALIENSHOOTER)) {
+        spawnAlienShooters();
       }
     });
     onUpdate("obstacle", (ob) => {
