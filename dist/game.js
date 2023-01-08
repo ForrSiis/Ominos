@@ -3900,7 +3900,8 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
             {
               speedX: 0,
               speedY: BLOCK_SIZE / 2,
-              touchDamage: "medium"
+              touchDamage: "medium",
+              points: 2
             }
           ]);
         }
@@ -3934,6 +3935,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     on("hurt", "obstacle", (ob) => {
       if (0 >= ob.hp()) {
         destroy(ob);
+        updateScore(ob.points);
       }
     });
   });

@@ -995,6 +995,7 @@ scene("main", () => {
                         speedX: 0,
                         speedY: BLOCK_SIZE / 2,
                         touchDamage: 'medium',
+                        points: 2,
                     }
                 ]);
             }
@@ -1032,6 +1033,7 @@ scene("main", () => {
     on("hurt", "obstacle", (ob) => {
         if (0 >= ob.hp()) {
             destroy(ob);
+            updateScore(ob.points);
         }
     });
 });
