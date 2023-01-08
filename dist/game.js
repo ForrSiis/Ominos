@@ -3262,11 +3262,12 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
           scale(3),
           color(0, 255, 255),
           rotate(angle),
+          opacity(1),
           "exhaust",
           {
-            speedX: Math.cos(Math.d2r(angle)) * EXHAUST_SPEED,
-            speedY: Math.sin(Math.d2r(angle)) * EXHAUST_SPEED,
-            destroyDelay: 0.125,
+            speedX: rand(Math.cos(Math.d2r(angle)) * EXHAUST_SPEED),
+            speedY: rand(Math.sin(Math.d2r(angle)) * EXHAUST_SPEED),
+            destroyDelay: 0.25,
             destroyTimer: 0
           }
         ]);
@@ -3286,9 +3287,8 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       spawnPlayerExhaust(player.cells);
     });
     onUpdate("exhaust", (ob) => {
-      if (chance(0.75)) {
-        ob.move(ob.speedX, ob.speedY);
-      }
+      ob.use(opacity(ob.opacity - 0.075));
+      ob.move(ob.speedX, ob.speedY);
       ob.destroyTimer += dt();
       if (ob.destroyTimer >= ob.destroyDelay) {
         destroy(ob);
@@ -3652,8 +3652,8 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       let alienDirection = choose([direction.LEFT, direction.RIGHT]);
       let xpos = alienDirection == direction.LEFT ? 0 : MAP_WIDTH - 22;
       const points_speed_up = Math.floor(player.score / POINTS_ALIEN_STRONGER);
-      const alien_speed = ALIEN_BASE_SPEED + points_speed_up * ALIEN_SPEED_INC;
-      const new_alien_interval = 1 - points_speed_up / 20;
+      const alienSpeed = ALIEN_BASE_SPEED + points_speed_up * ALIEN_SPEED_INC;
+      const newAlienInterval = 1 - points_speed_up / 20;
       let angle = alienDirection == direction.LEFT ? rand(45, -45) : rand(-135, -225);
       add([
         sprite("alien"),
@@ -3665,14 +3665,14 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         health(9),
         "alien",
         {
-          speedX: Math.cos(Math.d2r(angle)) * alien_speed,
-          speedY: Math.sin(Math.d2r(angle)) * alien_speed,
+          speedX: Math.cos(Math.d2r(angle)) * alienSpeed,
+          speedY: Math.sin(Math.d2r(angle)) * alienSpeed,
           shootChance: 5e-3,
           touchDamage: "veryhigh",
           points: 10
         }
       ]);
-      wait(new_alien_interval, spawnAlien);
+      wait(newAlienInterval, spawnAlien);
     }
     __name(spawnAlien, "spawnAlien");
     spawnAlien();
@@ -3701,7 +3701,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
           {
             speedX: (alienDirection == direction.LEFT ? spriteSize : -spriteSize) / 2,
             speedY: 0,
-            shootChance: 0.01618,
+            shootChance: 0.02,
             touchDamage: "veryhigh",
             points: 30,
             destroyX: alienDirection == direction.LEFT ? MAP_WIDTH : 0
