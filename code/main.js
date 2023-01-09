@@ -179,16 +179,21 @@ function createTitle() {
 }
 
 function animateTitle(frame) {
+    let obs = 0;
     let dy = (frame % 3) - 1; // [-1, 0, 1]
     log(dy);
     every("o", (ob) => {
         ob.move(0, dy * ob.step);
+        obs++;
     });
     every("s", (ob) => {
         ob.angle += 45;
+        obs++;
     });
 
-    setTimeout(animateTitle, 1000, ++frame);
+    if (obs) {
+        setTimeout(animateTitle, 1000, ++frame);
+    }
 }
 
 scene("title", () => {

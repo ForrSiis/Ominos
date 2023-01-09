@@ -3141,15 +3141,20 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
   }
   __name(createTitle, "createTitle");
   function animateTitle(frame) {
+    let obs = 0;
     let dy = frame % 3 - 1;
     log(dy);
     every("o", (ob) => {
       ob.move(0, dy * ob.step);
+      obs++;
     });
     every("s", (ob) => {
       ob.angle += 45;
+      obs++;
     });
-    setTimeout(animateTitle, 1e3, ++frame);
+    if (obs) {
+      setTimeout(animateTitle, 1e3, ++frame);
+    }
   }
   __name(animateTitle, "animateTitle");
   scene("title", () => {
