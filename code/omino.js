@@ -89,8 +89,6 @@ export default class Omino {
             id++;
          }
       }
-
       return cells;
    };
-
 }
