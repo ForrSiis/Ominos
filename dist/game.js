@@ -3269,7 +3269,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       "player",
       {
         score: 0,
-        shootDelay: 0.5,
+        shootDelay: 0.8,
         shootTimer: 0,
         shootLevel: 0,
         speed: 200,
@@ -3971,9 +3971,9 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       layer("ui")
     ]);
     function updatePlayerLevel() {
-      if (player.shootLevel <= Math.floor(player.score / 1e3)) {
+      if (player.shootLevel < Math.floor(player.score / 1e3)) {
         player.shootLevel++;
-        player.shootDelay /= 0.1;
+        player.shootDelay *= 0.9;
       }
     }
     __name(updatePlayerLevel, "updatePlayerLevel");

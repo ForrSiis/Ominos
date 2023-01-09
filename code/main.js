@@ -317,7 +317,7 @@ scene("main", () => {
         health(100),
         "player", {
             score: 0,
-            shootDelay: 0.5,
+            shootDelay: 0.8,
             shootTimer: 0,
             shootLevel: 0,
             speed: 200,
@@ -1082,9 +1082,9 @@ scene("main", () => {
     ]);
 
     function updatePlayerLevel() {
-        if (player.shootLevel <= Math.floor(player.score / 1000)) {
+        if (player.shootLevel < Math.floor(player.score / 1000)) {
             player.shootLevel++;
-            player.shootDelay /= 0.1;
+            player.shootDelay *= 0.9;
         }
     }
 
