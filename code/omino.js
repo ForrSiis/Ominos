@@ -7,32 +7,7 @@ hosted @ https://replit.com/@Amuseum/TetraShmup#code/main.js
 played @ https://TetraShmup.amuseum.repl.co
 //*/
 
-Math.d2r = function (degrees) {
-   return degrees * Math.PI / 180;
-}
-
-Math.rotatePoint = function(center, angle, point) {
-   //console.log(center, angle, point);
-   let newPoint = {};
-
-   let sin = Math.sin(Math.d2r(angle));
-   let cos = Math.cos(Math.d2r(angle));
-
-   // translate point back to origin
-   newPoint.x = point.x - center.x;
-   newPoint.y = point.y - center.y;
-
-   // rotate point
-   let newX = newPoint.x * cos - newPoint.y * sin;
-   let newY = newPoint.x * sin + newPoint.y * cos;
-
-   // translate point back
-   newPoint.x = newX + center.x;
-   newPoint.y = newY + center.y;
-   //console.log(newPoint);
-
-   return newPoint;
-}
+import * as math from "./math.js"
 
 export default class Omino {
    static Shapes = {
@@ -102,7 +77,7 @@ export default class Omino {
          for (let c = 0; c < cols; c++) {
             let on = grid.substring(id, id + 1);
             if (on == '1') {
-               let point = Math.rotatePoint({
+               let point = math.rotatePoint({
                      x: 0,
                      y: 0
                   }, angle, {

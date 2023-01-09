@@ -7,45 +7,8 @@ hosted @ https://replit.com/@Amuseum/TetraShmup#code/main.js
 played @ https://TetraShmup.amuseum.repl.co
 //*/
 
-//import kaboom from "kaboom"
-//import Omino from "./omino.js"
-
-Math.d2r = function (degrees) {
-   return degrees * Math.PI / 180;
-}
-
-Math.r2d = function (radians) {
-   return radians * 180 / Math.PI;
-}
-
-Math.midpoint = function (a, b) {
-   // find midpoint between self and point
-   let spot = vec2((a.x + b.x) / 2, (a.y + b.y) / 2);
-   return spot;
-}
-
-Math.rotatePoint = function(center, angle, point) {
-   //console.log(center, angle, point);
-   let newPoint = {};
-
-   let sin = Math.sin(Math.d2r(angle));
-   let cos = Math.cos(Math.d2r(angle));
-
-   // translate point back to origin
-   newPoint.x = point.x - center.x;
-   newPoint.y = point.y - center.y;
-
-   // rotate point
-   let newX = newPoint.x * cos - newPoint.y * sin;
-   let newY = newPoint.x * sin + newPoint.y * cos;
-
-   // translate point back
-   newPoint.x = newX + center.x;
-   newPoint.y = newY + center.y;
-   //console.log(newPoint);
-
-   return newPoint;
-}
+import * as math from "./math.js"
+import Omino from "./omino.js"
 
 var log = console.log;
 
@@ -355,7 +318,7 @@ scene("main", () => {
 
    function playerMoveLeft() {
       // move left
-      player.move(Math.min(-player.speed / 2, Math.cos(Math.d2r(player.angle)) * player.speed), 0);
+      player.move(Math.min(-player.speed / 2, Math.cos(math.d2r(player.angle)) * player.speed), 0);
       if (player.pos.x < 0) {
          player.pos.x = 0;
       }
@@ -363,21 +326,21 @@ scene("main", () => {
 
    function playerMoveRight() {
       // move right
-      player.move(Math.max(player.speed / 2, Math.cos(Math.d2r(-player.angle)) * player.speed), 0);
+      player.move(Math.max(player.speed / 2, Math.cos(math.d2r(-player.angle)) * player.speed), 0);
       if (player.pos.x > MAP_WIDTH) {
          player.pos.x = MAP_WIDTH;
       }
    }
 
    function playerMoveUp() {
-      player.move(0, Math.min(-player.speed / 2, Math.sin(Math.d2r(player.angle)) * player.speed));
+      player.move(0, Math.min(-player.speed / 2, Math.sin(math.d2r(player.angle)) * player.speed));
       if (player.pos.y < 0) {
          player.pos.y = 0;
       }
    }
 
    function playerMoveDown() {
-      player.move(0, Math.max(player.speed / 2, Math.sin(Math.d2r(-player.angle - 180)) * player.speed));
+      player.move(0, Math.max(player.speed / 2, Math.sin(math.d2r(-player.angle - 180)) * player.speed));
       if (player.pos.y > MAP_HEIGHT) {
          player.pos.y = MAP_HEIGHT;
       }
@@ -431,8 +394,8 @@ scene("main", () => {
       let angle = player.angle + 180;
 
       cells.forEach((cell) => {
-         let x = player.pos.x + cell.x + Math.cos(Math.d2r(angle)) * 12 * player.omino.cols / 2;
-         let y = player.pos.y + cell.y + Math.sin(Math.d2r(angle)) * 12 * player.omino.rows / 2;
+         let x = player.pos.x + cell.x + Math.cos(math.d2r(angle)) * 12 * player.omino.cols / 2;
+         let y = player.pos.y + cell.y + Math.sin(math.d2r(angle)) * 12 * player.omino.rows / 2;
          add([
                pos(x, y),
                rect(1, 1),
@@ -441,8 +404,8 @@ scene("main", () => {
                rotate(angle),
                opacity(1),
                "exhaust", {
-                  speedX: rand(Math.cos(Math.d2r(angle)) * EXHAUST_SPEED),
-                  speedY: rand(Math.sin(Math.d2r(angle)) * EXHAUST_SPEED),
+                  speedX: rand(Math.cos(math.d2r(angle)) * EXHAUST_SPEED),
+                  speedY: rand(Math.sin(math.d2r(angle)) * EXHAUST_SPEED),
                   destroyDelay: 0.25,
                   destroyTimer: 0,
                }
@@ -527,8 +490,8 @@ scene("main", () => {
             cleanup(),
             "playerattack",
             "bullet", {
-               speedX: Math.cos(Math.d2r(player.angle)) * BULLET_SPEED,
-               speedY: Math.sin(Math.d2r(player.angle)) * BULLET_SPEED,
+               speedX: Math.cos(math.d2r(player.angle)) * BULLET_SPEED,
+               speedY: Math.sin(math.d2r(player.angle)) * BULLET_SPEED,
                damage: 'low',
             }
          ]);
@@ -547,7 +510,7 @@ scene("main", () => {
       cells.forEach((cell) => {
          let x = player.pos.x + cell.x;
          let y = player.pos.y + cell.y;
-			let spot = Math.rotatePoint({x:x, y:y}, player.angle, {x:x + BLOCK_SIZE, y:y});
+			let spot = math.rotatePoint({x:x, y:y}, player.angle, {x:x + BLOCK_SIZE, y:y});
          spawnLaser(spot);
       });
    }
@@ -563,8 +526,8 @@ scene("main", () => {
 			cleanup(),
 			"playerattack",
 			"laser", {
-				speedX: Math.cos(Math.d2r(player.angle)) * LASER_SPEED,
-				speedY: Math.sin(Math.d2r(player.angle)) * LASER_SPEED,
+				speedX: Math.cos(math.d2r(player.angle)) * LASER_SPEED,
+				speedY: Math.sin(math.d2r(player.angle)) * LASER_SPEED,
 				damage: 'low',
 			}
 		]);
@@ -597,8 +560,8 @@ scene("main", () => {
             cleanup(),
             "playerattack",
             "missile", {
-               speedX: Math.cos(Math.d2r(player.angle)) * MISSILE_SPEED,
-               speedY: Math.sin(Math.d2r(player.angle)) * MISSILE_SPEED,
+               speedX: Math.cos(math.d2r(player.angle)) * MISSILE_SPEED,
+               speedY: Math.sin(math.d2r(player.angle)) * MISSILE_SPEED,
                damage: 'medium',
             }
          ]);
@@ -703,8 +666,8 @@ scene("main", () => {
             cleanup(),
             "playerattack",
             "bouncer", {
-               speedX: Math.cos(Math.d2r(player.angle)) * BULLET_SPEED,
-               speedY: Math.sin(Math.d2r(player.angle)) * BULLET_SPEED,
+               speedX: Math.cos(math.d2r(player.angle)) * BULLET_SPEED,
+               speedY: Math.sin(math.d2r(player.angle)) * BULLET_SPEED,
                damage: 'low',
                destroyDelay: 5,
                destroyTimer: 0,
@@ -814,7 +777,7 @@ scene("main", () => {
       add([
             pos(spot),
             rect(BLOCK_SIZE * 2, 1),
-            rotate(Math.r2d(angle)),
+            rotate(math.r2d(angle)),
             origin("center"),
             color(255, 128, 0),
             area(),
@@ -862,8 +825,8 @@ scene("main", () => {
             cleanup(),
             health(9),
             "alien", {
-               speedX: Math.cos(Math.d2r(angle)) * alienSpeed,
-               speedY: Math.sin(Math.d2r(angle)) * alienSpeed,
+               speedX: Math.cos(math.d2r(angle)) * alienSpeed,
+               speedY: Math.sin(math.d2r(angle)) * alienSpeed,
                shootChance: 0.005,
                touchDamage: 'veryhigh',
                bulletDamage: 'high',
@@ -908,8 +871,8 @@ scene("main", () => {
    onUpdate("wasp", (wasp) => {
       // move like sine wave
       wasp.timer += dt();
-      let cos = Math.cos(Math.d2r(wasp.angle));
-      let sin = Math.sin(Math.d2r(wasp.angle));
+      let cos = Math.cos(math.d2r(wasp.angle));
+      let sin = Math.sin(math.d2r(wasp.angle));
       let wobble = wasp.amplitude * Math.cos(wasp.frequency * wasp.timer) * wasp.frequency;
       let dx = cos * wasp.speed - sin * wobble;
       let dy = sin * wasp.speed + cos * wobble;
@@ -1005,7 +968,7 @@ scene("main", () => {
    });
 
    onCollide("alien", "bullet", (alien, attacker) => {
-      makeExplosion(Math.midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.GREEN);
+      makeExplosion(math.midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.GREEN);
       gotHurt(alien, attacker.damage);
       destroy(attacker);
       play("explosion", {
@@ -1015,7 +978,7 @@ scene("main", () => {
    });
 
    onCollide("alien", "laser", (alien, attacker) => {
-      makeExplosion(Math.midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.GREEN);
+      makeExplosion(math.midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.GREEN);
       gotHurt(alien, attacker.damage);
       play("explosion", {
          volume: 0.0375,
@@ -1024,7 +987,7 @@ scene("main", () => {
    });
 
    onCollide("alien", "missile", (alien, attacker) => {
-      makeExplosion(Math.midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.GREEN);
+      makeExplosion(math.midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.GREEN);
       gotHurt(alien, attacker.damage);
       spawnBomb(attacker.pos);
       destroy(attacker);
@@ -1035,7 +998,7 @@ scene("main", () => {
    });
 
    onCollide("alien", "bomb", (alien, attacker) => {
-      makeExplosion(Math.midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.YELLOW);
+      makeExplosion(math.midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.YELLOW);
       gotHurt(alien, attacker.damage);
       play("explosion", {
          volume: 0.0375,
@@ -1044,7 +1007,7 @@ scene("main", () => {
    });
 
    onCollide("alien", "field", (alien, attacker) => {
-      makeExplosion(Math.midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.GREEN);
+      makeExplosion(math.midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.GREEN);
       gotHurt(alien, attacker.damage);
       play("explosion", {
          volume: 0.0375,
@@ -1053,7 +1016,7 @@ scene("main", () => {
    });
 
    onCollide("alien", "bouncer", (alien, attacker) => {
-      makeExplosion(Math.midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.CYAN);
+      makeExplosion(math.midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.CYAN);
       gotHurt(alien, attacker.damage);
       play("explosion", {
          volume: 0.0375,
@@ -1062,7 +1025,7 @@ scene("main", () => {
    });
 
    onCollide("alien", "falling", (alien, attacker) => {
-      makeExplosion(Math.midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.GREEN);
+      makeExplosion(math.midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.GREEN);
       gotHurt(alien, attacker.damage);
       play("explosion", {
          volume: 0.0375,
@@ -1287,7 +1250,7 @@ scene("main", () => {
    player.onCollide("obstacle", (ob) => {
       gotHurt(player, ob.touchDamage);
       gotHurt(ob, ob.touchDamage);
-      makeExplosion(Math.midpoint(ob.pos, player.pos), 4, 4, 4, Color.RED);
+      makeExplosion(math.midpoint(ob.pos, player.pos), 4, 4, 4, Color.RED);
       play("explosion", {
          detune: -1200,
          volume: 0.0375,
@@ -1298,7 +1261,7 @@ scene("main", () => {
       gotHurt(ob, attack.damage);
       if (attack.is('missile')) {
          destroy(attack);
-         spawnBomb(Math.midpoint(attack.pos, ob.pos));
+         spawnBomb(math.midpoint(attack.pos, ob.pos));
       }
       if (attack.is('bomb') || attack.is('bullet')) {
          destroy(attack);
