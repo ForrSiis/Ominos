@@ -11,7 +11,7 @@ Math.d2r = function (degrees) {
    return degrees * Math.PI / 180;
 }
 
-function rotatePoint(center, angle, point) {
+Math.rotatePoint = function(center, angle, point) {
    //console.log(center, angle, point);
    let newPoint = {};
 
@@ -102,7 +102,7 @@ export default class Omino {
          for (let c = 0; c < cols; c++) {
             let on = grid.substring(id, id + 1);
             if (on == '1') {
-               let point = rotatePoint({
+               let point = Math.rotatePoint({
                      x: 0,
                      y: 0
                   }, angle, {
