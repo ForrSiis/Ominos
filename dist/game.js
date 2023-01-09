@@ -3417,7 +3417,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     function spawnBullet(spot) {
       add([
         pos(spot),
-        circle(4),
+        circle(BLOCK_SIZE / 4),
         origin("center"),
         color(255, 0, 0),
         area({
@@ -3444,8 +3444,8 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     });
     function playerShootsLasers(cells) {
       cells.forEach((cell) => {
-        let x = player.pos.x + cell.x;
-        let y = player.pos.y + cell.y;
+        let x = player.pos.x + cell.x + 2 * (player.shootLevel + 1);
+        let y = player.pos.y + cell.y + 2 * (player.shootLevel + 1);
         let spot = vec2(x, y);
         spawnLaser(spot);
       });
@@ -3454,7 +3454,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     function spawnLaser(spot) {
       add([
         pos(spot),
-        rect(BLOCK_SIZE * 2, 1),
+        rect(BLOCK_SIZE * 2, 2 * (player.shootLevel + 1)),
         rotate(player.angle),
         origin("center"),
         color(0, 255, 255),
@@ -3589,7 +3589,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     function spawnBouncer(spot) {
       add([
         pos(spot),
-        circle(BLOCK_SIZE / 4),
+        circle(BLOCK_SIZE / 8),
         origin("center"),
         color(Color.GREEN),
         area({
