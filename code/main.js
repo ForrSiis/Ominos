@@ -314,6 +314,7 @@ scene("main", () => {
             score: 0,
             shootDelay: 0.5,
             shootTimer: 0,
+            shootLevel: 0,
             speed: 200,
             gems: 0,
             gemsLimit: 10,
@@ -1075,6 +1076,13 @@ scene("main", () => {
         layer("ui"),
     ]);
 
+    function updatePlayerLevel() {
+        if (player.shootLevel <= Math.floor(player.score / 1000)) {
+            player.shootLevel++;
+            player.shootDelay /= 0.1;
+        }
+    }
+
     function updateScore(points) {
         player.score += points;
         scoreText.text = player.score.toString().padStart(6, 0);
@@ -1082,6 +1090,8 @@ scene("main", () => {
             volume: 0.05,
             detune: rand(-1200, 1000),
         });
+
+        updatePlayerLevel();
     }
 
     add([

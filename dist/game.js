@@ -3266,6 +3266,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         score: 0,
         shootDelay: 0.5,
         shootTimer: 0,
+        shootLevel: 0,
         speed: 200,
         gems: 0,
         gemsLimit: 10,
@@ -3964,6 +3965,13 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       pos(72, 10),
       layer("ui")
     ]);
+    function updatePlayerLevel() {
+      if (player.shootLevel <= Math.floor(player.score / 1e3)) {
+        player.shootLevel++;
+        player.shootDelay /= 0.1;
+      }
+    }
+    __name(updatePlayerLevel, "updatePlayerLevel");
     function updateScore(points) {
       player.score += points;
       scoreText.text = player.score.toString().padStart(6, 0);
@@ -3971,6 +3979,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         volume: 0.05,
         detune: rand(-1200, 1e3)
       });
+      updatePlayerLevel();
     }
     __name(updateScore, "updateScore");
     add([
