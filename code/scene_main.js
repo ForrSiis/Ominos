@@ -1006,15 +1006,11 @@ function runScene() {
     }
 
     // random obstacles, of random size and speed
-    const CHANCE_SPAWN_OBSTACLES = 0.001;
+    const CHANCE_SPAWN_OBSTACLES = 0.0005 * Math.pow(1.1, player.level);
     const MAX_OBSTACLES_W = 5;
     const MAX_OBSTACLES_H = 3;
 
     function spawnObstacles() {
-        let bUp = chance(0.5);
-        let y = bUp ? 0 : Const.mapH;
-        let moveDirection = bUp ? Const.direction.DOWN : Const.direction.UP;
-        let speedY = (Const.blockSize) * (moveDirection - 2);
         let x = rand(Const.mapW - Const.blockSize * MAX_OBSTACLES_W);
         for (let i = MAX_OBSTACLES_W; i; i--) {
             for (let j = MAX_OBSTACLES_H; j; j--) {

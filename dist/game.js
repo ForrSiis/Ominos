@@ -4092,14 +4092,10 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       }
     }
     __name(playerGemsBoost, "playerGemsBoost");
-    const CHANCE_SPAWN_OBSTACLES = 1e-3;
+    const CHANCE_SPAWN_OBSTACLES = 5e-4 * Math.pow(1.1, player.level);
     const MAX_OBSTACLES_W = 5;
     const MAX_OBSTACLES_H = 3;
     function spawnObstacles() {
-      let bUp = chance(0.5);
-      let y = bUp ? 0 : mapH;
-      let moveDirection = bUp ? direction.DOWN : direction.UP;
-      let speedY = blockSize * (moveDirection - 2);
       let x = rand(mapW - blockSize * MAX_OBSTACLES_W);
       for (let i = MAX_OBSTACLES_W; i; i--) {
         for (let j = MAX_OBSTACLES_H; j; j--) {
