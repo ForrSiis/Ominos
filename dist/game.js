@@ -3318,6 +3318,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     const MISSILE_SPEED = blockSize * 6;
     const FALLING_SPEED = blockSize * 4;
     const EXHAUST_SPEED = blockSize;
+    const LASER_H = 2;
     function spawnPlayerExhaust(cells) {
       let angle = player.angle + 180;
       cells.forEach((cell) => {
@@ -3423,24 +3424,35 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       b2.move(b2.speedX, b2.speedY);
     });
     function playerShootsLasers(cells) {
-      cells.forEach((cell) => {
+      let getSpot = /* @__PURE__ */ __name((cell, dy) => {
         let x = player.pos.x + cell.x;
         let y = player.pos.y + cell.y;
+        dy = dy || 0;
         let spot = rotatePoint({
           x,
           y
         }, player.angle, {
-          x: x + blockSize,
-          y
+          x: x + cellSize,
+          y: y + dy
         });
         spawnLaser(spot);
+      }, "getSpot");
+      getSpot({
+        x: 0,
+        y: 0
       });
+      let nLasers = Math.ceil((player.level + 1) / 2);
+      for (let i = 0; i < nLasers; i++) {
+        let cell = cells[i % cells.length];
+        let dy = Math.floor(i / cells.length) * (i % 2 ? 1 : -1) * LASER_H;
+        getSpot(cell, dy);
+      }
     }
     __name(playerShootsLasers, "playerShootsLasers");
     function spawnLaser(spot) {
       let laser = add([
         pos(spot.x, spot.y),
-        rect(blockSize * 2, player.level + 1),
+        rect(blockSize * 2, LASER_H),
         rotate(player.angle),
         color(0, 255, 255),
         area(),

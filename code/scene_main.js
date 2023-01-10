@@ -167,6 +167,7 @@ function runScene() {
    const MISSILE_SPEED = Const.blockSize * 6;
    const FALLING_SPEED = Const.blockSize * 4;
    const EXHAUST_SPEED = Const.blockSize;
+   const LASER_H = 2;
 
    function spawnPlayerExhaust(cells) {
       // particles behind player, to denote movement direction
@@ -287,26 +288,40 @@ function runScene() {
    });
 
    function playerShootsLasers(cells) {
-      cells.forEach((cell) => {
+      // one laser from center, always
+      // extra lasers per player level
+      let getSpot = (cell, dy) => {
          let x = player.pos.x + cell.x;
          let y = player.pos.y + cell.y;
+         dy = dy || 0;
          let spot = math.rotatePoint({
                x: x,
                y: y
             }, player.angle, {
-               x: x + Const.blockSize,
-               y: y
+               x: x + Const.cellSize,
+               y: y + dy,
             });
          spawnLaser(spot);
+      }
+      getSpot({
+         x: 0,
+         y: 0
       });
+      let nLasers = Math.ceil((player.level + 1) / 2);
+      for (let i = 0; i < nLasers; i++) {
+         let cell = cells[i % cells.length];
+         let dy = Math.floor(i / cells.length) * (i % 2 ? 1 : -1) * LASER_H;
+         getSpot(cell, dy);
+      }
+
+      //cells.forEach((cell) => getSpot(cell));
    }
 
    function spawnLaser(spot) {
       let laser = add([
                pos(spot.x, spot.y),
-               rect(Const.blockSize * 2, player.level + 1),
+               rect(Const.blockSize * 2, LASER_H),
                rotate(player.angle),
-               //origin("center"),
                color(0, 255, 255),
                area(),
                cleanup(),
