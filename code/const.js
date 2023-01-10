@@ -25,6 +25,7 @@ function choose(arr) {
 	return arr[Math.floor(arr.length * Math.random())];
 }
 
+let playerStartLevel = 0;
 let playerStartAngle = -90;
 let playerAngleTurn = 22.5;
 let playerStartShape = choose(ominoShapes);
@@ -40,6 +41,7 @@ export {
    ominoColors,
    damageLevel,
    direction,
+   playerStartLevel,
    playerStartAngle,
    playerAngleTurn,
    playerStartShape,

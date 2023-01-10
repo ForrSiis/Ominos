@@ -3824,7 +3824,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
           {
             speedX: (alienDirection == direction.LEFT ? spriteSize : -spriteSize) / 2,
             speedY: 0,
-            shootChance: 75e-4 + 5e-4 * player.level,
+            shootChance: 5e-3 + 5e-4 * player.level,
             touchDamage: "veryhigh",
             points: 30,
             destroyX: alienDirection == direction.LEFT ? mapW : 0
