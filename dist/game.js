@@ -3319,7 +3319,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     const BULLET_SPEED = blockSize * 5;
     const LASER_SPEED = blockSize * 8;
     const MISSILE_SPEED = blockSize * 6;
-    const FALLING_SPEED = blockSize * 4;
+    const FALLING_SPEED = blockSize * 8;
     const EXHAUST_SPEED = blockSize;
     const LASER_H = 2;
     function spawnPlayerExhaust(cells) {
@@ -3663,7 +3663,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         {
           speedX: 0,
           speedY: FALLING_SPEED,
-          damage: "high"
+          damage: "low"
         }
       ]);
       play("shoot", {

@@ -167,7 +167,7 @@ function runScene() {
     const BULLET_SPEED = Const.blockSize * 5;
     const LASER_SPEED = Const.blockSize * 8;
     const MISSILE_SPEED = Const.blockSize * 6;
-    const FALLING_SPEED = Const.blockSize * 4;
+    const FALLING_SPEED = Const.blockSize * 8;
     const EXHAUST_SPEED = Const.blockSize;
     const LASER_H = 2;
 
@@ -534,7 +534,7 @@ function runScene() {
             "falling", {
                 speedX: 0,
                 speedY: FALLING_SPEED,
-                damage: 'high',
+                damage: 'low',
             }
         ]);
 
