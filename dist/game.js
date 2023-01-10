@@ -4140,7 +4140,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       if (chance(CHANCE_SPAWN_OBSTACLES)) {
         spawnObstacles();
       }
-      if (chance(CHANCE_SPAWN_ALIENSHOOTER)) {
+      if (!get("alienshooter").length && chance(CHANCE_SPAWN_ALIENSHOOTER)) {
         spawnAlienShooters();
       }
     });

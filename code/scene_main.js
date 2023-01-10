@@ -1048,7 +1048,7 @@ function runScene() {
         if (chance(CHANCE_SPAWN_OBSTACLES)) {
             spawnObstacles();
         }
-        if (chance(CHANCE_SPAWN_ALIENSHOOTER)) {
+        if (!get("alienshooter").length && chance(CHANCE_SPAWN_ALIENSHOOTER)) {
             spawnAlienShooters();
         }
     });
