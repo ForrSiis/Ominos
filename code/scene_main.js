@@ -84,7 +84,7 @@ function runScene() {
             score: 0,
             shootDelay: 0.8,
             shootTimer: 0,
-            level: 0,
+            level: Const.playerStartLevel,
             speed: 200,
             gems: 0,
             gemsLimit: 10,
@@ -94,6 +94,8 @@ function runScene() {
         }
     ]);
 
+    console.log(Const.playerStartLevel);
+    console.log(player.level);
     loadPlayerOmino();
 
     function playerMoveLeft() {
@@ -611,10 +613,8 @@ function runScene() {
     function spawnAlienSpider() {
         let alienDirection = choose([Const.direction.LEFT, Const.direction.RIGHT]);
         let xpos = (alienDirection == Const.direction.LEFT ? 0 : Const.mapW - 22);
-
-        const points_speed_up = Math.floor(player.score / POINTS_ALIEN_STRONGER);
-        const alienSpeed = ALIEN_BASE_SPEED + (points_speed_up * ALIEN_SPEED_INC);
-        const newAlienInterval = 2.0 - (points_speed_up / 6.18);
+        const alienSpeed = ALIEN_BASE_SPEED * Math.pow(1.1, player.level);
+        const newAlienInterval = 2.0 * Math.pow(0.9, player.level);
         let angle = alienDirection == Const.direction.LEFT ? rand(45, -45) : rand(-135, -225);
 
         add([

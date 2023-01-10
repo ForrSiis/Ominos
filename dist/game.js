@@ -2940,6 +2940,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     return arr[Math.floor(arr.length * Math.random())];
   }
   __name(choose2, "choose");
+  var playerStartLevel = 0;
   var playerStartAngle = -90;
   var playerAngleTurn = 22.5;
   var playerStartShape = choose2(ominoShapes);
@@ -3251,7 +3252,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         score: 0,
         shootDelay: 0.8,
         shootTimer: 0,
-        level: 0,
+        level: playerStartLevel,
         speed: 200,
         gems: 0,
         gemsLimit: 10,
@@ -3260,6 +3261,8 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         touchDamage: "veryhigh"
       }
     ]);
+    console.log(playerStartLevel);
+    console.log(player.level);
     loadPlayerOmino();
     function playerMoveLeft() {
       player.move(Math.min(-player.speed / 2, Math.cos(d2r(player.angle)) * player.speed), 0);
@@ -3735,9 +3738,8 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     function spawnAlienSpider() {
       let alienDirection = choose([direction.LEFT, direction.RIGHT]);
       let xpos = alienDirection == direction.LEFT ? 0 : mapW - 22;
-      const points_speed_up = Math.floor(player.score / POINTS_ALIEN_STRONGER);
-      const alienSpeed = ALIEN_BASE_SPEED + points_speed_up * ALIEN_SPEED_INC;
-      const newAlienInterval = 2 - points_speed_up / 6.18;
+      const alienSpeed = ALIEN_BASE_SPEED * Math.pow(1.1, player.level);
+      const newAlienInterval = 2 * Math.pow(0.9, player.level);
       let angle = alienDirection == direction.LEFT ? rand(45, -45) : rand(-135, -225);
       add([
         sprite("alien"),
