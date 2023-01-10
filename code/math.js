@@ -1,24 +1,25 @@
+let math = {};
 
-function d2r(degrees) {
+math.d2r = function(degrees) {
    return degrees * Math.PI / 180;
 }
 
-function r2d(radians) {
+math.r2d = function(radians) {
    return radians * 180 / Math.PI;
 }
 
-function midpoint(a, b) {
+math.midpoint = function(a, b) {
    // find midpoint between self and point
    let spot = vec2((a.x + b.x) / 2, (a.y + b.y) / 2);
    return spot;
 }
 
-function rotatePoint(center, angle, point) {
+math.rotatePoint = function(center, angle, point) {
    //console.log(center, angle, point);
    let newPoint = {};
 
-   let sin = Math.sin(d2r(angle));
-   let cos = Math.cos(d2r(angle));
+   let sin = Math.sin(math.d2r(angle));
+   let cos = Math.cos(math.d2r(angle));
 
    // translate point back to origin
    newPoint.x = point.x - center.x;
@@ -36,4 +37,4 @@ function rotatePoint(center, angle, point) {
    return newPoint;
 }
 
-export {d2r, r2d, midpoint, rotatePoint}
+export default math

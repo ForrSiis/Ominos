@@ -2959,23 +2959,21 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
   var const_default = Const;
 
   // code/math.js
-  function d2r(degrees) {
+  var math = {};
+  math.d2r = function(degrees) {
     return degrees * Math.PI / 180;
-  }
-  __name(d2r, "d2r");
-  function r2d(radians) {
+  };
+  math.r2d = function(radians) {
     return radians * 180 / Math.PI;
-  }
-  __name(r2d, "r2d");
-  function midpoint(a2, b2) {
+  };
+  math.midpoint = function(a2, b2) {
     let spot = vec2((a2.x + b2.x) / 2, (a2.y + b2.y) / 2);
     return spot;
-  }
-  __name(midpoint, "midpoint");
-  function rotatePoint(center, angle, point) {
+  };
+  math.rotatePoint = function(center, angle, point) {
     let newPoint = {};
-    let sin = Math.sin(d2r(angle));
-    let cos = Math.cos(d2r(angle));
+    let sin = Math.sin(math.d2r(angle));
+    let cos = Math.cos(math.d2r(angle));
     newPoint.x = point.x - center.x;
     newPoint.y = point.y - center.y;
     let newX = newPoint.x * cos - newPoint.y * sin;
@@ -2983,8 +2981,8 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     newPoint.x = newX + center.x;
     newPoint.y = newY + center.y;
     return newPoint;
-  }
-  __name(rotatePoint, "rotatePoint");
+  };
+  var math_default = math;
 
   // code/omino.js
   var Omino = class {
@@ -3032,7 +3030,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     let grid = shape.grid;
     let rows = shape.rows;
     let cols = shape.cols;
-    let midpoint2 = {
+    let midpoint = {
       x: radius * cols / 2,
       y: radius * rows / 2
     };
@@ -3041,12 +3039,12 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       for (let c = 0; c < cols; c++) {
         let on3 = grid.substring(id, id + 1);
         if (on3 == "1") {
-          let point = rotatePoint({
+          let point = math_default.rotatePoint({
             x: 0,
             y: 0
           }, angle, {
-            x: radius * (c + 0.5) - midpoint2.x,
-            y: radius * (r + 0.5) - midpoint2.y
+            x: radius * (c + 0.5) - midpoint.x,
+            y: radius * (r + 0.5) - midpoint.y
           });
           cells.push(point);
         }
@@ -3281,28 +3279,28 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     console.log(player.level);
     loadPlayerOmino();
     function playerMoveLeft() {
-      player.move(Math.min(-player.speed / 2, Math.cos(d2r(player.angle)) * player.speed), 0);
+      player.move(Math.min(-player.speed / 2, Math.cos(math_default.d2r(player.angle)) * player.speed), 0);
       if (player.pos.x < 0) {
         player.pos.x = 0;
       }
     }
     __name(playerMoveLeft, "playerMoveLeft");
     function playerMoveRight() {
-      player.move(Math.max(player.speed / 2, Math.cos(d2r(-player.angle)) * player.speed), 0);
+      player.move(Math.max(player.speed / 2, Math.cos(math_default.d2r(-player.angle)) * player.speed), 0);
       if (player.pos.x > const_default.mapW) {
         player.pos.x = const_default.mapW;
       }
     }
     __name(playerMoveRight, "playerMoveRight");
     function playerMoveUp() {
-      player.move(0, Math.min(-player.speed / 2, Math.sin(d2r(player.angle)) * player.speed));
+      player.move(0, Math.min(-player.speed / 2, Math.sin(math_default.d2r(player.angle)) * player.speed));
       if (player.pos.y < 0) {
         player.pos.y = 0;
       }
     }
     __name(playerMoveUp, "playerMoveUp");
     function playerMoveDown() {
-      player.move(0, Math.max(player.speed / 2, Math.sin(d2r(-player.angle - 180)) * player.speed));
+      player.move(0, Math.max(player.speed / 2, Math.sin(math_default.d2r(-player.angle - 180)) * player.speed));
       if (player.pos.y > const_default.mapH) {
         player.pos.y = const_default.mapH;
       }
@@ -3341,8 +3339,8 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     function spawnPlayerExhaust(cells) {
       let angle = player.angle + 180;
       cells.forEach((cell) => {
-        let x = player.pos.x + cell.x + Math.cos(d2r(angle)) * 12 * player.omino.cols / 2;
-        let y = player.pos.y + cell.y + Math.sin(d2r(angle)) * 12 * player.omino.rows / 2;
+        let x = player.pos.x + cell.x + Math.cos(math_default.d2r(angle)) * 12 * player.omino.cols / 2;
+        let y = player.pos.y + cell.y + Math.sin(math_default.d2r(angle)) * 12 * player.omino.rows / 2;
         add([
           pos(x, y),
           rect(1, 1),
@@ -3352,8 +3350,8 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
           opacity(1),
           "exhaust",
           {
-            speedX: rand(Math.cos(d2r(angle)) * EXHAUST_SPEED),
-            speedY: rand(Math.sin(d2r(angle)) * EXHAUST_SPEED),
+            speedX: rand(Math.cos(math_default.d2r(angle)) * EXHAUST_SPEED),
+            speedY: rand(Math.sin(math_default.d2r(angle)) * EXHAUST_SPEED),
             destroyDelay: 0.25,
             destroyTimer: 0
           }
@@ -3428,8 +3426,8 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         "playerattack",
         "bullet",
         {
-          speedX: Math.cos(d2r(player.angle)) * BULLET_SPEED,
-          speedY: Math.sin(d2r(player.angle)) * BULLET_SPEED,
+          speedX: Math.cos(math_default.d2r(player.angle)) * BULLET_SPEED,
+          speedY: Math.sin(math_default.d2r(player.angle)) * BULLET_SPEED,
           damage: "low"
         }
       ]);
@@ -3447,7 +3445,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         let x = player.pos.x + cell.x;
         let y = player.pos.y + cell.y;
         dy = dy || 0;
-        let spot = rotatePoint({
+        let spot = math_default.rotatePoint({
           x,
           y
         }, player.angle, {
@@ -3479,8 +3477,8 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         "playerattack",
         "laser",
         {
-          speedX: Math.cos(d2r(player.angle)) * LASER_SPEED,
-          speedY: Math.sin(d2r(player.angle)) * LASER_SPEED,
+          speedX: Math.cos(math_default.d2r(player.angle)) * LASER_SPEED,
+          speedY: Math.sin(math_default.d2r(player.angle)) * LASER_SPEED,
           damage: "low"
         }
       ]);
@@ -3512,8 +3510,8 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         "playerattack",
         "missile",
         {
-          speedX: Math.cos(d2r(player.angle)) * MISSILE_SPEED,
-          speedY: Math.sin(d2r(player.angle)) * MISSILE_SPEED,
+          speedX: Math.cos(math_default.d2r(player.angle)) * MISSILE_SPEED,
+          speedY: Math.sin(math_default.d2r(player.angle)) * MISSILE_SPEED,
           damage: "medium"
         }
       ]);
@@ -3616,8 +3614,8 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         "playerattack",
         "bouncer",
         {
-          speedX: Math.cos(d2r(player.angle)) * BULLET_SPEED,
-          speedY: Math.sin(d2r(player.angle)) * BULLET_SPEED,
+          speedX: Math.cos(math_default.d2r(player.angle)) * BULLET_SPEED,
+          speedY: Math.sin(math_default.d2r(player.angle)) * BULLET_SPEED,
           damage: "low",
           destroyDelay: 3 * Math.pow(1.1, player.level),
           destroyTimer: 0
@@ -3728,7 +3726,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       add([
         pos(spot),
         rect(const_default.blockSize * 2, 1),
-        rotate(r2d(angle)),
+        rotate(math_default.r2d(angle)),
         origin("center"),
         color(255, 128, 0),
         area(),
@@ -3772,8 +3770,8 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         health(6),
         "alien",
         {
-          speedX: Math.cos(d2r(angle)) * alienSpeed,
-          speedY: Math.sin(d2r(angle)) * alienSpeed,
+          speedX: Math.cos(math_default.d2r(angle)) * alienSpeed,
+          speedY: Math.sin(math_default.d2r(angle)) * alienSpeed,
           shootChance: 1e-3 + 1e-4 * player.level,
           touchDamage: "veryhigh",
           bulletDamage: "high",
@@ -3815,8 +3813,8 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     wait(rand(6, 12), spawnAlienWasp);
     onUpdate("wasp", (wasp) => {
       wasp.timer += dt();
-      let cos = Math.cos(d2r(wasp.angle));
-      let sin = Math.sin(d2r(wasp.angle));
+      let cos = Math.cos(math_default.d2r(wasp.angle));
+      let sin = Math.sin(math_default.d2r(wasp.angle));
       let wobble = wasp.amplitude * Math.cos(wasp.frequency * wasp.timer) * wasp.frequency;
       let dx = cos * wasp.speed - sin * wobble;
       let dy = sin * wasp.speed + cos * wobble;
@@ -3904,7 +3902,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       }
     });
     onCollide("alien", "bullet", (alien, attacker) => {
-      makeExplosion(midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.GREEN);
+      makeExplosion(math_default.midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.GREEN);
       gotHurt(alien, attacker.damage);
       destroy(attacker);
       play("explosion", {
@@ -3913,7 +3911,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       });
     });
     onCollide("alien", "laser", (alien, attacker) => {
-      makeExplosion(midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.GREEN);
+      makeExplosion(math_default.midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.GREEN);
       gotHurt(alien, attacker.damage);
       play("explosion", {
         volume: 0.0375,
@@ -3921,7 +3919,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       });
     });
     onCollide("alien", "missile", (alien, attacker) => {
-      makeExplosion(midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.GREEN);
+      makeExplosion(math_default.midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.GREEN);
       gotHurt(alien, attacker.damage);
       spawnBomb(attacker.pos);
       destroy(attacker);
@@ -3931,7 +3929,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       });
     });
     onCollide("alien", "bomb", (alien, attacker) => {
-      makeExplosion(midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.YELLOW);
+      makeExplosion(math_default.midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.YELLOW);
       gotHurt(alien, attacker.damage);
       play("explosion", {
         volume: 0.0375,
@@ -3939,7 +3937,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       });
     });
     onCollide("alien", "field", (alien, attacker) => {
-      makeExplosion(midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.GREEN);
+      makeExplosion(math_default.midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.GREEN);
       gotHurt(alien, attacker.damage);
       play("explosion", {
         volume: 0.0375,
@@ -3947,7 +3945,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       });
     });
     onCollide("alien", "bouncer", (alien, attacker) => {
-      makeExplosion(midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.CYAN);
+      makeExplosion(math_default.midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.CYAN);
       gotHurt(alien, attacker.damage);
       play("explosion", {
         volume: 0.0375,
@@ -3955,7 +3953,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       });
     });
     onCollide("alien", "falling", (alien, attacker) => {
-      makeExplosion(midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.GREEN);
+      makeExplosion(math_default.midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.GREEN);
       gotHurt(alien, attacker.damage);
       play("explosion", {
         volume: 0.0375,
@@ -4158,7 +4156,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     player.onCollide("obstacle", (ob) => {
       gotHurt(player, ob.touchDamage);
       gotHurt(ob, ob.touchDamage);
-      makeExplosion(midpoint(ob.pos, player.pos), 4, 4, 4, Color.RED);
+      makeExplosion(math_default.midpoint(ob.pos, player.pos), 4, 4, 4, Color.RED);
       play("explosion", {
         detune: -1200,
         volume: 0.0375
@@ -4168,7 +4166,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       gotHurt(ob, attack.damage);
       if (attack.is("missile")) {
         destroy(attack);
-        spawnBomb(midpoint(attack.pos, ob.pos));
+        spawnBomb(math_default.midpoint(attack.pos, ob.pos));
       }
       if (attack.is("bomb") || attack.is("bullet")) {
         destroy(attack);

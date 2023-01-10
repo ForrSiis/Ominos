@@ -1,5 +1,5 @@
 import Const from "./const.js"
-import * as math from "./math.js"
+import math from "./math.js"
 import Omino from "./omino.js"
 
 function runScene() {
