@@ -3603,7 +3603,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
           speedX: Math.cos(d2r(player.angle)) * BULLET_SPEED,
           speedY: Math.sin(d2r(player.angle)) * BULLET_SPEED,
           damage: "low",
-          destroyDelay: 5,
+          destroyDelay: 3 * Math.pow(1.1, player.level),
           destroyTimer: 0
         }
       ]);

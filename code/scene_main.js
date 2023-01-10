@@ -472,7 +472,7 @@ function runScene() {
                 speedX: Math.cos(math.d2r(player.angle)) * BULLET_SPEED,
                 speedY: Math.sin(math.d2r(player.angle)) * BULLET_SPEED,
                 damage: 'low',
-                destroyDelay: 5,
+                destroyDelay: 3 * Math.pow(1.1, player.level),
                 destroyTimer: 0,
             }
         ]);
