@@ -639,6 +639,7 @@ function runScene() {
             rotate(angle + 90),
             cleanup(),
             health(6),
+            "spider",
             "alien", {
                 speedX: Math.cos(math.d2r(angle)) * alienSpeed,
                 speedY: Math.sin(math.d2r(angle)) * alienSpeed,
