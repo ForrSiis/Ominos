@@ -1,4 +1,4 @@
-import * as Const from "./const.js"
+import Const from "./const.js"
 import * as math from "./math.js"
 import Omino from "./omino.js"
 
@@ -85,7 +85,7 @@ function runScene() {
             solid(),
             rotate(Const.playerStartAngle),
             origin("center"),
-            health(100),
+            health(Const.playerMaxLife),
             "player", {
                score: 0,
                shootDelay: 0.8,
@@ -932,9 +932,9 @@ function runScene() {
 
    function updatePlayerHealth() {
       player.setHP(Math.max(player.hp(), 0));
-      player.setHP(Math.min(player.hp(), 100));
+      player.setHP(Math.min(player.hp(), Const.playerMaxLife));
 
-      healthBar.width = 50 * (player.hp() / 100);
+      healthBar.width = 50 * (player.hp() / Const.playerMaxLife);
 
       if (player.hp() <= 25) {
          healthBar.color = rgb(255, 0, 0);

@@ -12,7 +12,7 @@ Credits:
 //*/
 
 import kaboom from "kaboom"
-import * as Const from "./const.js"
+import Const from "./const.js"
 import Omino from "./omino.js"
 import * as scene_title from "./scene_title.js"
 import * as scene_main from "./scene_main.js"

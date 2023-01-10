@@ -2918,40 +2918,45 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
   }, "default");
 
   // code/const.js
-  var mapW = 360;
-  var mapH = 480;
-  var blockSize = 24;
-  var cellSize = 12;
-  var ominoShapes = ["t", "i", "l", "j", "o", "s", "z"];
-  var ominoColors = ["red", "cyan", "yellow", "magenta", "green", "white"];
-  var damageLevel = {
-    low: 3,
-    medium: 6,
-    high: 9,
-    veryhigh: 12
-  };
-  var direction = {
-    LEFT: 0,
-    UP: 1,
-    RIGHT: 2,
-    DOWN: 3
-  };
   function choose2(arr) {
     return arr[Math.floor(arr.length * Math.random())];
   }
   __name(choose2, "choose");
-  var playerStartLevel = 0;
-  var playerStartAngle = -90;
-  var playerAngleTurn = 22.5;
-  var playerStartShape = choose2(ominoShapes);
-  var playerStartColor = choose2(ominoColors);
-  var playlist = [
-    "alone_against_enemy",
-    "brave_pilots",
-    "epic_end",
-    "rain_of_lasers",
-    "without_fear"
-  ];
+  var Const = {
+    "mapW": 360,
+    "mapH": 480,
+    "gameTitle": "OMINOS",
+    "blockSize": 24,
+    "cellSize": 12,
+    "ominoShapes": ["t", "i", "l", "j", "o", "s", "z"],
+    "ominoColors": ["red", "cyan", "yellow", "magenta", "green", "white"],
+    "damageLevel": {
+      low: 3,
+      medium: 6,
+      high: 9,
+      veryhigh: 12
+    },
+    "direction": {
+      LEFT: 0,
+      UP: 1,
+      RIGHT: 2,
+      DOWN: 3
+    },
+    "playerStartLevel": 0,
+    "playerMaxLife": 144,
+    "playerStartAngle": -90,
+    "playerAngleTurn": 22.5,
+    "playlist": [
+      "alone_against_enemy",
+      "brave_pilots",
+      "epic_end",
+      "rain_of_lasers",
+      "without_fear"
+    ]
+  };
+  Const.playerStartShape = choose2(Const.ominoShapes);
+  Const.playerStartColor = choose2(Const.ominoColors);
+  var const_default = Const;
 
   // code/math.js
   function d2r(degrees) {
@@ -3150,7 +3155,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         size: 20,
         font: "sink"
       }),
-      pos(mapW / 2, mapH * 6 / 12),
+      pos(const_default.mapW / 2, const_default.mapH * 6 / 12),
       origin("center"),
       layer("ui")
     ]);
@@ -3159,7 +3164,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         size: 20,
         font: "sink"
       }),
-      pos(mapW / 2, mapH * 8 / 12),
+      pos(const_default.mapW / 2, const_default.mapH * 8 / 12),
       origin("center"),
       layer("ui")
     ]);
@@ -3168,7 +3173,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         size: 20,
         font: "sink"
       }),
-      pos(mapW / 2, mapH * 10 / 12),
+      pos(const_default.mapW / 2, const_default.mapH * 10 / 12),
       origin("center"),
       layer("ui")
     ]);
@@ -3180,7 +3185,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
 
   // code/scene_main.js
   function runScene2() {
-    const music = play(choose(playlist), {
+    const music = play(choose(const_default.playlist), {
       volume: 0.125,
       loop: true
     });
@@ -3193,10 +3198,10 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     for (let i = 0; i < nBackgrounds; i++) {
       add([
         sprite("stars", {
-          width: mapW,
-          height: mapH
+          width: const_default.mapW,
+          height: const_default.mapH
         }),
-        pos(0, -i * mapH),
+        pos(0, -i * const_default.mapH),
         layer("bg"),
         "bg",
         {
@@ -3212,18 +3217,18 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       if (bg.timer >= bg.scrollDelay) {
         bg.move(bg.scrollX, bg.scrollY);
       }
-      if (bg.pos.y >= mapH) {
-        bg.pos.y = -mapH;
+      if (bg.pos.y >= const_default.mapH) {
+        bg.pos.y = -const_default.mapH;
       }
     });
     function gotHurt(ob, damage) {
-      damage = damageLevel[damage] || damage;
+      damage = const_default.damageLevel[damage] || damage;
       ob.hurt(damage);
     }
     __name(gotHurt, "gotHurt");
     function randomizePlayerOmino() {
-      player.shape = choose(ominoShapes);
-      player.ominocolor = choose(ominoColors);
+      player.shape = choose(const_default.ominoShapes);
+      player.ominocolor = choose(const_default.ominoColors);
       loadPlayerOmino();
     }
     __name(randomizePlayerOmino, "randomizePlayerOmino");
@@ -3232,7 +3237,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     }
     __name(getOminoSprite, "getOminoSprite");
     function getPlayerCells(player2) {
-      player2.cells = Omino.getCellPos(player2.omino, player2.angle, cellSize);
+      player2.cells = Omino.getCellPos(player2.omino, player2.angle, const_default.cellSize);
     }
     __name(getPlayerCells, "getPlayerCells");
     function updatePlayerSprite(spriteName) {
@@ -3250,29 +3255,29 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     }
     __name(loadPlayerOmino, "loadPlayerOmino");
     const player = add([
-      sprite(getOminoSprite(playerStartShape, playerStartColor)),
-      pos(mapW / 2, mapH / 2),
+      sprite(getOminoSprite(const_default.playerStartShape, const_default.playerStartColor)),
+      pos(const_default.mapW / 2, const_default.mapH / 2),
       z(99),
       area(),
       solid(),
-      rotate(playerStartAngle),
+      rotate(const_default.playerStartAngle),
       origin("center"),
-      health(100),
+      health(const_default.playerMaxLife),
       "player",
       {
         score: 0,
         shootDelay: 0.8,
         shootTimer: 0,
-        level: playerStartLevel,
+        level: const_default.playerStartLevel,
         speed: 200,
         gems: 0,
         gemsLimit: 10,
-        shape: playerStartShape,
-        ominocolor: playerStartColor,
+        shape: const_default.playerStartShape,
+        ominocolor: const_default.playerStartColor,
         touchDamage: "veryhigh"
       }
     ]);
-    console.log(playerStartLevel);
+    console.log(const_default.playerStartLevel);
     console.log(player.level);
     loadPlayerOmino();
     function playerMoveLeft() {
@@ -3284,8 +3289,8 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     __name(playerMoveLeft, "playerMoveLeft");
     function playerMoveRight() {
       player.move(Math.max(player.speed / 2, Math.cos(d2r(-player.angle)) * player.speed), 0);
-      if (player.pos.x > mapW) {
-        player.pos.x = mapW;
+      if (player.pos.x > const_default.mapW) {
+        player.pos.x = const_default.mapW;
       }
     }
     __name(playerMoveRight, "playerMoveRight");
@@ -3298,19 +3303,19 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     __name(playerMoveUp, "playerMoveUp");
     function playerMoveDown() {
       player.move(0, Math.max(player.speed / 2, Math.sin(d2r(-player.angle - 180)) * player.speed));
-      if (player.pos.y > mapH) {
-        player.pos.y = mapH;
+      if (player.pos.y > const_default.mapH) {
+        player.pos.y = const_default.mapH;
       }
     }
     __name(playerMoveDown, "playerMoveDown");
     function playerTurnLeft() {
-      player.angle -= playerAngleTurn;
+      player.angle -= const_default.playerAngleTurn;
       getPlayerCells(player);
     }
     __name(playerTurnLeft, "playerTurnLeft");
     ;
     function playerTurnRight() {
-      player.angle += playerAngleTurn;
+      player.angle += const_default.playerAngleTurn;
       getPlayerCells(player);
     }
     __name(playerTurnRight, "playerTurnRight");
@@ -3327,11 +3332,11 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     onKeyDown("c", playerMoveDown);
     onKeyPress("j", playerTurnLeft);
     onKeyPress("l", playerTurnRight);
-    const BULLET_SPEED = blockSize * 5;
-    const LASER_SPEED = blockSize * 8;
-    const MISSILE_SPEED = blockSize * 6;
-    const FALLING_SPEED = blockSize * 8;
-    const EXHAUST_SPEED = blockSize;
+    const BULLET_SPEED = const_default.blockSize * 5;
+    const LASER_SPEED = const_default.blockSize * 8;
+    const MISSILE_SPEED = const_default.blockSize * 6;
+    const FALLING_SPEED = const_default.blockSize * 8;
+    const EXHAUST_SPEED = const_default.blockSize;
     const LASER_H = 2;
     function spawnPlayerExhaust(cells) {
       let angle = player.angle + 180;
@@ -3446,7 +3451,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
           x,
           y
         }, player.angle, {
-          x: x + cellSize,
+          x: x + const_default.cellSize,
           y: y + dy
         });
         spawnLaser(spot);
@@ -3466,7 +3471,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     function spawnLaser(spot) {
       let laser = add([
         pos(spot.x, spot.y),
-        rect(blockSize * 2, LASER_H),
+        rect(const_default.blockSize * 2, LASER_H),
         rotate(player.angle),
         color(0, 255, 255),
         area(),
@@ -3524,11 +3529,11 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     function spawnBomb(spot) {
       add([
         pos(spot),
-        circle(blockSize + player.level),
+        circle(const_default.blockSize + player.level),
         origin("center"),
         area({
-          width: (blockSize + player.level) * 2,
-          height: (blockSize + player.level) * 2
+          width: (const_default.blockSize + player.level) * 2,
+          height: (const_default.blockSize + player.level) * 2
         }),
         color(Color.YELLOW),
         cleanup(),
@@ -3560,12 +3565,12 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     function spawnField(spot) {
       add([
         pos(spot),
-        circle(blockSize * Math.pow(1.1, player.level)),
+        circle(const_default.blockSize * Math.pow(1.1, player.level)),
         origin("center"),
         color(255, 0, 0),
         area({
-          width: blockSize * 2 * Math.pow(1.1, player.level),
-          height: blockSize * 2 * Math.pow(1.1, player.level)
+          width: const_default.blockSize * 2 * Math.pow(1.1, player.level),
+          height: const_default.blockSize * 2 * Math.pow(1.1, player.level)
         }),
         cleanup(),
         "playerattack",
@@ -3600,12 +3605,12 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     function spawnBouncer(spot) {
       add([
         pos(spot),
-        circle(blockSize / 8),
+        circle(const_default.blockSize / 8),
         origin("center"),
         color(Color.GREEN),
         area({
-          width: blockSize / 2,
-          height: blockSize / 2
+          width: const_default.blockSize / 2,
+          height: const_default.blockSize / 2
         }),
         cleanup(),
         "playerattack",
@@ -3635,27 +3640,27 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         bouncer.pos.x = -bouncer.pos.x * 2;
         bouncer.speedX *= -1;
       }
-      if (bouncer.pos.x > mapW) {
-        bouncer.pos.x -= (bouncer.pos.x - mapW) * 2;
+      if (bouncer.pos.x > const_default.mapW) {
+        bouncer.pos.x -= (bouncer.pos.x - const_default.mapW) * 2;
         bouncer.speedX *= -1;
       }
       if (bouncer.pos.y < 0) {
         bouncer.pos.y = -bouncer.pos.y * 2;
         bouncer.speedY *= -1;
       }
-      if (bouncer.pos.y > mapH) {
-        bouncer.pos.y -= (bouncer.pos.y - mapH) * 2;
+      if (bouncer.pos.y > const_default.mapH) {
+        bouncer.pos.y -= (bouncer.pos.y - const_default.mapH) * 2;
         bouncer.speedY *= -1;
       }
     });
     function playerShootsFalling() {
       let x = player.pos.x;
-      let y = blockSize;
+      let y = const_default.blockSize;
       let pos2 = vec2(x, y);
       spawnFalling(pos2);
       let nFalling = Math.floor((player.level + 1) / 3);
       for (let i = 0; i < nFalling; i++) {
-        let dx = x + Math.ceil((i + 1) / 2) * (i % 2 ? 1 : -1) * blockSize;
+        let dx = x + Math.ceil((i + 1) / 2) * (i % 2 ? 1 : -1) * const_default.blockSize;
         spawnFalling(vec2(dx, 0));
       }
     }
@@ -3663,7 +3668,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     function spawnFalling(spot) {
       add([
         pos(spot),
-        sprite(getOminoSprite(player.shape, choose(ominoColors))),
+        sprite(getOminoSprite(player.shape, choose(const_default.ominoColors))),
         origin("center"),
         rotate(player.angle),
         scale(0.5),
@@ -3722,7 +3727,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       let angle = Math.atan2(player.pos.y - spot.y, player.pos.x - spot.x);
       add([
         pos(spot),
-        rect(blockSize * 2, 1),
+        rect(const_default.blockSize * 2, 1),
         rotate(r2d(angle)),
         origin("center"),
         color(255, 128, 0),
@@ -3752,14 +3757,14 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     const ALIEN_SPEED_INC = 20;
     const POINTS_ALIEN_STRONGER = 1e3;
     function spawnAlienSpider() {
-      let alienDirection = choose([direction.LEFT, direction.RIGHT]);
-      let xpos = alienDirection == direction.LEFT ? 0 : mapW - 22;
+      let alienDirection = choose([const_default.direction.LEFT, const_default.direction.RIGHT]);
+      let xpos = alienDirection == const_default.direction.LEFT ? 0 : const_default.mapW - 22;
       const alienSpeed = ALIEN_BASE_SPEED * Math.pow(1.1, player.level);
       const newAlienInterval = 2 * Math.pow(0.9, player.level);
-      let angle = alienDirection == direction.LEFT ? rand(45, -45) : rand(-135, -225);
+      let angle = alienDirection == const_default.direction.LEFT ? rand(45, -45) : rand(-135, -225);
       add([
         sprite("alien"),
-        pos(xpos, rand(0, mapH - 30)),
+        pos(xpos, rand(0, const_default.mapH - 30)),
         area(),
         origin("center"),
         rotate(angle + 90),
@@ -3780,10 +3785,10 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     __name(spawnAlienSpider, "spawnAlienSpider");
     spawnAlienSpider();
     function spawnAlienWasp() {
-      let xpos = choose([0, mapW]);
-      let ypos = choose([0, mapH]);
-      let angle = xpos == mapW ? 135 : 45;
-      angle *= ypos == mapH ? -1 : 1;
+      let xpos = choose([0, const_default.mapW]);
+      let ypos = choose([0, const_default.mapH]);
+      let angle = xpos == const_default.mapW ? 135 : 45;
+      angle *= ypos == const_default.mapH ? -1 : 1;
       add([
         sprite("wasp"),
         pos(xpos, ypos),
@@ -3819,15 +3824,15 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     });
     const CHANCE_SPAWN_ALIENSHOOTER = 1e-3 * Math.pow(1.1, player.level);
     function spawnAlienShooters() {
-      let alienDirection = choose([direction.LEFT, direction.RIGHT]);
+      let alienDirection = choose([const_default.direction.LEFT, const_default.direction.RIGHT]);
       let spriteSize = 40;
       let xpos = [
-        alienDirection == direction.LEFT ? -spriteSize / 2 : mapW + spriteSize / 2,
-        alienDirection == direction.LEFT ? 0 : mapW,
-        alienDirection == direction.LEFT ? -spriteSize / 2 : mapW + spriteSize / 2
+        alienDirection == const_default.direction.LEFT ? -spriteSize / 2 : const_default.mapW + spriteSize / 2,
+        alienDirection == const_default.direction.LEFT ? 0 : const_default.mapW,
+        alienDirection == const_default.direction.LEFT ? -spriteSize / 2 : const_default.mapW + spriteSize / 2
       ];
-      let ypos = rand(spriteSize, mapH - spriteSize * 3);
-      let angle = alienDirection == direction.LEFT ? 0 : 180;
+      let ypos = rand(spriteSize, const_default.mapH - spriteSize * 3);
+      let angle = alienDirection == const_default.direction.LEFT ? 0 : 180;
       for (let i = 0; i < 3; i++) {
         add([
           sprite("spaceship"),
@@ -3840,12 +3845,12 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
           "alienshooter",
           "alien",
           {
-            speedX: (alienDirection == direction.LEFT ? spriteSize : -spriteSize) / 2,
+            speedX: (alienDirection == const_default.direction.LEFT ? spriteSize : -spriteSize) / 2,
             speedY: 0,
             shootChance: 5e-3 + 5e-4 * player.level,
             touchDamage: "veryhigh",
             points: 30,
-            destroyX: alienDirection == direction.LEFT ? mapW : 0
+            destroyX: alienDirection == const_default.direction.LEFT ? const_default.mapW : 0
           }
         ]);
       }
@@ -3867,12 +3872,12 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     const CHANCE_ELITE_SPAWN_UP = 0.5;
     function spawnAlienElite() {
       let bUp = chance(CHANCE_ELITE_SPAWN_UP);
-      let y = bUp ? 0 : mapH;
-      let moveDirection = bUp ? direction.DOWN : direction.UP;
-      let speedY = blockSize / 2 * (moveDirection - 2);
+      let y = bUp ? 0 : const_default.mapH;
+      let moveDirection = bUp ? const_default.direction.DOWN : const_default.direction.UP;
+      let speedY = const_default.blockSize / 2 * (moveDirection - 2);
       add([
         sprite("alien"),
-        pos(rand(blockSize * 2, mapW - blockSize * 2), y),
+        pos(rand(const_default.blockSize * 2, const_default.mapW - const_default.blockSize * 2), y),
         scale(4),
         area(),
         origin("center"),
@@ -4030,8 +4035,8 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     ]);
     function updatePlayerHealth() {
       player.setHP(Math.max(player.hp(), 0));
-      player.setHP(Math.min(player.hp(), 100));
-      healthBar.width = 50 * (player.hp() / 100);
+      player.setHP(Math.min(player.hp(), const_default.playerMaxLife));
+      healthBar.width = 50 * (player.hp() / const_default.playerMaxLife);
       if (player.hp() <= 25) {
         healthBar.color = rgb(255, 0, 0);
       } else if (player.hp() <= 50) {
@@ -4045,7 +4050,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         destroy(player);
         for (let i = 0; i < 500; i++) {
           wait(0.01 * i, () => {
-            makeExplosion(vec2(rand(0, mapW), rand(0, mapH)), 5, 5, 5, Color.RED);
+            makeExplosion(vec2(rand(0, const_default.mapW), rand(0, const_default.mapH)), 5, 5, 5, Color.RED);
             play("explosion", {
               volume: 0.125,
               detune: rand(-1200, 1200)
@@ -4075,10 +4080,10 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       gotHurt(alien, player.touchDamage);
     });
     function spawnGem() {
-      let xpos = rand(blockSize, mapW - blockSize);
+      let xpos = rand(const_default.blockSize, const_default.mapW - const_default.blockSize);
       add([
         sprite("gem"),
-        pos(rand(blockSize, mapW - blockSize), rand(blockSize, mapH - blockSize)),
+        pos(rand(const_default.blockSize, const_default.mapW - const_default.blockSize), rand(const_default.blockSize, const_default.mapH - const_default.blockSize)),
         area(),
         "gem",
         {
@@ -4094,7 +4099,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     player.onCollide("gem", (gem) => {
       destroy(gem);
       updateScore(gem.points);
-      player.heal(damageLevel[gem.life]);
+      player.heal(const_default.damageLevel[gem.life]);
       wait(gem.spawnDelay, spawnGem);
       playerGemsBoost();
       randomizePlayerOmino();
@@ -4111,7 +4116,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     const MAX_OBSTACLES_W = 5;
     const MAX_OBSTACLES_H = 3;
     function spawnObstacles() {
-      let x = rand(mapW - blockSize * MAX_OBSTACLES_W);
+      let x = rand(const_default.mapW - const_default.blockSize * MAX_OBSTACLES_W);
       for (let i = MAX_OBSTACLES_W; i; i--) {
         for (let j = MAX_OBSTACLES_H; j; j--) {
           if (!chance(0.33)) {
@@ -4119,7 +4124,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
           }
           add([
             sprite("asteroid"),
-            pos(x + i * blockSize, -j * blockSize),
+            pos(x + i * const_default.blockSize, -j * const_default.blockSize),
             origin("center"),
             area(),
             solid(),
@@ -4127,7 +4132,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
             "obstacle",
             {
               speedX: 0,
-              speedY: blockSize / 2,
+              speedY: const_default.blockSize / 2,
               touchDamage: "medium",
               points: 2
             }
@@ -4146,7 +4151,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     });
     onUpdate("obstacle", (ob) => {
       ob.move(ob.speedX, ob.speedY);
-      if (ob.pos.y > mapH) {
+      if (ob.pos.y > const_default.mapH) {
         destroy(ob);
       }
     });
@@ -4219,7 +4224,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         size: 40,
         font: "sink"
       }),
-      pos(mapW / 2, mapH * 5 / 12),
+      pos(const_default.mapW / 2, const_default.mapH * 5 / 12),
       origin("center"),
       layer("ui")
     ]);
@@ -4228,7 +4233,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         size: 20,
         font: "sink"
       }),
-      pos(mapW / 2, mapH * 7 / 12),
+      pos(const_default.mapW / 2, const_default.mapH * 7 / 12),
       origin("center"),
       layer("ui")
     ]);
@@ -4237,7 +4242,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         size: 20,
         font: "sink"
       }),
-      pos(mapW / 2, mapH * 10 / 12),
+      pos(const_default.mapW / 2, const_default.mapH * 10 / 12),
       origin("center"),
       layer("ui")
     ]);
@@ -4272,8 +4277,8 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
   loadSound("rain_of_lasers", "rain_of_lasers.ogg");
   loadSound("without_fear", "without_fear.ogg");
   function loadOminos() {
-    ominoShapes.forEach((shape) => {
-      ominoColors.forEach((color2) => {
+    const_default.ominoShapes.forEach((shape) => {
+      const_default.ominoColors.forEach((color2) => {
         loadSprite(`omino_${shape}_${color2}`, `omino_${shape}_${color2}.png`);
       });
     });
