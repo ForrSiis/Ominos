@@ -422,14 +422,16 @@ function runScene() {
     }
 
     function spawnField(spot) {
+        let radius = Const.blockSize + 3 * (player.level);
+        let diameter = 2 * radius;
         add([
             pos(spot),
-            circle(Const.blockSize * Math.pow(1.1, player.level)),
+            circle(radius),
             origin("center"),
             color(255, 0, 0),
             area({
-                width: Const.blockSize * 2 * Math.pow(1.1, player.level),
-                height: Const.blockSize * 2 * Math.pow(1.1, player.level),
+                width: diameter,
+                height: diameter,
             }),
             cleanup(),
             "playerattack",
