@@ -3402,8 +3402,8 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         origin("center"),
         color(255, 0, 0),
         area({
-          width: 8,
-          height: 8
+          width: (2 + player.level / 2) * 2,
+          height: (2 + player.level / 2) * 2
         }),
         cleanup(),
         "playerattack",

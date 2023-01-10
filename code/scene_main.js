@@ -265,8 +265,8 @@ function runScene() {
             origin("center"),
             color(255, 0, 0),
             area({
-                width: 8,
-                height: 8
+                width: (2 + player.level / 2) * 2,
+                height: (2 + player.level / 2) * 2,
             }),
             cleanup(),
             "playerattack",
