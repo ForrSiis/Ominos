@@ -3398,7 +3398,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     function spawnBullet(spot) {
       add([
         pos(spot),
-        circle(blockSize / 4),
+        circle(2 + player.level / 2),
         origin("center"),
         color(255, 0, 0),
         area({
