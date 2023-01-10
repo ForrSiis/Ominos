@@ -3764,7 +3764,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         origin("center"),
         rotate(angle + 90),
         cleanup(),
-        health(9),
+        health(6),
         "alien",
         {
           speedX: Math.cos(d2r(angle)) * alienSpeed,
