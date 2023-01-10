@@ -513,6 +513,12 @@ function runScene() {
         let y = Const.blockSize;
         let pos = vec2(x, y);
         spawnFalling(pos);
+        let nFalling = Math.floor((player.level + 1) / 3);
+
+        for (let i = 0; i < nFalling; i++) {
+            let dx = x + Math.ceil((i + 1) / 2) * (i % 2 ? 1 : -1) * Const.blockSize;
+            spawnFalling(vec2(dx, 0));
+        }
     }
 
     function spawnFalling(spot) {
