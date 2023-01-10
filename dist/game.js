@@ -3801,7 +3801,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       let dy = sin * wasp.speed + cos * wobble;
       wasp.move(dx, dy);
     });
-    const CHANCE_SPAWN_ALIENSHOOTER = 25e-4;
+    const CHANCE_SPAWN_ALIENSHOOTER = 1e-3 * Math.pow(1.1, player.level);
     function spawnAlienShooters() {
       let alienDirection = choose([direction.LEFT, direction.RIGHT]);
       let spriteSize = 40;

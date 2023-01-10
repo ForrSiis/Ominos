@@ -680,7 +680,7 @@ function runScene() {
         wasp.move(dx, dy);
     });
 
-    const CHANCE_SPAWN_ALIENSHOOTER = 0.0025;
+    const CHANCE_SPAWN_ALIENSHOOTER = 0.001 * Math.pow(1.1, player.level);
 
     function spawnAlienShooters() {
         // create 3 enemies from left or right edges
