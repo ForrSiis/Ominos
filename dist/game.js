@@ -2945,6 +2945,13 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
   var playerAngleTurn = 22.5;
   var playerStartShape = choose2(ominoShapes);
   var playerStartColor = choose2(ominoColors);
+  var playlist = [
+    "alone_against_enemy",
+    "brave_pilots",
+    "epic_end",
+    "rain_of_lasers",
+    "without_fear"
+  ];
 
   // code/math.js
   function d2r(degrees) {
@@ -3173,6 +3180,10 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
 
   // code/scene_main.js
   function runScene2() {
+    const music = play(choose(playlist), {
+      volume: 0.125,
+      loop: true
+    });
     layers([
       "bg",
       "obj",
@@ -4042,6 +4053,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
           });
         }
         wait(2, () => {
+          music.stop();
           go("endGame", player.score);
         });
       }
@@ -4249,10 +4261,13 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
   loadOminos();
   loadRoot("sounds/");
   loadSound("shoot", "shoot.wav");
-  loadSound("score", "score.wav");
-  loadSound("music", "music.mp3");
-  loadSound("pandora", "pandora.mp3");
   loadSound("explosion", "explosion.wav");
+  loadSound("score", "score.wav");
+  loadSound("alone_against_enemy", "alone_against_enemy.ogg");
+  loadSound("brave_pilots", "brave_pilots.ogg");
+  loadSound("epic_end", "epic_end.ogg");
+  loadSound("rain_of_lasers", "rain_of_lasers.ogg");
+  loadSound("without_fear", "without_fear.ogg");
   function loadOminos() {
     ominoShapes.forEach((shape) => {
       ominoColors.forEach((color2) => {
@@ -4264,10 +4279,6 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
   scene("main", runScene2);
   scene("title", runScene);
   scene("endGame", runScene3);
-  var music = play("pandora", {
-    volume: 0.125,
-    loop: true
-  });
   go("title");
 })();
 //# sourceMappingURL=game.js.map

@@ -31,6 +31,14 @@ let playerAngleTurn = 22.5;
 let playerStartShape = choose(ominoShapes);
 let playerStartColor = choose(ominoColors);
 
+let playlist = [
+    "alone_against_enemy",
+    "brave_pilots",
+    "epic_end",
+    "rain_of_lasers",
+    "without_fear",
+];
+
 export {
    mapW,
    mapH,
@@ -45,5 +53,6 @@ export {
    playerStartAngle,
    playerAngleTurn,
    playerStartShape,
-   playerStartColor
+   playerStartColor,
+	playlist,
 }

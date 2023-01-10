@@ -3,6 +3,12 @@ import * as math from "./math.js"
 import Omino from "./omino.js"
 
 function runScene() {
+    // play bg music
+    const music = play(choose(Const.playlist), {
+        volume: 0.125,
+        loop: true,
+    });
+
     layers([
         "bg",
         "obj",
@@ -952,6 +958,7 @@ function runScene() {
                 });
             }
             wait(2, () => {
+                music.stop();
                 go("endGame", player.score);
             });
         }
