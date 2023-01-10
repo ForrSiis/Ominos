@@ -4194,12 +4194,14 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
 
   // code/scene_gameover.js
   function runScene3(score) {
+    createTitle();
+    setTimeout(animateTitle, 1e3, 2);
     add([
       text("GAME OVER", {
         size: 40,
         font: "sink"
       }),
-      pos(mapW / 2, mapH / 3),
+      pos(mapW / 2, mapH * 5 / 12),
       origin("center"),
       layer("ui")
     ]);
@@ -4208,7 +4210,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         size: 20,
         font: "sink"
       }),
-      pos(mapW / 2, mapH / 2),
+      pos(mapW / 2, mapH * 7 / 12),
       origin("center"),
       layer("ui")
     ]);
