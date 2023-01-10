@@ -271,7 +271,7 @@ function runScene() {
             pos(spot),
             circle(2 + player.level / 2),
             origin("center"),
-            color(255, 0, 0),
+            color(255, 0, 255),
             area({
                 width: (2 + player.level / 2) * 2,
                 height: (2 + player.level / 2) * 2,

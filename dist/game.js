@@ -3417,7 +3417,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         pos(spot),
         circle(2 + player.level / 2),
         origin("center"),
-        color(255, 0, 0),
+        color(255, 0, 255),
         area({
           width: (2 + player.level / 2) * 2,
           height: (2 + player.level / 2) * 2
