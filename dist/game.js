@@ -4061,7 +4061,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     __name(updatePlayerHealth, "updatePlayerHealth");
     player.onHurt(() => {
       shake(7);
-      updatePlayerHealth;
+      updatePlayerHealth();
     });
     player.onHeal(updatePlayerHealth);
     player.onCollide("alien", (alien) => {
