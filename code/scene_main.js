@@ -382,18 +382,18 @@ function runScene() {
     function spawnBomb(spot) {
         add([
             pos(spot),
-            circle(Const.blockSize),
+            circle(Const.blockSize + player.level),
             origin("center"),
             area({
-                width: Const.blockSize * 2,
-                height: Const.blockSize * 2
+                width: (Const.blockSize + player.level) * 2,
+                height: (Const.blockSize + player.level) * 2
             }),
             color(Color.YELLOW),
             cleanup(),
             "playerattack",
             "bomb", {
                 damage: 'veryhigh',
-                destroyDelay: 0.5,
+                destroyDelay: 0.5 * Math.pow(1.1, player.level),
                 destroyTimer: 0,
             }
         ]);
@@ -418,12 +418,12 @@ function runScene() {
     function spawnField(spot) {
         add([
             pos(spot),
-            circle(Const.blockSize * 1.5),
+            circle(Const.blockSize * Math.pow(1.1, player.level)),
             origin("center"),
             color(255, 0, 0),
             area({
-                width: Const.blockSize * 3,
-                height: Const.blockSize * 3,
+                width: Const.blockSize * 2 * Math.pow(1.1, player.level),
+                height: Const.blockSize * 2 * Math.pow(1.1, player.level),
             }),
             cleanup(),
             "playerattack",

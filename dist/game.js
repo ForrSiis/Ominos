@@ -3513,11 +3513,11 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     function spawnBomb(spot) {
       add([
         pos(spot),
-        circle(blockSize),
+        circle(blockSize + player.level),
         origin("center"),
         area({
-          width: blockSize * 2,
-          height: blockSize * 2
+          width: (blockSize + player.level) * 2,
+          height: (blockSize + player.level) * 2
         }),
         color(Color.YELLOW),
         cleanup(),
@@ -3525,7 +3525,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         "bomb",
         {
           damage: "veryhigh",
-          destroyDelay: 0.5,
+          destroyDelay: 0.5 * Math.pow(1.1, player.level),
           destroyTimer: 0
         }
       ]);
@@ -3549,12 +3549,12 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     function spawnField(spot) {
       add([
         pos(spot),
-        circle(blockSize * 1.5),
+        circle(blockSize * Math.pow(1.1, player.level)),
         origin("center"),
         color(255, 0, 0),
         area({
-          width: blockSize * 3,
-          height: blockSize * 3
+          width: blockSize * 2 * Math.pow(1.1, player.level),
+          height: blockSize * 2 * Math.pow(1.1, player.level)
         }),
         cleanup(),
         "playerattack",
