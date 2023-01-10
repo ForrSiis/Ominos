@@ -4035,11 +4035,11 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       player.setHP(Math.max(player.hp(), 0));
       player.setHP(Math.min(player.hp(), const_default.playerMaxLife));
       healthBar.width = 50 * (player.hp() / const_default.playerMaxLife);
-      if (player.hp() <= 25) {
+      if (player.hp() <= 0.25 * const_default.playerMaxLife) {
         healthBar.color = rgb(255, 0, 0);
-      } else if (player.hp() <= 50) {
+      } else if (player.hp() <= 0.5 * const_default.playerMaxLife) {
         healthBar.color = rgb(255, 127, 0);
-      } else if (player.hp() < 100) {
+      } else if (player.hp() < const_default.playerMaxLife) {
         healthBar.color = rgb(255, 255, 0);
       } else {
         healthBar.color = rgb(0, 255, 0);
