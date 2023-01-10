@@ -752,7 +752,7 @@ function runScene() {
             area(),
             origin("center"),
             cleanup(),
-            health(90),
+            health(90 * Math.pow(1.1, player.level)),
             "elite",
             "alien", {
                 speedX: 0,

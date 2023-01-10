@@ -3866,7 +3866,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         area(),
         origin("center"),
         cleanup(),
-        health(90),
+        health(90 * Math.pow(1.1, player.level)),
         "elite",
         "alien",
         {
