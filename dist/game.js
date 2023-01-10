@@ -3751,7 +3751,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         {
           speedX: Math.cos(d2r(angle)) * alienSpeed,
           speedY: Math.sin(d2r(angle)) * alienSpeed,
-          shootChance: 5e-3,
+          shootChance: 1e-3 + 1e-4 * player.level,
           touchDamage: "veryhigh",
           bulletDamage: "high",
           points: 10
@@ -3777,7 +3777,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         "wasp",
         "alien",
         {
-          shootChance: 0.025,
+          shootChance: 5e-3 + 1e-3 * player.level,
           bulletDamage: "high",
           touchDamage: "veryhigh",
           points: 20,
@@ -3824,7 +3824,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
           {
             speedX: (alienDirection == direction.LEFT ? spriteSize : -spriteSize) / 2,
             speedY: 0,
-            shootChance: 0.02,
+            shootChance: 75e-4 + 5e-4 * player.level,
             touchDamage: "veryhigh",
             points: 30,
             destroyX: alienDirection == direction.LEFT ? mapW : 0
@@ -3865,7 +3865,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         {
           speedX: 0,
           speedY,
-          shootChance: 0.0625,
+          shootChance: 0.0125 + 5e-3 * player.level,
           touchDamage: "veryhigh",
           bulletDamage: "high",
           points: 240

@@ -628,7 +628,7 @@ function runScene() {
             "alien", {
                 speedX: Math.cos(math.d2r(angle)) * alienSpeed,
                 speedY: Math.sin(math.d2r(angle)) * alienSpeed,
-                shootChance: 0.005,
+                shootChance: 0.001 + (0.0001 * player.level),
                 touchDamage: 'veryhigh',
                 bulletDamage: 'high',
                 points: 10,
@@ -655,7 +655,7 @@ function runScene() {
             health(18),
             "wasp",
             "alien", {
-                shootChance: 0.025,
+                shootChance: 0.005 + (0.001 * player.level),
                 bulletDamage: 'high',
                 touchDamage: 'veryhigh',
                 points: 20,
@@ -709,7 +709,7 @@ function runScene() {
                 "alien", {
                     speedX: (alienDirection == Const.direction.LEFT ? spriteSize : -spriteSize) / 2,
                     speedY: 0,
-                    shootChance: 0.02,
+                    shootChance: 0.005 + (0.0005 * player.level),
                     touchDamage: 'veryhigh',
                     points: 30,
                     destroyX: alienDirection == Const.direction.LEFT ? Const.mapW : 0,
@@ -751,7 +751,7 @@ function runScene() {
             "alien", {
                 speedX: 0,
                 speedY: speedY,
-                shootChance: 0.0625,
+                shootChance: 0.0125 + (0.005 * player.level),
                 touchDamage: 'veryhigh',
                 bulletDamage: 'high',
                 points: 240,
