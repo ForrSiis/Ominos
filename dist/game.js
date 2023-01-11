@@ -3669,21 +3669,24 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     });
     function playerShootsFalling() {
       let nDirs = const_default.nDirs;
-      for (let i = 0; i < player.level + 1; i++) {
-        let dir = (i + 1) % nDirs;
-        let x = player.pos.x;
-        let y = player.pos.y;
-        let quotient = Math.floor(i / nDirs);
-        let delta = Math.ceil(quotient / 2) * (quotient % 2 ? 1 : -1) * const_default.blockSize;
-        if (0 == dir % 2) {
-          x = 0 == dir ? 0 : const_default.mapW;
-          y += delta;
-        } else {
-          y = 1 == dir ? 0 : const_default.mapH;
-          x += delta;
+      let levelGap = 5;
+      let linesPerSide = 1 + Math.floor(player.level / levelGap);
+      for (let line = 0; line < linesPerSide; line++) {
+        for (let i = 0; i < nDirs; i++) {
+          let dir = (i + 1) % nDirs;
+          let x = player.pos.x;
+          let y = player.pos.y;
+          let delta = Math.ceil(line / 2) * (line % 2 ? 1 : -1) * const_default.blockSize;
+          if (0 == dir % 2) {
+            x = 0 == dir ? 0 : const_default.mapW;
+            y += delta;
+          } else {
+            y = 1 == dir ? 0 : const_default.mapH;
+            x += delta;
+          }
+          let spot = vec2(x, y);
+          spawnFalling(spot, dir);
         }
-        let spot = vec2(x, y);
-        spawnFalling(spot, dir);
       }
     }
     __name(playerShootsFalling, "playerShootsFalling");
