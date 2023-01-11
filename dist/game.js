@@ -3452,10 +3452,11 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
           x,
           y
         }, player.angle, {
-          x: x + const_default.cellSize,
+          x: x - const_default.blockSize,
           y: y + dy
         });
-        spawnLaser(spot);
+        spawnLaser(spot, 0);
+        spawnLaser(spot, 180);
       }, "getSpot");
       getSpot({
         x: 0,
@@ -3470,7 +3471,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       }
     }
     __name(playerShootsLasers, "playerShootsLasers");
-    function spawnLaser(spot) {
+    function spawnLaser(spot, angle) {
       let laser = add([
         pos(spot.x, spot.y),
         rect(const_default.blockSize * 2 + player.level, LASER_H),
@@ -3482,8 +3483,8 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         "playerattack",
         "laser",
         {
-          speedX: Math.cos(math_default.d2r(player.angle)) * LASER_SPEED,
-          speedY: Math.sin(math_default.d2r(player.angle)) * LASER_SPEED,
+          speedX: Math.cos(math_default.d2r(player.angle + angle)) * LASER_SPEED,
+          speedY: Math.sin(math_default.d2r(player.angle + angle)) * LASER_SPEED,
           damage: "low"
         }
       ]);
