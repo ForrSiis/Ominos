@@ -3532,13 +3532,15 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       b2.move(b2.speedX, b2.speedY);
     });
     function spawnBomb(spot) {
+      let radius = const_default.blockSize + 2 * player.level;
+      let diameter = 2 * radius;
       add([
         pos(spot),
-        circle(const_default.blockSize + player.level),
+        circle(radius),
         origin("center"),
         area({
-          width: (const_default.blockSize + player.level) * 2,
-          height: (const_default.blockSize + player.level) * 2
+          width: diameter,
+          height: diameter
         }),
         color(Color.YELLOW),
         z(-3),

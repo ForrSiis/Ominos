@@ -392,13 +392,15 @@ function runScene() {
     });
 
     function spawnBomb(spot) {
+        let radius = Const.blockSize + 2 * player.level;
+        let diameter = 2 * radius;
         add([
             pos(spot),
-            circle(Const.blockSize + player.level),
+            circle(radius),
             origin("center"),
             area({
-                width: (Const.blockSize + player.level) * 2,
-                height: (Const.blockSize + player.level) * 2
+                width: diameter,
+                height: diameter,
             }),
             color(Color.YELLOW),
             z(-3),
