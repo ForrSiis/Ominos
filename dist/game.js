@@ -3422,6 +3422,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
           width: (2 + player.level / 2) * 2,
           height: (2 + player.level / 2) * 2
         }),
+        z(-3),
         cleanup(),
         "playerattack",
         "bullet",
@@ -3473,6 +3474,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         rotate(player.angle),
         color(0, 255, 255),
         area(),
+        z(-3),
         cleanup(),
         "playerattack",
         "laser",
@@ -3506,6 +3508,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         rotate(player.angle),
         scale(0.5),
         area(),
+        z(-3),
         cleanup(),
         "playerattack",
         "missile",
@@ -3534,6 +3537,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
           height: (const_default.blockSize + player.level) * 2
         }),
         color(Color.YELLOW),
+        z(-3),
         cleanup(),
         "playerattack",
         "bomb",
@@ -3572,6 +3576,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
           width: diameter,
           height: diameter
         }),
+        z(-3),
         cleanup(),
         "playerattack",
         "field",
@@ -3612,6 +3617,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
           width: const_default.blockSize / 2,
           height: const_default.blockSize / 2
         }),
+        z(-3),
         cleanup(),
         "playerattack",
         "bouncer",
@@ -3673,6 +3679,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         rotate(player.angle),
         scale(0.5),
         area(),
+        z(-3),
         cleanup(),
         "playerattack",
         "falling",
@@ -3701,6 +3708,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
           width: 8,
           height: 8
         }),
+        z(-1),
         cleanup(),
         "alienbullet",
         {
@@ -3732,6 +3740,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         origin("center"),
         color(255, 128, 0),
         area(),
+        z(-1),
         cleanup(),
         "alienlaser",
         {
