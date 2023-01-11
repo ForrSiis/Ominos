@@ -3429,8 +3429,8 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         "playerattack",
         "bullet",
         {
-          speedX: Math.cos(math_default.d2r(player.angle + angle)) * BULLET_SPEED,
-          speedY: Math.sin(math_default.d2r(player.angle + angle)) * BULLET_SPEED,
+          speedX: Math.cos(math_default.d2r(player.angle + angle)) * BULLET_SPEED * Math.pow(1.1, player.level),
+          speedY: Math.sin(math_default.d2r(player.angle + angle)) * BULLET_SPEED * Math.pow(1.1, player.level),
           damage: "low"
         }
       ]);
