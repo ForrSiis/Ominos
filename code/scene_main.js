@@ -258,18 +258,19 @@ function runScene() {
     }
 
     function playerShootsBullets(cells) {
-        cells.forEach((cell) => {
+        let angles = [-45, 0, 0, 45];
+        cells.forEach((cell, i) => {
             let x = player.pos.x + cell.x;
             let y = player.pos.y + cell.y;
             let spot = vec2(x, y);
-            spawnBullet(spot);
+            spawnBullet(spot, angles[i]);
         });
     }
 
-    function spawnBullet(spot) {
+    function spawnBullet(spot, angle) {
         add([
             pos(spot),
-            circle(2 + player.level / 2),
+            circle(2 + player.level),
             origin("center"),
             color(255, 0, 255),
             area({
@@ -280,8 +281,8 @@ function runScene() {
             cleanup(),
             "playerattack",
             "bullet", {
-                speedX: Math.cos(math.d2r(player.angle)) * BULLET_SPEED,
-                speedY: Math.sin(math.d2r(player.angle)) * BULLET_SPEED,
+                speedX: Math.cos(math.d2r(player.angle + angle)) * BULLET_SPEED,
+                speedY: Math.sin(math.d2r(player.angle + angle)) * BULLET_SPEED,
                 damage: 'low',
             }
         ]);
