@@ -155,7 +155,7 @@ function runScene() {
 
     onKeyPress("s", playerTurnLeft);
 
-    onKeyPress("n", playerTurnRight);
+    onKeyPress("t", playerTurnRight);
 
     // SHITTY
     onKeyDown("x", playerMoveLeft);
@@ -166,9 +166,9 @@ function runScene() {
 
     onKeyDown("c", playerMoveDown);
 
-    onKeyPress("j", playerTurnLeft);
+    onKeyPress(",", playerTurnLeft);
 
-    onKeyPress("l", playerTurnRight);
+    onKeyPress(".", playerTurnRight);
 
     const BULLET_SPEED = Const.blockSize * 5;
     const LASER_SPEED = Const.blockSize * 8;

@@ -3159,7 +3159,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       layer("ui")
     ]);
     add([
-      text(" Turn:\n<S N>  <J L>", {
+      text(" Turn:\n<S T>  <, .>", {
         size: 20,
         font: "sink"
       }),
@@ -3324,13 +3324,13 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     onKeyDown("o", playerMoveUp);
     onKeyDown("e", playerMoveDown);
     onKeyPress("s", playerTurnLeft);
-    onKeyPress("n", playerTurnRight);
+    onKeyPress("t", playerTurnRight);
     onKeyDown("x", playerMoveLeft);
     onKeyDown("v", playerMoveRight);
     onKeyDown("d", playerMoveUp);
     onKeyDown("c", playerMoveDown);
-    onKeyPress("j", playerTurnLeft);
-    onKeyPress("l", playerTurnRight);
+    onKeyPress(",", playerTurnLeft);
+    onKeyPress(".", playerTurnRight);
     const BULLET_SPEED = const_default.blockSize * 5;
     const LASER_SPEED = const_default.blockSize * 8;
     const MISSILE_SPEED = const_default.blockSize * 6;
