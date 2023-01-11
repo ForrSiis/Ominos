@@ -3769,15 +3769,15 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         origin("center"),
         rotate(angle + 90),
         cleanup(),
-        health(6),
+        health(8),
         "spider",
         "alien",
         {
           speedX: Math.cos(math_default.d2r(angle)) * alienSpeed,
           speedY: Math.sin(math_default.d2r(angle)) * alienSpeed,
           shootChance: 1e-3 + 1e-4 * player.level,
-          touchDamage: "veryhigh",
-          bulletDamage: "high",
+          touchDamage: "high",
+          bulletDamage: "medium",
           points: 10
         }
       ]);
@@ -3797,13 +3797,13 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         origin("center"),
         rotate(angle),
         cleanup(),
-        health(18),
+        health(24),
         "wasp",
         "alien",
         {
           shootChance: 5e-3 + 1e-3 * player.level,
-          bulletDamage: "high",
           touchDamage: "veryhigh",
+          bulletDamage: "high",
           points: 20,
           speed: ALIEN_BASE_SPEED,
           amplitude: 3,
@@ -3842,7 +3842,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
           origin("center"),
           rotate(angle),
           cleanup(),
-          health(18),
+          health(24),
           "alienshooter",
           "alien",
           {
@@ -3883,15 +3883,15 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         area(),
         origin("center"),
         cleanup(),
-        health(90 * Math.pow(1.1, player.level)),
+        health(120 * Math.pow(1.1, player.level)),
         "elite",
         "alien",
         {
           speedX: 0,
           speedY,
           shootChance: 0.0125 + 5e-3 * player.level,
-          touchDamage: "veryhigh",
-          bulletDamage: "high",
+          touchDamage: "extreme",
+          bulletDamage: "medium",
           points: 240
         }
       ]);

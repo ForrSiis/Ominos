@@ -638,14 +638,14 @@ function runScene() {
             origin("center"),
             rotate(angle + 90),
             cleanup(),
-            health(6),
+            health(8),
             "spider",
             "alien", {
                 speedX: Math.cos(math.d2r(angle)) * alienSpeed,
                 speedY: Math.sin(math.d2r(angle)) * alienSpeed,
                 shootChance: 0.001 + (0.0001 * player.level),
-                touchDamage: 'veryhigh',
-                bulletDamage: 'high',
+                touchDamage: 'high',
+                bulletDamage: 'medium',
                 points: 10,
             },
         ]);
@@ -667,12 +667,12 @@ function runScene() {
             origin("center"),
             rotate(angle),
             cleanup(),
-            health(18),
+            health(24),
             "wasp",
             "alien", {
                 shootChance: 0.005 + (0.001 * player.level),
-                bulletDamage: 'high',
                 touchDamage: 'veryhigh',
+                bulletDamage: 'high',
                 points: 20,
                 speed: ALIEN_BASE_SPEED, // wavelength
                 amplitude: 3, // delta pixels
@@ -719,7 +719,7 @@ function runScene() {
                 origin("center"),
                 rotate(angle),
                 cleanup(),
-                health(18),
+                health(24),
                 "alienshooter",
                 "alien", {
                     speedX: (alienDirection == Const.direction.LEFT ? spriteSize : -spriteSize) / 2,
@@ -761,14 +761,14 @@ function runScene() {
             area(),
             origin("center"),
             cleanup(),
-            health(90 * Math.pow(1.1, player.level)),
+            health(120 * Math.pow(1.1, player.level)),
             "elite",
             "alien", {
                 speedX: 0,
                 speedY: speedY,
                 shootChance: 0.0125 + (0.005 * player.level),
-                touchDamage: 'veryhigh',
-                bulletDamage: 'high',
+                touchDamage: 'extreme',
+                bulletDamage: 'medium',
                 points: 240,
             },
         ]);
