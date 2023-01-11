@@ -3334,7 +3334,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     const BULLET_SPEED = const_default.blockSize * 5;
     const LASER_SPEED = const_default.blockSize * 8;
     const MISSILE_SPEED = const_default.blockSize * 6;
-    const FALLING_SPEED = const_default.blockSize * 8;
+    const FALLING_SPEED = const_default.blockSize * 10;
     const EXHAUST_SPEED = const_default.blockSize;
     const LASER_H = 2;
     function spawnPlayerExhaust(cells) {
@@ -3668,24 +3668,43 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       }
     });
     function playerShootsFalling() {
-      let x = player.pos.x;
-      let y = const_default.blockSize;
-      let pos2 = vec2(x, y);
-      spawnFalling(pos2);
-      let levelGap = 4;
-      let nFalling = Math.floor((player.level + 1) / levelGap);
-      for (let i = 0; i < nFalling; i++) {
-        let dx = x + Math.ceil((i + 1) / 2) * (i % 2 ? 1 : -1) * const_default.blockSize;
-        spawnFalling(vec2(dx, 0));
+      let nDirs = const_default.nDirs;
+      for (let i = 0; i < player.level + 1; i++) {
+        let dir = (i + 1) % nDirs;
+        let x = player.pos.x;
+        let y = player.pos.y;
+        let quotient = Math.floor(i / nDirs);
+        let delta = Math.ceil(quotient / 2) * (quotient % 2 ? 1 : -1) * const_default.blockSize;
+        if (0 == dir % 2) {
+          x = 0 == dir ? 0 : const_default.mapW;
+          y += delta;
+        } else {
+          y = 1 == dir ? 0 : const_default.mapH;
+          x += delta;
+        }
+        let spot = vec2(x, y);
+        spawnFalling(spot, dir);
       }
     }
     __name(playerShootsFalling, "playerShootsFalling");
-    function spawnFalling(spot) {
+    function spawnFalling(spot, dir) {
+      let speedX = 0;
+      let delay = 2;
+      if (0 == dir % 2) {
+        speedX = FALLING_SPEED * (0 == dir ? 1 : -1);
+        delay = const_default.mapW / FALLING_SPEED / 2;
+      }
+      let speedY = 0;
+      if (1 == dir % 2) {
+        speedY = FALLING_SPEED * (1 == dir ? 1 : -1);
+        delay = const_default.mapH / FALLING_SPEED / 2;
+      }
       add([
         pos(spot),
         sprite(getOminoSprite(player.shape, choose(const_default.ominoColors))),
         origin("center"),
         rotate(player.angle),
+        opacity(0.5),
         scale(0.5),
         area(),
         z(-3),
@@ -3693,9 +3712,11 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         "playerattack",
         "falling",
         {
-          speedX: 0,
-          speedY: FALLING_SPEED,
-          damage: "low"
+          speedX,
+          speedY,
+          damage: "low",
+          destroyDelay: delay,
+          destroyTimer: 0
         }
       ]);
       play("shoot", {
@@ -3704,8 +3725,13 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       });
     }
     __name(spawnFalling, "spawnFalling");
-    onUpdate("falling", (b2) => {
-      b2.move(b2.speedX, b2.speedY);
+    onUpdate("falling", (ob) => {
+      ob.destroyTimer += dt();
+      if (ob.destroyTimer > ob.destroyDelay) {
+        destroy(ob);
+        return;
+      }
+      ob.move(ob.speedX, ob.speedY);
     });
     function spawnAlienBullet(spot) {
       add([
@@ -3980,6 +4006,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         volume: 0.0375,
         detune: rand(0, 1200)
       });
+      destroy(attacker);
     });
     on("hurt", "alien", (alien) => {
       if (alien.hp() <= 0) {
