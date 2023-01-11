@@ -3405,13 +3405,19 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     }
     __name(playerShootsLogic, "playerShootsLogic");
     function playerShootsBullets(cells) {
-      let angles = [-45, 0, 0, 45];
+      let angles = [-45, 45];
       cells.forEach((cell, i) => {
         let x = player.pos.x + cell.x;
         let y = player.pos.y + cell.y;
         let spot = vec2(x, y);
-        spawnBullet(spot, angles[i]);
+        spawnBullet(spot, 0);
       });
+      for (let i = 0; i < 2; i++) {
+        let x = player.pos.x;
+        let y = player.pos.y;
+        let spot = vec2(x, y);
+        spawnBullet(spot, angles[i]);
+      }
     }
     __name(playerShootsBullets, "playerShootsBullets");
     function spawnBullet(spot, angle) {
