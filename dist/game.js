@@ -3664,7 +3664,8 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       let y = const_default.blockSize;
       let pos2 = vec2(x, y);
       spawnFalling(pos2);
-      let nFalling = Math.floor((player.level + 1) / 3);
+      let levelGap = 4;
+      let nFalling = Math.floor((player.level + 1) / levelGap);
       for (let i = 0; i < nFalling; i++) {
         let dx = x + Math.ceil((i + 1) / 2) * (i % 2 ? 1 : -1) * const_default.blockSize;
         spawnFalling(vec2(dx, 0));
