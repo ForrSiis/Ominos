@@ -316,7 +316,8 @@ function runScene() {
             x: 0,
             y: 0
         });
-        let nLasers = Math.ceil((player.level + 1) / 2);
+        let levelGap = 2; // gain 1 laser per levelGap
+        let nLasers = Math.ceil((player.level + 1) / levelGap);
         for (let i = 0; i < nLasers; i++) {
             let cell = cells[i % cells.length];
             let dy = Math.floor(i / cells.length) * (i % 2 ? 1 : -1) * LASER_H;
@@ -329,7 +330,7 @@ function runScene() {
     function spawnLaser(spot) {
         let laser = add([
             pos(spot.x, spot.y),
-            rect(Const.blockSize * 2, LASER_H),
+            rect(Const.blockSize * 2 + player.level, LASER_H),
             rotate(player.angle),
             color(0, 255, 255),
             area(),

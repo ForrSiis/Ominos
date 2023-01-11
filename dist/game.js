@@ -2931,10 +2931,11 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     "ominoShapes": ["t", "i", "l", "j", "o", "s", "z"],
     "ominoColors": ["red", "cyan", "yellow", "magenta", "green", "white"],
     "damageLevel": {
-      low: 3,
-      medium: 6,
-      high: 9,
-      veryhigh: 12
+      low: 4,
+      medium: 8,
+      high: 12,
+      veryhigh: 16,
+      extreme: 24
     },
     "direction": {
       LEFT: 0,
@@ -2942,17 +2943,17 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       RIGHT: 2,
       DOWN: 3
     },
-    "playerStartLevel": 0,
-    "playerMaxLife": 144,
-    "playerStartAngle": -90,
-    "playerAngleTurn": 22.5,
     "playlist": [
       "alone_against_enemy",
       "brave_pilots",
       "epic_end",
       "rain_of_lasers",
       "without_fear"
-    ]
+    ],
+    "playerMaxLife": 144,
+    "playerStartAngle": -90,
+    "playerAngleTurn": 22.5,
+    "playerStartLevel": 0
   };
   Const.playerStartShape = choose2(Const.ominoShapes);
   Const.playerStartColor = choose2(Const.ominoColors);
@@ -3459,7 +3460,8 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         x: 0,
         y: 0
       });
-      let nLasers = Math.ceil((player.level + 1) / 2);
+      let levelGap = 2;
+      let nLasers = Math.ceil((player.level + 1) / levelGap);
       for (let i = 0; i < nLasers; i++) {
         let cell = cells[i % cells.length];
         let dy = Math.floor(i / cells.length) * (i % 2 ? 1 : -1) * LASER_H;
@@ -3470,7 +3472,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     function spawnLaser(spot) {
       let laser = add([
         pos(spot.x, spot.y),
-        rect(const_default.blockSize * 2, LASER_H),
+        rect(const_default.blockSize * 2 + player.level, LASER_H),
         rotate(player.angle),
         color(0, 255, 255),
         area(),
