@@ -3415,14 +3415,16 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     }
     __name(playerShootsBullets, "playerShootsBullets");
     function spawnBullet(spot, angle) {
+      let radius = 2 + player.level;
+      let diameter = 2 * radius;
       add([
         pos(spot),
-        circle(2 + player.level),
+        circle(radius),
         origin("center"),
         color(255, 0, 255),
         area({
-          width: (2 + player.level / 2) * 2,
-          height: (2 + player.level / 2) * 2
+          width: diameter,
+          height: diameter
         }),
         z(-3),
         cleanup(),
