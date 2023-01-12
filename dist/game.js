@@ -3618,14 +3618,13 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         }),
         z(-3),
         cleanup(),
+        lifespan(3 * Math.pow(1.1, player.level)),
         "playerattack",
         "bouncer",
         {
           speedX: Math.cos(math_default.d2r(player.angle)) * BULLET_SPEED,
           speedY: Math.sin(math_default.d2r(player.angle)) * BULLET_SPEED,
-          damage: "low",
-          destroyDelay: 3 * Math.pow(1.1, player.level),
-          destroyTimer: 0
+          damage: "low"
         }
       ]);
       play("shoot", {
@@ -3635,11 +3634,6 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     }
     __name(spawnBouncer, "spawnBouncer");
     onUpdate("bouncer", (bouncer) => {
-      bouncer.destroyTimer += dt();
-      if (bouncer.destroyTimer >= bouncer.destroyDelay) {
-        destroy(bouncer);
-        return;
-      }
       bouncer.move(bouncer.speedX, bouncer.speedY);
       if (bouncer.pos.x < 0) {
         bouncer.pos.x = -bouncer.pos.x * 2;

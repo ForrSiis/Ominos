@@ -469,13 +469,12 @@ function runScene() {
             }),
             z(-3),
             cleanup(),
+            lifespan(3 * Math.pow(1.1, player.level)),
             "playerattack",
             "bouncer", {
                 speedX: Math.cos(math.d2r(player.angle)) * BULLET_SPEED,
                 speedY: Math.sin(math.d2r(player.angle)) * BULLET_SPEED,
                 damage: 'low',
-                destroyDelay: 3 * Math.pow(1.1, player.level),
-                destroyTimer: 0,
             }
         ]);
 
@@ -486,11 +485,6 @@ function runScene() {
     }
 
     onUpdate("bouncer", (bouncer) => {
-        bouncer.destroyTimer += dt();
-        if (bouncer.destroyTimer >= bouncer.destroyDelay) {
-            destroy(bouncer);
-            return;
-        }
         bouncer.move(bouncer.speedX, bouncer.speedY);
         if (bouncer.pos.x < 0) {
             bouncer.pos.x = -bouncer.pos.x * 2;
