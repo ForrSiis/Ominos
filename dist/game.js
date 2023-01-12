@@ -3505,11 +3505,10 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         area(),
         z(-3),
         cleanup(),
+        move(player.angle, MISSILE_SPEED),
         "playerattack",
         "missile",
         {
-          speedX: Math.cos(math_default.d2r(player.angle)) * MISSILE_SPEED,
-          speedY: Math.sin(math_default.d2r(player.angle)) * MISSILE_SPEED,
           damage: "medium"
         }
       ]);
@@ -3519,9 +3518,6 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       });
     }
     __name(spawnMissile, "spawnMissile");
-    onUpdate("missile", (b2) => {
-      b2.move(b2.speedX, b2.speedY);
-    });
     function spawnBomb(spot) {
       let radius = const_default.blockSize + 2 * player.level;
       let diameter = 2 * radius;

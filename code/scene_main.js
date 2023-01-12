@@ -355,10 +355,9 @@ function runScene() {
             area(),
             z(-3),
             cleanup(),
+            move(player.angle, MISSILE_SPEED),
             "playerattack",
             "missile", {
-                speedX: Math.cos(math.d2r(player.angle)) * MISSILE_SPEED,
-                speedY: Math.sin(math.d2r(player.angle)) * MISSILE_SPEED,
                 damage: 'medium',
             }
         ]);
@@ -368,10 +367,6 @@ function runScene() {
             detune: rand(-1200, 1200),
         });
     }
-
-    onUpdate("missile", (b) => {
-        b.move(b.speedX, b.speedY);
-    });
 
     function spawnBomb(spot) {
         let radius = Const.blockSize + 2 * player.level;
