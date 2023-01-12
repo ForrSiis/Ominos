@@ -3823,7 +3823,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       const newAlienInterval = 2 * Math.pow(0.9, player.level);
       let angle = alienDirection == const_default.direction.LEFT ? rand(45, -45) : rand(-135, -225);
       add([
-        sprite("alien"),
+        sprite("spider"),
         pos(xpos, rand(0, const_default.mapH - 30)),
         area(),
         origin("center"),
@@ -3940,13 +3940,16 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     const CHANCE_ELITE_SPAWN_UP = 0.5;
     function spawnAlienElite() {
       let bUp = chance(CHANCE_ELITE_SPAWN_UP);
+      let theSprite = sprite("gaia");
+      let h = theSprite.height;
+      let w = theSprite.width;
       let y = bUp ? 0 : const_default.mapH;
+      let x = rand(0, const_default.mapW);
       let moveDirection = bUp ? const_default.direction.DOWN : const_default.direction.UP;
       let speedY = const_default.blockSize / 2 * (moveDirection - 2);
       add([
-        sprite("alien"),
-        pos(rand(const_default.blockSize * 2, const_default.mapW - const_default.blockSize * 2), y),
-        scale(4),
+        theSprite,
+        pos(x, y),
         area(),
         origin("center"),
         cleanup(),
@@ -3964,7 +3967,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       ]);
     }
     __name(spawnAlienElite, "spawnAlienElite");
-    wait(rand(10, 10), spawnAlienElite);
+    wait(rand(10, 16), spawnAlienElite);
     onUpdate("alien", (alien) => {
       alien.move(alien.speedX, alien.speedY);
       if (alien.bulletDamage && chance(alien.shootChance)) {
@@ -4325,23 +4328,28 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     height: 480,
     scale: 1.5
   });
-  loadRoot("sprites/");
-  loadSprite("stars", "stars.png");
-  loadSprite("gem", "gem.png");
-  loadSprite("spaceship", "spaceship.png");
-  loadSprite("alien", "alien.png");
-  loadSprite("wasp", "wasp.png");
-  loadSprite("asteroid", "asteroid.png");
-  loadOminos();
-  loadRoot("sounds/");
-  loadSound("shoot", "shoot.wav");
-  loadSound("explosion", "explosion.wav");
-  loadSound("score", "score.wav");
-  loadSound("alone_against_enemy", "alone_against_enemy.ogg");
-  loadSound("brave_pilots", "brave_pilots.ogg");
-  loadSound("epic_end", "epic_end.ogg");
-  loadSound("rain_of_lasers", "rain_of_lasers.ogg");
-  loadSound("without_fear", "without_fear.ogg");
+  var LOAD_SPRITES = [
+    "stars",
+    "gem",
+    "spider",
+    "wasp",
+    "spaceship",
+    "gaia",
+    "asteroid"
+  ];
+  var LOAD_WAVS = [
+    "shoot",
+    "explosion",
+    "score"
+  ];
+  var LOAD_OGGS = [
+    "alone_against_enemy",
+    "brave_pilots",
+    "epic_end",
+    "rain_of_lasers",
+    "without_fear"
+  ];
+  var LOAD_MP3S = [];
   function loadOminos() {
     const_default.ominoShapes.forEach((shape) => {
       const_default.ominoColors.forEach((color2) => {
@@ -4350,6 +4358,41 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     });
   }
   __name(loadOminos, "loadOminos");
+  function loadSprites() {
+    for (const ob of LOAD_SPRITES) {
+      loadSprite(ob, `${ob}.png`);
+    }
+  }
+  __name(loadSprites, "loadSprites");
+  function loadWavs() {
+    for (const ob of LOAD_WAVS) {
+      loadSound(ob, `${ob}.wav`);
+    }
+  }
+  __name(loadWavs, "loadWavs");
+  function loadOggs() {
+    for (const ob of LOAD_OGGS) {
+      loadSound(ob, `${ob}.ogg`);
+    }
+  }
+  __name(loadOggs, "loadOggs");
+  function loadMp3s() {
+    for (const ob of LOAD_MP3S) {
+      loadSound(ob, `${ob}.mp3`);
+    }
+  }
+  __name(loadMp3s, "loadMp3s");
+  function loadSounds() {
+    loadWavs();
+    loadOggs();
+    loadMp3s();
+  }
+  __name(loadSounds, "loadSounds");
+  loadRoot("sprites/");
+  loadSprites();
+  loadOminos();
+  loadRoot("sounds/");
+  loadSounds();
   scene("main", runScene2);
   scene("title", runScene);
   scene("endGame", runScene3);
