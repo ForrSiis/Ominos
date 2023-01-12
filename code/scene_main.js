@@ -184,20 +184,18 @@ function runScene() {
       cells.forEach((cell) => {
          let x = player.pos.x + cell.x + Math.cos(math.d2r(angle)) * 12 * player.omino.cols / 2;
          let y = player.pos.y + cell.y + Math.sin(math.d2r(angle)) * 12 * player.omino.rows / 2;
-         add([
-               pos(x, y),
-               rect(1, 1),
-               scale(3),
-               color(0, 255, 255),
-               rotate(angle),
-               opacity(1),
-               "exhaust", {
-                  speedX: rand(Math.cos(math.d2r(angle)) * EXHAUST_SPEED),
-                  speedY: rand(Math.sin(math.d2r(angle)) * EXHAUST_SPEED),
-                  destroyDelay: 0.25,
-                  destroyTimer: 0,
-               }
-            ]);
+         const ob = add([
+				pos(x, y),
+				rect(1, 1),
+				scale(3),
+				color(0, 255, 255),
+				rotate(angle),
+				opacity(1),
+				lifespan(0.25),
+				move(angle, rand(EXHAUST_SPEED)),
+				"exhaust", {
+				}
+			]);
       });
    }
 
@@ -217,14 +215,8 @@ function runScene() {
    });
 
    onUpdate("exhaust", (ob) => {
-      ob.use(opacity(ob.opacity - 0.075));
-      //if (chance(0.75)) {
-      ob.move(ob.speedX, ob.speedY);
-      //}
-      ob.destroyTimer += dt();
-      if (ob.destroyTimer >= ob.destroyDelay) {
-         destroy(ob);
-      }
+		// fade out
+      ob.use(opacity(ob.opacity * 0.9));
    });
 
    function playerShootsLogic(cells) {
@@ -818,10 +810,10 @@ function runScene() {
    function spawnAlienElite() {
       let bUp = chance(CHANCE_ELITE_SPAWN_UP);
 		let theSprite = sprite("gaia");
-		let h = theSprite.height;
 		let w = theSprite.width;
+		let h = theSprite.height;
       let y = bUp ? 0 : Const.mapH;
-		let x = rand(0, Const.mapW);
+		let x = rand(w / 2, Const.mapW - w / 2);
       let moveDirection = bUp ? Const.direction.DOWN : Const.direction.UP;
       let speedY = (Const.blockSize / 2) * (moveDirection - 2);
       add([
@@ -844,6 +836,7 @@ function runScene() {
    }
 
    wait(rand(10, 16), spawnAlienElite);
+   //wait(rand(0, 0), spawnAlienElite);
 
    onUpdate("alien", (alien) => {
       alien.move(alien.speedX, alien.speedY);
