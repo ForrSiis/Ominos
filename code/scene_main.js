@@ -271,10 +271,9 @@ function runScene() {
             }),
             z(-3),
             cleanup(),
+            move(player.angle + angle, BULLET_SPEED * Math.pow(1.1, player.level)),
             "playerattack",
             "bullet", {
-                speedX: Math.cos(math.d2r(player.angle + angle)) * BULLET_SPEED * Math.pow(1.1, player.level),
-                speedY: Math.sin(math.d2r(player.angle + angle)) * BULLET_SPEED * Math.pow(1.1, player.level),
                 damage: 'low',
             }
         ]);
@@ -284,10 +283,6 @@ function runScene() {
             detune: rand(-1200, 1200),
         });
     }
-
-    onUpdate("bullet", (b) => {
-        b.move(b.speedX, b.speedY);
-    });
 
     function playerShootsLasers(cells) {
         // one laser from center, always

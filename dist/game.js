@@ -3425,11 +3425,10 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         }),
         z(-3),
         cleanup(),
+        move(player.angle + angle, BULLET_SPEED * Math.pow(1.1, player.level)),
         "playerattack",
         "bullet",
         {
-          speedX: Math.cos(math_default.d2r(player.angle + angle)) * BULLET_SPEED * Math.pow(1.1, player.level),
-          speedY: Math.sin(math_default.d2r(player.angle + angle)) * BULLET_SPEED * Math.pow(1.1, player.level),
           damage: "low"
         }
       ]);
@@ -3439,9 +3438,6 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       });
     }
     __name(spawnBullet, "spawnBullet");
-    onUpdate("bullet", (b2) => {
-      b2.move(b2.speedX, b2.speedY);
-    });
     function playerShootsLasers(cells) {
       let getSpot = /* @__PURE__ */ __name((cell, dy) => {
         let x = player.pos.x + cell.x;
