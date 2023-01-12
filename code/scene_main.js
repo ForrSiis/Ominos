@@ -1018,7 +1018,7 @@ function runScene() {
             "gem", {
                 spawnDelay: rand(2, 6),
                 points: 100,
-                life: 'medium',
+                lifeGain: 'medium',
             },
         ]);
     }
@@ -1029,7 +1029,7 @@ function runScene() {
     player.onCollide("gem", (gem) => {
         destroy(gem);
         updateScore(gem.points);
-        player.heal(Const.damageLevel[gem.life]);
+        player.heal(Const.damageLevel[gem.lifeGain]);
         wait(gem.spawnDelay, spawnGem);
         playerGemsBoost();
         randomizePlayerOmino();

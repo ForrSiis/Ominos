@@ -4119,7 +4119,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         {
           spawnDelay: rand(2, 6),
           points: 100,
-          life: "medium"
+          lifeGain: "medium"
         }
       ]);
     }
@@ -4129,7 +4129,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     player.onCollide("gem", (gem) => {
       destroy(gem);
       updateScore(gem.points);
-      player.heal(const_default.damageLevel[gem.life]);
+      player.heal(const_default.damageLevel[gem.lifeGain]);
       wait(gem.spawnDelay, spawnGem);
       playerGemsBoost();
       randomizePlayerOmino();
