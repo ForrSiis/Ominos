@@ -435,11 +435,10 @@ function runScene() {
             }),
             z(-3),
             cleanup(),
+            lifespan(0.1),
             "playerattack",
             "field", {
                 damage: 'veryhigh',
-                destroyDelay: 0.1,
-                destroyTimer: 0,
             }
         ]);
 
@@ -448,13 +447,6 @@ function runScene() {
             detune: rand(-1200, 1200),
         });
     }
-
-    onUpdate("field", (field) => {
-        field.destroyTimer += dt();
-        if (field.destroyTimer >= field.destroyDelay) {
-            destroy(field);
-        }
-    });
 
     function playerShootsBouncer(cells) {
         cells.forEach((cell) => {

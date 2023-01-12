@@ -3584,12 +3584,11 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         }),
         z(-3),
         cleanup(),
+        lifespan(0.1),
         "playerattack",
         "field",
         {
-          damage: "veryhigh",
-          destroyDelay: 0.1,
-          destroyTimer: 0
+          damage: "veryhigh"
         }
       ]);
       play("shoot", {
@@ -3598,12 +3597,6 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       });
     }
     __name(spawnField, "spawnField");
-    onUpdate("field", (field) => {
-      field.destroyTimer += dt();
-      if (field.destroyTimer >= field.destroyDelay) {
-        destroy(field);
-      }
-    });
     function playerShootsBouncer(cells) {
       cells.forEach((cell) => {
         let x = player.pos.x + cell.x;
