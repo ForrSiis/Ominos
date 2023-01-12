@@ -325,10 +325,9 @@ function runScene() {
             area(),
             z(-3),
             cleanup(),
+            move(player.angle + angle, LASER_SPEED),
             "playerattack",
             "laser", {
-                speedX: Math.cos(math.d2r(player.angle + angle)) * LASER_SPEED,
-                speedY: Math.sin(math.d2r(player.angle + angle)) * LASER_SPEED,
                 damage: 'low',
             }
         ]);
@@ -338,10 +337,6 @@ function runScene() {
             detune: rand(-1200, 1200),
         });
     }
-
-    onUpdate("laser", (b) => {
-        b.move(b.speedX, b.speedY);
-    });
 
     function playerShootsMissiles() {
         let x = player.pos.x;

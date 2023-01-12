@@ -3475,11 +3475,10 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         area(),
         z(-3),
         cleanup(),
+        move(player.angle + angle, LASER_SPEED),
         "playerattack",
         "laser",
         {
-          speedX: Math.cos(math_default.d2r(player.angle + angle)) * LASER_SPEED,
-          speedY: Math.sin(math_default.d2r(player.angle + angle)) * LASER_SPEED,
           damage: "low"
         }
       ]);
@@ -3489,9 +3488,6 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       });
     }
     __name(spawnLaser, "spawnLaser");
-    onUpdate("laser", (b2) => {
-      b2.move(b2.speedX, b2.speedY);
-    });
     function playerShootsMissiles() {
       let x = player.pos.x;
       let y = player.pos.y;
