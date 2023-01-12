@@ -2918,10 +2918,6 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
   }, "default");
 
   // code/const.js
-  function choose2(arr) {
-    return arr[Math.floor(arr.length * Math.random())];
-  }
-  __name(choose2, "choose");
   var Const = {
     "mapW": 360,
     "mapH": 480,
@@ -2951,12 +2947,20 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       "without_fear"
     ],
     "playerMaxLife": 144,
+    "playerMaxLevel": 20,
+    "playerStartScore": 0,
     "playerStartAngle": -90,
     "playerAngleTurn": 22.5,
+    "playerShootLevelMultiplier": 0.95,
     "playerStartLevel": 0
   };
   Const.playerStartShape = choose2(Const.ominoShapes);
   Const.playerStartColor = choose2(Const.ominoColors);
+  Const.nDirs = Object.keys(Const.direction).length;
+  function choose2(arr) {
+    return arr[Math.floor(arr.length * Math.random())];
+  }
+  __name(choose2, "choose");
   var const_default = Const;
 
   // code/math.js
@@ -3264,10 +3268,10 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       health(const_default.playerMaxLife),
       "player",
       {
-        score: 0,
+        level: const_default.playerStartLevel || 0,
+        score: const_default.playerStartScore || 0,
         shootDelay: 0.8,
         shootTimer: 0,
-        level: const_default.playerStartLevel,
         speed: 200,
         gems: 0,
         gemsLimit: 10,
@@ -3276,8 +3280,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         touchDamage: "veryhigh"
       }
     ]);
-    console.log(const_default.playerStartLevel);
-    console.log(player.level);
+    player.shootDelay *= Math.pow(const_default.playerShootLevelMultiplier, player.level);
     loadPlayerOmino();
     function playerMoveLeft() {
       player.move(Math.min(-player.speed / 2, Math.cos(math_default.d2r(player.angle)) * player.speed), 0);
@@ -3839,31 +3842,38 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     __name(spawnAlienSpider, "spawnAlienSpider");
     spawnAlienSpider();
     function spawnAlienWasp() {
-      let xpos = choose([0, const_default.mapW]);
-      let ypos = choose([0, const_default.mapH]);
-      let angle = xpos == const_default.mapW ? 135 : 45;
-      angle *= ypos == const_default.mapH ? -1 : 1;
-      add([
-        sprite("wasp"),
-        pos(xpos, ypos),
-        area(),
-        origin("center"),
-        rotate(angle),
-        cleanup(),
-        health(24),
-        "wasp",
-        "alien",
-        {
-          shootChance: 5e-3 + 1e-3 * player.level,
-          touchDamage: "veryhigh",
-          bulletDamage: "high",
-          points: 20,
-          speed: ALIEN_BASE_SPEED,
-          amplitude: 3,
-          frequency: 45,
-          timer: 0
+      let spawnChance = 0.6;
+      for (let i = 4; i; i--) {
+        if (!chance(spawnChance)) {
+          continue;
         }
-      ]);
+        let xpos = 0 == i % 2 ? 0 : const_default.mapW;
+        let ypos = 2 >= i ? 0 : const_default.mapH;
+        let angle = xpos == const_default.mapW ? 135 : 45;
+        angle *= ypos == const_default.mapH ? -1 : 1;
+        add([
+          sprite("wasp"),
+          pos(xpos, ypos),
+          area(),
+          origin("center"),
+          rotate(angle),
+          cleanup(),
+          health(24),
+          "wasp",
+          "alien",
+          {
+            shootChance: 5e-3 + 1e-3 * player.level,
+            touchDamage: "veryhigh",
+            bulletDamage: "high",
+            points: 20,
+            speed: ALIEN_BASE_SPEED,
+            amplitude: 3,
+            frequency: 45,
+            timer: 0
+          }
+        ]);
+      }
+      wait(rand(12, 18), spawnAlienWasp);
     }
     __name(spawnAlienWasp, "spawnAlienWasp");
     wait(rand(6, 12), spawnAlienWasp);
@@ -4026,9 +4036,6 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     on("destroy", "elite", (alien) => {
       wait(rand(12, 24), spawnAlienElite);
     });
-    on("destroy", "wasp", (alien) => {
-      wait(rand(6, 12), spawnAlienWasp);
-    });
     add([
       text("SCORE: ", {
         size: 8,
@@ -4046,9 +4053,9 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       layer("ui")
     ]);
     function updatePlayerLevel() {
-      if (player.level < Math.floor(player.score / 1e3)) {
+      if (20 >= const_default.playerMaxLevel && player.level < Math.floor(player.score / 1e3)) {
         player.level++;
-        player.shootDelay *= 0.9;
+        player.shootDelay *= const_default.playerShootLevelMultiplier;
       }
     }
     __name(updatePlayerLevel, "updatePlayerLevel");

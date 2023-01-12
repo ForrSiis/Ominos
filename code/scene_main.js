@@ -87,10 +87,10 @@ function runScene() {
             origin("center"),
             health(Const.playerMaxLife),
             "player", {
-               score: 0,
+               level: Const.playerStartLevel || 0,
+               score: Const.playerStartScore || 0,
                shootDelay: 0.8,
                shootTimer: 0,
-               level: Const.playerStartLevel,
                speed: 200,
                gems: 0,
                gemsLimit: 10,
@@ -946,7 +946,7 @@ function runScene() {
          ]);
 
    function updatePlayerLevel() {
-      if (player.level < Math.floor(player.score / 1000)) {
+      if (20 >= Const.playerMaxLevel && player.level < Math.floor(player.score / 1000)) {
          player.level++;
          player.shootDelay *= Const.playerShootLevelMultiplier;
       }
