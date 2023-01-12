@@ -3582,7 +3582,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     }
     __name(playerShootsField, "playerShootsField");
     function spawnField(spot) {
-      let radius = const_default.blockSize + 3 * player.level;
+      let radius = const_default.blockSize * 1.5 + 3 * player.level;
       let diameter = 2 * radius;
       add([
         pos(spot),
