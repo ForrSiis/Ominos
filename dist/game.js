@@ -3541,6 +3541,17 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       ]);
     }
     __name(spawnBomb, "spawnBomb");
+    function explodeMissile(ob) {
+      destroy(ob);
+      spawnBomb(ob.pos);
+    }
+    __name(explodeMissile, "explodeMissile");
+    function explodeAllMissiles() {
+      every("missile", (ob) => {
+        explodeMissile(ob);
+      });
+    }
+    __name(explodeAllMissiles, "explodeAllMissiles");
     function playerShootsField(cells) {
       cells.forEach((cell) => {
         let x = player.pos.x + cell.x;
@@ -3913,8 +3924,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     onCollide("alien", "missile", (alien, attacker) => {
       makeExplosion(math_default.midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.GREEN);
       gotHurt(alien, attacker.damage);
-      spawnBomb(attacker.pos);
-      destroy(attacker);
+      explodeAllMissiles();
       play("explosion", {
         volume: 0.0375,
         detune: rand(0, 1200)
@@ -4154,10 +4164,9 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     onCollide("obstacle", "playerattack", (ob, attack) => {
       gotHurt(ob, attack.damage);
       if (attack.is("missile")) {
-        destroy(attack);
-        spawnBomb(math_default.midpoint(attack.pos, ob.pos));
+        explodeAllMissiles();
       }
-      if (attack.is("bomb") || attack.is("bullet")) {
+      if (attack.is("bullet")) {
         destroy(attack);
       }
     });

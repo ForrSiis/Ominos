@@ -388,6 +388,17 @@ function runScene() {
         ]);
     }
 
+    function explodeMissile(ob) {
+        destroy(ob);
+        spawnBomb(ob.pos);
+    }
+
+    function explodeAllMissiles() {
+        every("missile", (ob) => {
+            explodeMissile(ob);
+        });
+    }
+
     function playerShootsField(cells) {
         cells.forEach((cell) => {
             let x = player.pos.x + cell.x;
@@ -784,8 +795,7 @@ function runScene() {
     onCollide("alien", "missile", (alien, attacker) => {
         makeExplosion(math.midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.GREEN);
         gotHurt(alien, attacker.damage);
-        spawnBomb(attacker.pos);
-        destroy(attacker);
+        explodeAllMissiles();
         play("explosion", {
             volume: 0.0375,
             detune: rand(0, 1200),
@@ -1052,10 +1062,9 @@ function runScene() {
     onCollide("obstacle", "playerattack", (ob, attack) => {
         gotHurt(ob, attack.damage);
         if (attack.is('missile')) {
-            destroy(attack);
-            spawnBomb(math.midpoint(attack.pos, ob.pos));
+            explodeAllMissiles();
         }
-        if (attack.is('bomb') || attack.is('bullet')) {
+        if (attack.is('bullet')) {
             destroy(attack);
         }
     });
