@@ -4328,6 +4328,9 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     height: 480,
     scale: 1.5
   });
+  for (const c of document.getElementsByTagName("canvas")) {
+    c.style.cursor = "none";
+  }
   var LOAD_SPRITES = [
     "stars",
     "gem",
