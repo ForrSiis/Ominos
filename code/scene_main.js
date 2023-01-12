@@ -973,21 +973,33 @@ function runScene() {
     function spawnGem() {
         let xpos = rand(Const.blockSize, Const.mapW - Const.blockSize);
         add([
-            sprite("gem"),
+            sprite("omino_plus"),
             pos(rand(Const.blockSize, Const.mapW - Const.blockSize), rand(Const.blockSize, Const.mapH - Const.blockSize)),
             area(),
+            scale(0.25),
+            rotate(0),
+            origin("center"),
+            opacity(1),
+            color(Color[choose(Const.ominoColors).toUpperCase()]),
             "gem", {
                 spawnDelay: () => {
                     return rand(2, 6);
                 },
                 points: 100,
                 lifeGain: 'medium',
+
             },
         ]);
     }
 
     wait(rand(2, 6), spawnGem);
     wait(rand(2, 6), spawnGem);
+
+    onUpdate("gem", (gem) => {
+        gem.angle += 2;
+        // fade in and out?
+        gem.use(opacity(Math.sin((gem.angle / 45) % Math.PI) + 0.38));
+    });
 
     player.onCollide("gem", (gem) => {
         destroy(gem);

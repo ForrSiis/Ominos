@@ -4080,9 +4080,14 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     function spawnGem() {
       let xpos = rand(const_default.blockSize, const_default.mapW - const_default.blockSize);
       add([
-        sprite("gem"),
+        sprite("omino_plus"),
         pos(rand(const_default.blockSize, const_default.mapW - const_default.blockSize), rand(const_default.blockSize, const_default.mapH - const_default.blockSize)),
         area(),
+        scale(0.25),
+        rotate(0),
+        origin("center"),
+        opacity(1),
+        color(Color[choose(const_default.ominoColors).toUpperCase()]),
         "gem",
         {
           spawnDelay: () => {
@@ -4096,6 +4101,10 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     __name(spawnGem, "spawnGem");
     wait(rand(2, 6), spawnGem);
     wait(rand(2, 6), spawnGem);
+    onUpdate("gem", (gem) => {
+      gem.angle += 2;
+      gem.use(opacity(Math.sin(gem.angle / 45 % Math.PI) + 0.38));
+    });
     player.onCollide("gem", (gem) => {
       destroy(gem);
       updateScore(gem.points);
@@ -4265,7 +4274,8 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     "wasp",
     "spaceship",
     "gaia",
-    "asteroid"
+    "asteroid",
+    "omino_plus"
   ];
   var LOAD_WAVS = [
     "shoot",
