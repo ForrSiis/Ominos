@@ -24,20 +24,13 @@ function runScene() {
             }),
             pos(0, -i * Const.mapH),
             layer("bg"),
+            move(90, Const.mapH / 12),
             "bg", {
-                scrollDelay: 1,
-                scrollX: 0,
-                scrollY: 100,
-                timer: 0,
             },
         ]);
     }
 
     onUpdate("bg", (bg) => {
-        bg.timer += dt();
-        if (bg.timer >= bg.scrollDelay) {
-            bg.move(bg.scrollX, bg.scrollY);
-        }
         if (bg.pos.y >= Const.mapH) {
             bg.pos.y = -Const.mapH;
         }

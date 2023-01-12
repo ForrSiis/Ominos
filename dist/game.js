@@ -3210,20 +3210,12 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         }),
         pos(0, -i * const_default.mapH),
         layer("bg"),
+        move(90, const_default.mapH / 12),
         "bg",
-        {
-          scrollDelay: 1,
-          scrollX: 0,
-          scrollY: 100,
-          timer: 0
-        }
+        {}
       ]);
     }
     onUpdate("bg", (bg) => {
-      bg.timer += dt();
-      if (bg.timer >= bg.scrollDelay) {
-        bg.move(bg.scrollX, bg.scrollY);
-      }
       if (bg.pos.y >= const_default.mapH) {
         bg.pos.y = -const_default.mapH;
       }
