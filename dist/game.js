@@ -3763,11 +3763,10 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         rotate(angle + 90),
         cleanup(),
         health(8),
+        move(angle, alienSpeed),
         "spider",
         "alien",
         {
-          speedX: Math.cos(math_default.d2r(angle)) * alienSpeed,
-          speedY: Math.sin(math_default.d2r(angle)) * alienSpeed,
           shootChance: 1e-3 + 1e-4 * player.level,
           touchDamage: "high",
           bulletDamage: "medium",
@@ -3868,8 +3867,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       let h = theSprite.height;
       let y = bUp ? 0 : const_default.mapH;
       let x = rand(w / 2, const_default.mapW - w / 2);
-      let moveDirection = bUp ? const_default.direction.DOWN : const_default.direction.UP;
-      let speedY = const_default.blockSize / 2 * (moveDirection - 2);
+      let angle = bUp ? 90 : -90;
       add([
         theSprite,
         pos(x, y),
@@ -3877,11 +3875,10 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         origin("center"),
         cleanup(),
         health(120 * Math.pow(1.1, player.level)),
+        move(angle, const_default.blockSize / 2),
         "elite",
         "alien",
         {
-          speedX: 0,
-          speedY,
           shootChance: 0.0125 + 5e-3 * player.level,
           touchDamage: "extreme",
           bulletDamage: "medium",
@@ -3892,7 +3889,6 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     __name(spawnAlienElite, "spawnAlienElite");
     wait(rand(10, 16), spawnAlienElite);
     onUpdate("alien", (alien) => {
-      alien.move(alien.speedX, alien.speedY);
       if (alien.bulletDamage && chance(alien.shootChance)) {
         spawnAlienBullet(alien.pos);
       }

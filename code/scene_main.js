@@ -619,10 +619,9 @@ function runScene() {
             rotate(angle + 90),
             cleanup(),
             health(8),
+            move(angle, alienSpeed),
             "spider",
             "alien", {
-                speedX: Math.cos(math.d2r(angle)) * alienSpeed,
-                speedY: Math.sin(math.d2r(angle)) * alienSpeed,
                 shootChance: 0.001 + (0.0001 * player.level),
                 touchDamage: 'high',
                 bulletDamage: 'medium',
@@ -735,8 +734,7 @@ function runScene() {
         let h = theSprite.height;
         let y = bUp ? 0 : Const.mapH;
         let x = rand(w / 2, Const.mapW - w / 2);
-        let moveDirection = bUp ? Const.direction.DOWN : Const.direction.UP;
-        let speedY = (Const.blockSize / 2) * (moveDirection - 2);
+        let angle = bUp ? 90 : -90;
         add([
             theSprite,
             pos(x, y),
@@ -744,10 +742,9 @@ function runScene() {
             origin("center"),
             cleanup(),
             health(120 * Math.pow(1.1, player.level)),
+            move(angle, Const.blockSize / 2),
             "elite",
             "alien", {
-                speedX: 0,
-                speedY: speedY,
                 shootChance: 0.0125 + (0.005 * player.level),
                 touchDamage: 'extreme',
                 bulletDamage: 'medium',
@@ -760,7 +757,6 @@ function runScene() {
     //wait(rand(0, 0), spawnAlienElite);
 
     onUpdate("alien", (alien) => {
-        alien.move(alien.speedX, alien.speedY);
         if (alien.bulletDamage && chance(alien.shootChance)) {
             spawnAlienBullet(alien.pos);
         }
