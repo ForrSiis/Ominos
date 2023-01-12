@@ -3721,7 +3721,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     });
     function spawnAlienLaser(spot) {
       let angle = Math.atan2(player.pos.y - spot.y, player.pos.x - spot.x);
-      add([
+      let ob = add([
         pos(spot),
         rect(const_default.blockSize * 2, 1),
         rotate(math_default.r2d(angle)),
@@ -3732,16 +3732,12 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         cleanup(),
         "alienlaser",
         {
-          speedX: Math.cos(angle) * LASER_SPEED,
-          speedY: Math.sin(angle) * LASER_SPEED,
           damage: "low"
         }
       ]);
+      ob.use(move(player.pos.angle(ob.pos), LASER_SPEED));
     }
     __name(spawnAlienLaser, "spawnAlienLaser");
-    onUpdate("alienlaser", (attack) => {
-      attack.move(attack.speedX, attack.speedY);
-    });
     player.onCollide("alienlaser", (attack) => {
       gotHurt(player, attack.damage);
       makeExplosion(player.pos, 3, 3, 3, Color.YELLOW);
