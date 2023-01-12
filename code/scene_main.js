@@ -25,8 +25,7 @@ function runScene() {
             pos(0, -i * Const.mapH),
             layer("bg"),
             move(90, Const.mapH / 12),
-            "bg", {
-            },
+            "bg", {},
         ]);
     }
 
@@ -186,8 +185,7 @@ function runScene() {
                 opacity(1),
                 lifespan(0.25),
                 move(angle, rand(EXHAUST_SPEED)),
-                "exhaust", {
-                }
+                "exhaust", {}
             ]);
         });
     }
@@ -498,8 +496,7 @@ function runScene() {
                     // left or right
                     x = 0 == dir ? 0 : Const.mapW;
                     y += delta;
-                }
-                else {
+                } else {
                     // up or down
                     y = 1 == dir ? 0 : Const.mapH;
                     x += delta;
@@ -548,7 +545,7 @@ function runScene() {
     }
 
     function spawnAlienBullet(spot) {
-        add([
+        const alien = add([
             pos(spot),
             circle(4),
             origin("center"),
@@ -560,16 +557,11 @@ function runScene() {
             z(-1),
             cleanup(),
             "alienbullet", {
-                speedX: Math.cos(Math.atan2(player.pos.y - spot.y, player.pos.x - spot.x)) * BULLET_SPEED,
-                speedY: Math.sin(Math.atan2(player.pos.y - spot.y, player.pos.x - spot.x)) * BULLET_SPEED,
                 damage: 'medium',
             }
         ]);
+        alien.use(move(player.pos.angle(alien.pos), BULLET_SPEED));
     }
-
-    onUpdate("alienbullet", (attack) => {
-        attack.move(attack.speedX, attack.speedY);
-    });
 
     player.onCollide("alienbullet", (attack) => {
         gotHurt(player, attack.damage);
@@ -994,7 +986,9 @@ function runScene() {
             pos(rand(Const.blockSize, Const.mapW - Const.blockSize), rand(Const.blockSize, Const.mapH - Const.blockSize)),
             area(),
             "gem", {
-                spawnDelay: () => { return rand(2, 6); },
+                spawnDelay: () => {
+                    return rand(2, 6);
+                },
                 points: 100,
                 lifeGain: 'medium',
             },

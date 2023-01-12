@@ -3691,7 +3691,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     }
     __name(spawnFalling, "spawnFalling");
     function spawnAlienBullet(spot) {
-      add([
+      const alien = add([
         pos(spot),
         circle(4),
         origin("center"),
@@ -3704,16 +3704,12 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         cleanup(),
         "alienbullet",
         {
-          speedX: Math.cos(Math.atan2(player.pos.y - spot.y, player.pos.x - spot.x)) * BULLET_SPEED,
-          speedY: Math.sin(Math.atan2(player.pos.y - spot.y, player.pos.x - spot.x)) * BULLET_SPEED,
           damage: "medium"
         }
       ]);
+      alien.use(move(player.pos.angle(alien.pos), BULLET_SPEED));
     }
     __name(spawnAlienBullet, "spawnAlienBullet");
-    onUpdate("alienbullet", (attack) => {
-      attack.move(attack.speedX, attack.speedY);
-    });
     player.onCollide("alienbullet", (attack) => {
       gotHurt(player, attack.damage);
       destroy(attack);
