@@ -3843,29 +3843,19 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
           rotate(angle),
           cleanup(),
           health(24),
+          move(angle, spriteSize),
           "alienshooter",
           "alien",
           {
-            speedX: (alienDirection == const_default.direction.LEFT ? spriteSize : -spriteSize) / 2,
-            speedY: 0,
             shootChance: 5e-3 + 5e-4 * player.level,
             touchDamage: "veryhigh",
-            points: 30,
-            destroyX: alienDirection == const_default.direction.LEFT ? const_default.mapW : 0
+            points: 30
           }
         ]);
       }
     }
     __name(spawnAlienShooters, "spawnAlienShooters");
     onUpdate("alienshooter", (alien) => {
-      alien.move(alien.speedX, alien.speedY);
-      if (alien.destroyX) {
-        if (alien.destroyX <= alien.pos.x) {
-          destroy(alien);
-        }
-      } else if (0 >= alien.pos.x) {
-        destroy(alien);
-      }
       if (chance(alien.shootChance)) {
         spawnAlienLaser(alien.pos);
       }
