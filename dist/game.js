@@ -3349,20 +3349,17 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       cells.forEach((cell) => {
         let x = player.pos.x + cell.x + Math.cos(math_default.d2r(angle)) * 12 * player.omino.cols / 2;
         let y = player.pos.y + cell.y + Math.sin(math_default.d2r(angle)) * 12 * player.omino.rows / 2;
-        add([
+        const ob = add([
           pos(x, y),
           rect(1, 1),
           scale(3),
           color(0, 255, 255),
           rotate(angle),
           opacity(1),
+          lifespan(0.25),
+          move(angle, rand(EXHAUST_SPEED)),
           "exhaust",
-          {
-            speedX: rand(Math.cos(math_default.d2r(angle)) * EXHAUST_SPEED),
-            speedY: rand(Math.sin(math_default.d2r(angle)) * EXHAUST_SPEED),
-            destroyDelay: 0.25,
-            destroyTimer: 0
-          }
+          {}
         ]);
       });
     }
@@ -3380,12 +3377,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       spawnPlayerExhaust(player.cells);
     });
     onUpdate("exhaust", (ob) => {
-      ob.use(opacity(ob.opacity - 0.075));
-      ob.move(ob.speedX, ob.speedY);
-      ob.destroyTimer += dt();
-      if (ob.destroyTimer >= ob.destroyDelay) {
-        destroy(ob);
-      }
+      ob.use(opacity(ob.opacity * 0.9));
     });
     function playerShootsLogic(cells) {
       switch (player.ominocolor) {
@@ -3560,22 +3552,15 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         color(Color.YELLOW),
         z(-3),
         cleanup(),
+        lifespan(0.5 * Math.pow(1.1, player.level)),
         "playerattack",
         "bomb",
         {
-          damage: "veryhigh",
-          destroyDelay: 0.5 * Math.pow(1.1, player.level),
-          destroyTimer: 0
+          damage: "veryhigh"
         }
       ]);
     }
     __name(spawnBomb, "spawnBomb");
-    onUpdate("bomb", (bomb) => {
-      bomb.destroyTimer += dt();
-      if (bomb.destroyTimer >= bomb.destroyDelay) {
-        destroy(bomb);
-      }
-    });
     function playerShootsField(cells) {
       cells.forEach((cell) => {
         let x = player.pos.x + cell.x;
@@ -3941,10 +3926,10 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     function spawnAlienElite() {
       let bUp = chance(CHANCE_ELITE_SPAWN_UP);
       let theSprite = sprite("gaia");
-      let h = theSprite.height;
       let w = theSprite.width;
+      let h = theSprite.height;
       let y = bUp ? 0 : const_default.mapH;
-      let x = rand(0, const_default.mapW);
+      let x = rand(w / 2, const_default.mapW - w / 2);
       let moveDirection = bUp ? const_default.direction.DOWN : const_default.direction.UP;
       let speedY = const_default.blockSize / 2 * (moveDirection - 2);
       add([
