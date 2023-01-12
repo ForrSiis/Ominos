@@ -533,18 +533,17 @@ function runScene() {
     }
 
     function spawnFalling(spot, dir) {
-        let speedX = 0;
-        let delay = 2;
+        let angle = 0;
+        let duration = 2;
         if (0 == dir % 2) {
             // move left or right
-            speedX = FALLING_SPEED * (0 == dir ? 1 : -1);
-            delay = Const.mapW / FALLING_SPEED / 2;
+            angle += (0 == dir ? 0 : 180);
+            duration = Const.mapW / FALLING_SPEED / 2;
         }
-        let speedY = 0;
         if (1 == dir % 2) {
             // move up or down
-            speedY = FALLING_SPEED * (1 == dir ? 1 : -1);
-            delay = Const.mapH / FALLING_SPEED / 2;
+            angle += (1 == dir ? 90 : -90);
+            duration = Const.mapH / FALLING_SPEED / 2;
         }
         add([
             pos(spot),
@@ -556,13 +555,11 @@ function runScene() {
             area(),
             z(-3),
             cleanup(),
+            lifespan(duration),
+            move(angle, FALLING_SPEED),
             "playerattack",
             "falling", {
-                speedX: speedX,
-                speedY: speedY,
                 damage: 'low',
-                destroyDelay: delay,
-                destroyTimer: 0,
             }
         ]);
 
@@ -571,15 +568,6 @@ function runScene() {
             detune: rand(-1200, 1200),
         });
     }
-
-    onUpdate("falling", (ob) => {
-        ob.destroyTimer += dt();
-        if (ob.destroyTimer > ob.destroyDelay) {
-            destroy(ob);
-            return;
-        }
-        ob.move(ob.speedX, ob.speedY);
-    });
 
     function spawnAlienBullet(spot) {
         add([
