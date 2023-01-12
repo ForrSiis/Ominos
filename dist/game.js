@@ -4121,7 +4121,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       }
     }
     __name(playerGemsBoost, "playerGemsBoost");
-    const CHANCE_SPAWN_OBSTACLES = 5e-4 * Math.pow(1.1, player.level);
+    const CHANCE_SPAWN_OBSTACLES = 5e-4 * Math.pow(1.05, player.level);
     const MAX_OBSTACLES_W = 5;
     const MAX_OBSTACLES_H = 3;
     function spawnObstacles() {

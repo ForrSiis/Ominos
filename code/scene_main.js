@@ -1019,7 +1019,7 @@ function runScene() {
     }
 
     // random obstacles, of random size and speed
-    const CHANCE_SPAWN_OBSTACLES = 0.0005 * Math.pow(1.1, player.level);
+    const CHANCE_SPAWN_OBSTACLES = 0.0005 * Math.pow(1.05, player.level);
     const MAX_OBSTACLES_W = 5;
     const MAX_OBSTACLES_H = 3;
 
