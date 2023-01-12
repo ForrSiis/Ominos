@@ -1013,11 +1013,9 @@ function runScene() {
                     pos(x + i * Const.blockSize, -j * Const.blockSize),
                     origin("center"),
                     area(),
-                    solid(),
                     health(24),
+                    move(90, Const.blockSize / 2),
                     "obstacle", {
-                        speedX: 0,
-                        speedY: Const.blockSize / 2,
                         touchDamage: 'medium',
                         points: 2,
                     }
@@ -1025,6 +1023,7 @@ function runScene() {
             }
         }
     }
+
     onUpdate(() => {
         if (chance(CHANCE_SPAWN_OBSTACLES)) {
             spawnObstacles();
@@ -1035,7 +1034,6 @@ function runScene() {
     });
 
     onUpdate("obstacle", (ob) => {
-        ob.move(ob.speedX, ob.speedY);
         if (ob.pos.y > Const.mapH) {
             destroy(ob);
         }

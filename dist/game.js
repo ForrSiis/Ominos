@@ -4117,12 +4117,10 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
             pos(x + i * const_default.blockSize, -j * const_default.blockSize),
             origin("center"),
             area(),
-            solid(),
             health(24),
+            move(90, const_default.blockSize / 2),
             "obstacle",
             {
-              speedX: 0,
-              speedY: const_default.blockSize / 2,
               touchDamage: "medium",
               points: 2
             }
@@ -4140,7 +4138,6 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       }
     });
     onUpdate("obstacle", (ob) => {
-      ob.move(ob.speedX, ob.speedY);
       if (ob.pos.y > const_default.mapH) {
         destroy(ob);
       }
