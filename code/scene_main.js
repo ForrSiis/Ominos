@@ -1009,7 +1009,7 @@ function runScene() {
             pos(rand(Const.blockSize, Const.mapW - Const.blockSize), rand(Const.blockSize, Const.mapH - Const.blockSize)),
             area(),
             "gem", {
-                spawnDelay: rand(2, 6),
+                spawnDelay: () => { return rand(2, 6); },
                 points: 100,
                 lifeGain: 'medium',
             },
@@ -1023,7 +1023,7 @@ function runScene() {
         destroy(gem);
         updateScore(gem.points);
         player.heal(Const.damageLevel[gem.lifeGain]);
-        wait(gem.spawnDelay, spawnGem);
+        wait(gem.spawnDelay(), spawnGem);
         playerGemsBoost();
         randomizePlayerOmino();
     });

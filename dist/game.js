@@ -4109,7 +4109,9 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         area(),
         "gem",
         {
-          spawnDelay: rand(2, 6),
+          spawnDelay: () => {
+            return rand(2, 6);
+          },
           points: 100,
           lifeGain: "medium"
         }
@@ -4122,7 +4124,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       destroy(gem);
       updateScore(gem.points);
       player.heal(const_default.damageLevel[gem.lifeGain]);
-      wait(gem.spawnDelay, spawnGem);
+      wait(gem.spawnDelay(), spawnGem);
       playerGemsBoost();
       randomizePlayerOmino();
     });
