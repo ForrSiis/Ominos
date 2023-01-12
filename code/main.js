@@ -9,6 +9,8 @@ played @ https://TetraShmup.amuseum.repl.co
 Credits:
 = Game Designer = AMuseum = Xay Voong
 = Music BY OBLIDIVM http://oblidivmmusic.blogspot.com.es/
+= Elite art by antifarea
+= Arts and music found at opengameart.org, replit.com
 //*/
 
 import kaboom from "kaboom"
@@ -27,27 +29,32 @@ kaboom({
 });
 
 // load resources
-loadRoot("sprites/");
-loadSprite("stars", "stars.png");
-loadSprite("gem", "gem.png");
-loadSprite("spaceship", "spaceship.png");
-loadSprite("alien", "alien.png");
-loadSprite("wasp", "wasp.png");
-loadSprite("asteroid", "asteroid.png");
+const LOAD_SPRITES = [
+	"stars",
+	"gem",
+	"spider",
+	"wasp",
+	"spaceship",
+	"gaia",
+	"asteroid",
+];
 
-loadOminos();
+const LOAD_WAVS = [
+	"shoot",
+	"explosion",
+	"score",
+];
 
-loadRoot("sounds/");
-loadSound("shoot", "shoot.wav");
-loadSound("explosion", "explosion.wav");
-loadSound("score", "score.wav");
+const LOAD_OGGS = [
+	"alone_against_enemy",
+	"brave_pilots",
+	"epic_end",
+	"rain_of_lasers",
+	"without_fear",
+];
 
-loadSound("alone_against_enemy", "alone_against_enemy.ogg");
-loadSound("brave_pilots", "brave_pilots.ogg");
-loadSound("epic_end", "epic_end.ogg");
-loadSound("rain_of_lasers", "rain_of_lasers.ogg");
-loadSound("without_fear", "without_fear.ogg");
-
+const LOAD_MP3S = [
+];
 
 function loadOminos() {
    Const.ominoShapes.forEach((shape) => {
@@ -56,6 +63,43 @@ function loadOminos() {
       });
    });
 }
+
+function loadSprites() {
+	for (const ob of LOAD_SPRITES) {
+		loadSprite(ob, `${ob}.png`);
+	}
+}
+
+function loadWavs() {
+	for (const ob of LOAD_WAVS) {
+		loadSound(ob, `${ob}.wav`);
+	}
+}
+
+function loadOggs() {
+	for (const ob of LOAD_OGGS) {
+		loadSound(ob, `${ob}.ogg`);
+	}
+}
+
+function loadMp3s() {
+	for (const ob of LOAD_MP3S) {
+		loadSound(ob, `${ob}.mp3`);
+	}
+}
+
+function loadSounds() {
+	loadWavs();
+	loadOggs();
+	loadMp3s();
+}
+
+loadRoot("sprites/");
+loadSprites();
+loadOminos();
+
+loadRoot("sounds/");
+loadSounds();
 
 // define scenes
 scene("main", scene_main.runScene);
