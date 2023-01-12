@@ -2956,6 +2956,10 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
   };
   Const.playerStartShape = choose2(Const.ominoShapes);
   Const.playerStartColor = choose2(Const.ominoColors);
+  if (window.bOminosDebug) {
+    Const.playerStartColor = "magenta";
+    Const.playerStartLevel = 20;
+  }
   Const.nDirs = Object.keys(Const.direction).length;
   function choose2(arr) {
     return arr[Math.floor(arr.length * Math.random())];
