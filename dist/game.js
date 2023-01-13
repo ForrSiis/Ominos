@@ -3227,12 +3227,12 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       ob.hurt(damage);
     }
     __name(gotHurt, "gotHurt");
-    function randomizePlayerOmino() {
+    function changePlayerOmino(newColor) {
       player.shape = choose(const_default.ominoShapes);
-      player.ominocolor = choose(const_default.ominoColors);
+      player.ominocolor = newColor;
       loadPlayerOmino();
     }
-    __name(randomizePlayerOmino, "randomizePlayerOmino");
+    __name(changePlayerOmino, "changePlayerOmino");
     function getOminoSprite(shape, color2) {
       return `omino_${shape}_${color2}`;
     }
@@ -4089,6 +4089,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     });
     function spawnGem() {
       let xpos = rand(const_default.blockSize, const_default.mapW - const_default.blockSize);
+      let newColor = choose(const_default.ominoColors);
       add([
         sprite("omino_plus"),
         pos(rand(const_default.blockSize, const_default.mapW - const_default.blockSize), rand(const_default.blockSize, const_default.mapH - const_default.blockSize)),
@@ -4097,14 +4098,15 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         rotate(0),
         origin("center"),
         opacity(1),
-        color(Color[choose(const_default.ominoColors).toUpperCase()]),
+        color(Color[newColor.toUpperCase()]),
         "gem",
         {
           spawnDelay: () => {
             return rand(2, 6);
           },
           points: 100,
-          lifeGain: "medium"
+          lifeGain: "medium",
+          newColor
         }
       ]);
     }
@@ -4116,12 +4118,13 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       gem.use(opacity(Math.sin(gem.angle / 45 % Math.PI) + 0.38));
     });
     player.onCollide("gem", (gem) => {
+      let newColor = gem.newColor;
       destroy(gem);
       updateScore(gem.points);
       player.heal(const_default.damageLevel[gem.lifeGain]);
       wait(gem.spawnDelay(), spawnGem);
       playerGemsBoost();
-      randomizePlayerOmino();
+      changePlayerOmino(newColor);
     });
     function playerGemsBoost() {
       player.gems++;
