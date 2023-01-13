@@ -30,23 +30,23 @@ let Const = {
     ],
     "playerMaxLife": 144,
     "playerMaxLevel": 20,
+    "playerMaxSpeed": 600,
     "playerStartScore": 0,
     "playerStartAngle": -90,
     "playerAngleTurn": 22.5,
     "playerShootLevelMultiplier": 0.95,
+    "playerStartSpeed": 200,
     "playerStartLevel": 0,
 };
 
 Const.playerStartShape = choose(Const.ominoShapes);
 Const.playerStartColor = choose(Const.ominoColors);
 
-
 // debug
 if (window.bOminosDebug) {
-    Const.playerStartColor = 'magenta';
-    Const.playerStartLevel = 20;
+    Const.playerStartColor = 'white';
+    Const.playerStartLevel = 0;
 }
-
 
 Const.nDirs = Object.keys(Const.direction).length;
 

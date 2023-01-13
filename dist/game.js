@@ -2948,17 +2948,19 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     ],
     "playerMaxLife": 144,
     "playerMaxLevel": 20,
+    "playerMaxSpeed": 600,
     "playerStartScore": 0,
     "playerStartAngle": -90,
     "playerAngleTurn": 22.5,
     "playerShootLevelMultiplier": 0.95,
+    "playerStartSpeed": 200,
     "playerStartLevel": 0
   };
   Const.playerStartShape = choose2(Const.ominoShapes);
   Const.playerStartColor = choose2(Const.ominoColors);
   if (window.bOminosDebug) {
-    Const.playerStartColor = "magenta";
-    Const.playerStartLevel = 20;
+    Const.playerStartColor = "white";
+    Const.playerStartLevel = 0;
   }
   Const.nDirs = Object.keys(Const.direction).length;
   function choose2(arr) {
@@ -3647,6 +3649,14 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       let nDirs = const_default.nDirs;
       let levelGap = 5;
       let linesPerSide = 1 + Math.floor(player.level / levelGap);
+      let damage = "veryhigh";
+      if (player.level >= levelGap * 3) {
+        damage = "low";
+      } else if (player.level >= levelGap * 2) {
+        damage = "medium";
+      } else if (player.level >= levelGap * 1) {
+        damage = "high";
+      }
       for (let line = 0; line < linesPerSide; line++) {
         for (let i = 0; i < nDirs; i++) {
           let dir = (i + 1) % nDirs;
@@ -3661,12 +3671,12 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
             x += delta;
           }
           let spot = vec2(x, y);
-          spawnFalling(spot, dir, "low");
+          spawnFalling(spot, dir, damage);
         }
       }
     }
     __name(playerShootsFalling, "playerShootsFalling");
-    function spawnFalling(spot, dir, damage) {
+    function spawnFalling(spot, dir, damageLevel) {
       let angle = 0;
       let duration = 2;
       if (0 == dir % 2) {
@@ -3692,7 +3702,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         "playerattack",
         "falling",
         {
-          damage
+          damage: damageLevel
         }
       ]);
       play("shoot", {
