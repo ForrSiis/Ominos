@@ -3268,7 +3268,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         score: const_default.playerStartScore || 0,
         shootDelay: 0.8,
         shootTimer: 0,
-        speed: 200,
+        speed: const_default.playerStartSpeed,
         gems: 0,
         gemsLimit: 10,
         shape: const_default.playerStartShape,
@@ -3661,12 +3661,12 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
             x += delta;
           }
           let spot = vec2(x, y);
-          spawnFalling(spot, dir);
+          spawnFalling(spot, dir, "low");
         }
       }
     }
     __name(playerShootsFalling, "playerShootsFalling");
-    function spawnFalling(spot, dir) {
+    function spawnFalling(spot, dir, damage) {
       let angle = 0;
       let duration = 2;
       if (0 == dir % 2) {
@@ -3692,7 +3692,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         "playerattack",
         "falling",
         {
-          damage: "low"
+          damage
         }
       ]);
       play("shoot", {
@@ -4115,9 +4115,10 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     });
     function playerGemsBoost() {
       player.gems++;
-      if (player.gems >= player.gemsLimit) {
+      if (player.gems >= player.gemsLimit && const_default.playerMaxSpeed >= player.speed) {
         player.speed += ALIEN_SPEED_INC;
         player.gems = 0;
+        console.log(player.speed);
       }
     }
     __name(playerGemsBoost, "playerGemsBoost");
