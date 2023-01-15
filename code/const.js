@@ -7,7 +7,7 @@ let Const = {
     "blockSize": 24,
     "cellSize": 12,
     "ominoShapes": ['t', 'i', 'l', 'j', 'o', 's', 'z'],
-    "ominoColors": ['red', 'cyan', 'yellow', 'magenta', 'green', 'white'],
+    "ominoColors": ['red', 'cyan', 'yellow', 'magenta', 'green', 'white', 'blue'],
     "damageLevel": {
         low: 4,
         medium: 8,
@@ -44,7 +44,7 @@ Const.playerStartColor = choose(Const.ominoColors);
 
 // debug
 if (window.bOminosDebug) {
-    Const.playerStartColor = 'white';
+    //Const.playerStartColor = 'blue';
     Const.playerStartLevel = 0;
 }
 

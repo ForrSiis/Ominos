@@ -2,6 +2,8 @@ import Const from "./const.js"
 import math from "./math.js"
 import Omino from "./omino.js"
 
+let log = console.log;
+
 function runScene() {
    // play bg music
    const music = play(choose(Const.playlist), {
@@ -91,6 +93,7 @@ function runScene() {
                touchDamage: 'veryhigh',
             }
          ]);
+	console.log(player);
    player.shootDelay *= Math.pow(Const.playerShootLevelMultiplier, player.level);
 
    loadPlayerOmino();
@@ -164,6 +167,7 @@ function runScene() {
    const BULLET_SPEED = Const.blockSize * 5;
    const LASER_SPEED = Const.blockSize * 8;
    const MISSILE_SPEED = Const.blockSize * 6;
+   const SEEKER_SPEED = Const.blockSize * 8;
    const FALLING_SPEED = Const.blockSize * 10;
    const EXHAUST_SPEED = Const.blockSize;
    const LASER_H = 2;
@@ -230,6 +234,10 @@ function runScene() {
 
       case 'white':
          playerShootsFalling();
+         break;
+
+      case 'blue':
+         playerShootsSeekers(cells);
          break;
 
       case 'red':
@@ -563,6 +571,102 @@ function runScene() {
       });
    }
 
+	function playerShootsSeekers(cells) {
+		// two default seekers: ahead and behind player
+		// extra seeker for each levelGap shot from cells
+		let levelGap = 3;
+		let spot = player.pos;
+		let x = player.pos.x;
+		let y = player.pos.y;
+		let distance = Const.blockSize * 2;
+
+		// ahead
+		spot = math.rotatePoint({
+               x: x,
+               y: y
+            }, player.angle, {
+               x: x + distance,
+               y: y,
+            });
+		spawnSeeker(spot);
+
+		// behind
+		spot = math.rotatePoint({
+               x: x,
+               y: y
+            }, player.angle, {
+               x: x - distance,
+               y: y,
+            });
+		spawnSeeker(spot);
+
+		let nSeekers = Math.floor((player.level + 1)/levelGap) + 1;
+		log(nSeekers);
+		let ahead = [0, 3];
+		for (let i=0; i < nSeekers; i++) {
+			let cell = cells[i % cells.length];
+			x = player.pos.x + cell.x;
+			y = player.pos.y + cell.y;
+			let dx = ahead.includes(i) ? distance : -distance;
+			dx *= i >= cells.length ? -1 : 1;
+			spot = math.rotatePoint({
+				x: x,
+				y: y
+			}, player.angle, {
+				x: x + dx,
+				y: y,
+			});
+			spawnSeeker(spot);
+		}
+	}
+
+	function spawnSeeker(spot) {
+      let seeker = add([
+            pos(spot.x, spot.y),
+            sprite("omino_seeker"),
+            origin("center"),
+				color(Color.BLUE),
+				rotate(player.angle),
+            scale(0.125),
+            area(),
+            z(-3),
+            cleanup(),
+				lifespan(3),
+            "playerattack",
+            "seeker", {
+               damage: 'low',
+					nextTarget: null,
+					speed: SEEKER_SPEED * (1 + player.level / 100),
+            }
+         ]);
+
+      play("shoot", {
+         volume: 0.0125,
+         detune: rand(-1200, 1200),
+      });
+	}
+
+	onUpdate("seeker", (ob) => {
+		if (ob.nextTarget == null || !ob.nextTarget.exists()) {
+			seekerFindTarget(ob);
+		}
+		if (ob.nextTarget != null) {
+			ob.angle = ob.pos.angle(ob.nextTarget.pos) - 90;
+			ob.moveTo(ob.nextTarget.pos, ob.speed);
+		}
+	});
+
+	function seekerFindTarget(seeker) {
+		// find nearest alien
+		let enemies = get("alien").map((alien) => {
+			return {dist: alien.pos.dist(seeker.pos), target: alien};
+		});
+		enemies.sort((a, b) => {
+			return a.dist - b.dist;
+		});
+		seeker.nextTarget = enemies[0] ? enemies[0].target : null;
+	}
+
    function spawnAlienBullet(spot) {
       const alien = add([
                pos(spot),
@@ -847,6 +951,16 @@ function runScene() {
       destroy(attacker);
    });
 
+   onCollide("alien", "seeker", (alien, attacker) => {
+      makeExplosion(math.midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.GREEN);
+      gotHurt(alien, attacker.damage);
+      play("explosion", {
+         volume: 0.0375,
+         detune: rand(0, 1200),
+      });
+      destroy(attacker);
+   });
+
    on("hurt", "alien", (alien) => {
       if (alien.hp() <= 0) {
          updateScore(alien.points);
@@ -981,6 +1095,8 @@ function runScene() {
    function spawnGem() {
       let xpos = rand(Const.blockSize, Const.mapW - Const.blockSize);
       let newColor = choose(Const.ominoColors);
+		// debug
+		//newColor = 'blue';
       add([
             sprite("omino_plus"),
             pos(rand(Const.blockSize, Const.mapW - Const.blockSize), rand(Const.blockSize, Const.mapH - Const.blockSize)),
@@ -1025,7 +1141,6 @@ function runScene() {
       if (player.gems >= player.gemsLimit && Const.playerMaxSpeed >= player.speed) {
          player.speed += ALIEN_SPEED_INC;
          player.gems = 0;
-         console.log(player.speed);
       }
    }
 
