@@ -2925,7 +2925,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     "blockSize": 24,
     "cellSize": 12,
     "ominoShapes": ["t", "i", "l", "j", "o", "s", "z"],
-    "ominoColors": ["red", "cyan", "yellow", "magenta", "green", "white"],
+    "ominoColors": ["red", "cyan", "yellow", "magenta", "green", "white", "blue", "black"],
     "damageLevel": {
       low: 4,
       medium: 8,
@@ -2959,7 +2959,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
   Const.playerStartShape = choose2(Const.ominoShapes);
   Const.playerStartColor = choose2(Const.ominoColors);
   if (window.bOminosDebug) {
-    Const.playerStartColor = "white";
+    Const.playerStartColor = "black";
     Const.playerStartLevel = 0;
   }
   Const.nDirs = Object.keys(Const.direction).length;
@@ -3193,6 +3193,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
   __name(runScene, "runScene");
 
   // code/scene_main.js
+  var log = console.log;
   function runScene2() {
     const music = play(choose(const_default.playlist), {
       volume: 0.125,
@@ -3278,6 +3279,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         touchDamage: "veryhigh"
       }
     ]);
+    console.log(player);
     player.shootDelay *= Math.pow(const_default.playerShootLevelMultiplier, player.level);
     loadPlayerOmino();
     function playerMoveLeft() {
@@ -3335,6 +3337,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     const BULLET_SPEED = const_default.blockSize * 5;
     const LASER_SPEED = const_default.blockSize * 8;
     const MISSILE_SPEED = const_default.blockSize * 6;
+    const SEEKER_SPEED = const_default.blockSize * 8;
     const FALLING_SPEED = const_default.blockSize * 10;
     const EXHAUST_SPEED = const_default.blockSize;
     const LASER_H = 2;
@@ -3389,6 +3392,9 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
           break;
         case "white":
           playerShootsFalling();
+          break;
+        case "blue":
+          playerShootsSeekers(cells);
           break;
         case "red":
         default:
@@ -3711,6 +3717,93 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       });
     }
     __name(spawnFalling, "spawnFalling");
+    function playerShootsSeekers(cells) {
+      let levelGap = 3;
+      let spot = player.pos;
+      let x = player.pos.x;
+      let y = player.pos.y;
+      let distance = const_default.blockSize * 2;
+      spot = math_default.rotatePoint({
+        x,
+        y
+      }, player.angle, {
+        x: x + distance,
+        y
+      });
+      spawnSeeker(spot);
+      spot = math_default.rotatePoint({
+        x,
+        y
+      }, player.angle, {
+        x: x - distance,
+        y
+      });
+      spawnSeeker(spot);
+      let nSeekers = Math.floor((player.level + 1) / levelGap) + 1;
+      log(nSeekers);
+      let ahead = [0, 3];
+      for (let i = 0; i < nSeekers; i++) {
+        let cell = cells[i % cells.length];
+        x = player.pos.x + cell.x;
+        y = player.pos.y + cell.y;
+        let dx = ahead.includes(i) ? distance : -distance;
+        dx *= i >= cells.length ? -1 : 1;
+        spot = math_default.rotatePoint({
+          x,
+          y
+        }, player.angle, {
+          x: x + dx,
+          y
+        });
+        spawnSeeker(spot);
+      }
+    }
+    __name(playerShootsSeekers, "playerShootsSeekers");
+    function spawnSeeker(spot) {
+      let seeker = add([
+        pos(spot.x, spot.y),
+        sprite("omino_seeker"),
+        origin("center"),
+        color(Color.BLUE),
+        rotate(player.angle),
+        scale(0.125),
+        area(),
+        z(-3),
+        cleanup(),
+        lifespan(3),
+        "playerattack",
+        "seeker",
+        {
+          damage: "low",
+          nextTarget: null,
+          speed: SEEKER_SPEED * (1 + player.level / 100)
+        }
+      ]);
+      play("shoot", {
+        volume: 0.0125,
+        detune: rand(-1200, 1200)
+      });
+    }
+    __name(spawnSeeker, "spawnSeeker");
+    onUpdate("seeker", (ob) => {
+      if (ob.nextTarget == null || !ob.nextTarget.exists()) {
+        seekerFindTarget(ob);
+      }
+      if (ob.nextTarget != null) {
+        ob.angle = ob.pos.angle(ob.nextTarget.pos) - 90;
+        ob.moveTo(ob.nextTarget.pos, ob.speed);
+      }
+    });
+    function seekerFindTarget(seeker) {
+      let enemies = get("alien").map((alien) => {
+        return { dist: alien.pos.dist(seeker.pos), target: alien };
+      });
+      enemies.sort((a2, b2) => {
+        return a2.dist - b2.dist;
+      });
+      seeker.nextTarget = enemies[0] ? enemies[0].target : null;
+    }
+    __name(seekerFindTarget, "seekerFindTarget");
     function spawnAlienBullet(spot) {
       const alien = add([
         pos(spot),
@@ -3973,6 +4066,15 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       });
       destroy(attacker);
     });
+    onCollide("alien", "seeker", (alien, attacker) => {
+      makeExplosion(math_default.midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.GREEN);
+      gotHurt(alien, attacker.damage);
+      play("explosion", {
+        volume: 0.0375,
+        detune: rand(0, 1200)
+      });
+      destroy(attacker);
+    });
     on("hurt", "alien", (alien) => {
       if (alien.hp() <= 0) {
         updateScore(alien.points);
@@ -4131,7 +4233,6 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       if (player.gems >= player.gemsLimit && const_default.playerMaxSpeed >= player.speed) {
         player.speed += ALIEN_SPEED_INC;
         player.gems = 0;
-        console.log(player.speed);
       }
     }
     __name(playerGemsBoost, "playerGemsBoost");
