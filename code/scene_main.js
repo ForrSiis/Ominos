@@ -93,7 +93,7 @@ function runScene() {
                touchDamage: 'veryhigh',
             }
          ]);
-	console.log(player);
+   console.log(player);
    player.shootDelay *= Math.pow(Const.playerShootLevelMultiplier, player.level);
 
    loadPlayerOmino();
@@ -238,6 +238,10 @@ function runScene() {
 
       case 'blue':
          playerShootsSeekers(cells);
+         break;
+
+      case 'black':
+         playerShootsStickys(cells);
          break;
 
       case 'red':
@@ -571,71 +575,70 @@ function runScene() {
       });
    }
 
-	function playerShootsSeekers(cells) {
-		// two default seekers: ahead and behind player
-		// extra seeker for each levelGap shot from cells
-		let levelGap = 3;
-		let spot = player.pos;
-		let x = player.pos.x;
-		let y = player.pos.y;
-		let distance = Const.blockSize * 2;
+   function playerShootsSeekers(cells) {
+      // two default seekers: ahead and behind player
+      // extra seeker for each levelGap shot from cells
+      let levelGap = 3;
+      let spot = player.pos;
+      let x = player.pos.x;
+      let y = player.pos.y;
+      let distance = Const.blockSize * 2;
 
-		// ahead
-		spot = math.rotatePoint({
+      // ahead
+      spot = math.rotatePoint({
+            x: x,
+            y: y
+         }, player.angle, {
+            x: x + distance,
+            y: y,
+         });
+      spawnSeeker(spot);
+
+      // behind
+      spot = math.rotatePoint({
+            x: x,
+            y: y
+         }, player.angle, {
+            x: x - distance,
+            y: y,
+         });
+      spawnSeeker(spot);
+
+      let nSeekers = Math.floor((player.level + 1) / levelGap) + 1;
+      let ahead = [0, 3];
+      for (let i = 0; i < nSeekers; i++) {
+         let cell = cells[i % cells.length];
+         x = player.pos.x + cell.x;
+         y = player.pos.y + cell.y;
+         let dx = ahead.includes(i) ? distance : -distance;
+         dx *= i >= cells.length ? -1 : 1;
+         spot = math.rotatePoint({
                x: x,
                y: y
             }, player.angle, {
-               x: x + distance,
+               x: x + dx,
                y: y,
             });
-		spawnSeeker(spot);
+         spawnSeeker(spot);
+      }
+   }
 
-		// behind
-		spot = math.rotatePoint({
-               x: x,
-               y: y
-            }, player.angle, {
-               x: x - distance,
-               y: y,
-            });
-		spawnSeeker(spot);
-
-		let nSeekers = Math.floor((player.level + 1)/levelGap) + 1;
-		log(nSeekers);
-		let ahead = [0, 3];
-		for (let i=0; i < nSeekers; i++) {
-			let cell = cells[i % cells.length];
-			x = player.pos.x + cell.x;
-			y = player.pos.y + cell.y;
-			let dx = ahead.includes(i) ? distance : -distance;
-			dx *= i >= cells.length ? -1 : 1;
-			spot = math.rotatePoint({
-				x: x,
-				y: y
-			}, player.angle, {
-				x: x + dx,
-				y: y,
-			});
-			spawnSeeker(spot);
-		}
-	}
-
-	function spawnSeeker(spot) {
-      let seeker = add([
+   function spawnSeeker(spot) {
+      add([
             pos(spot.x, spot.y),
             sprite("omino_seeker"),
             origin("center"),
-				rotate(player.angle),
+            rotate(player.angle),
             scale(0.125),
             area(),
             z(-3),
             cleanup(),
-				lifespan(3),
+            lifespan(3),
             "playerattack",
             "seeker", {
                damage: 'low',
-					nextTarget: null,
-					speed: SEEKER_SPEED * (1 + player.level / 100),
+               nextTarget: null,
+               speed: SEEKER_SPEED * (1 + player.level / 100),
             }
          ]);
 
@@ -643,28 +646,115 @@ function runScene() {
          volume: 0.0125,
          detune: rand(-1200, 1200),
       });
-	}
+   }
 
-	onUpdate("seeker", (ob) => {
-		if (ob.nextTarget == null || !ob.nextTarget.exists()) {
-			seekerFindTarget(ob);
-		}
-		if (ob.nextTarget != null) {
-			ob.angle = ob.pos.angle(ob.nextTarget.pos) - 90;
-			ob.moveTo(ob.nextTarget.pos, ob.speed);
-		}
-	});
+   onUpdate("seeker", (ob) => {
+      if (ob.nextTarget == null || !ob.nextTarget.exists()) {
+         seekerFindTarget(ob);
+      }
+      if (ob.nextTarget != null) {
+         ob.angle = ob.pos.angle(ob.nextTarget.pos) - 90;
+         ob.moveTo(ob.nextTarget.pos, ob.speed);
+      }
+   });
 
-	function seekerFindTarget(seeker) {
-		// find nearest alien
-		let enemies = get("alien").map((alien) => {
-			return {dist: alien.pos.dist(seeker.pos), target: alien};
-		});
-		enemies.sort((a, b) => {
-			return a.dist - b.dist;
-		});
-		seeker.nextTarget = enemies[0] ? enemies[0].target : null;
-	}
+   function seekerFindTarget(seeker) {
+      // find nearest alien
+      let enemies = get("alien").map((alien) => {
+            return {
+               dist: alien.pos.dist(seeker.pos),
+               target: alien
+            };
+         });
+      enemies.sort((a, b) => {
+         return a.dist - b.dist;
+      });
+      seeker.nextTarget = enemies[0] ? enemies[0].target : null;
+   }
+
+   function playerShootsStickys(cells) {
+      // shoot one from center
+      // shoot extra from cells for each levelGap
+      let spot = player.pos;
+      spawnSticky(spot, 0);
+
+      const maxSticky = 4;
+      const angles = [22.5, -22.5, 45, -45];
+      const levelGap = 4;
+      const firstLevel = 2;
+      let nSticky = Math.min(maxSticky, Math.floor((player.level + firstLevel) / levelGap));
+      for (let i = 0; i < nSticky; i++) {
+         const cell = cells[(i + 1) % cells.length];
+         let angle = angles[i];
+         let x = player.pos.x + cell.x;
+         let y = player.pos.y + cell.y;
+         let dx = Const.blockSize;
+         spot = math.rotatePoint({
+               x: x,
+               y: y
+            }, player.angle, {
+               x: x + dx,
+               y: y,
+            });
+         spawnSticky(spot, angle);
+      }
+   }
+
+   function spawnSticky(spot, angle) {
+      add([
+            pos(spot.x, spot.y),
+            sprite(getOminoSprite(player.shape, player.ominocolor)),
+            origin("center"),
+            rotate(player.angle),
+            scale(0.5),
+            area(),
+            z(1),
+            cleanup(),
+            move(player.angle + angle, BULLET_SPEED),
+            "playerattack",
+            "sticky", {
+               damage: 'low',
+               duration: 3,
+               target: null,
+               dx: 0,
+               dy: 0,
+               collideDelay: 1 * Math.pow(0.98, player.level),
+               collideTimer: 0,
+
+            }
+         ]);
+
+      play("shoot", {
+         volume: 0.0125,
+         detune: rand(-1200, 1200),
+      });
+   }
+
+   function stickTarget(ob, target) {
+      if (ob.target == null) {
+         ob.target = target;
+         ob.unuse("move");
+         let midpoint = math.midpoint(ob.pos, target.pos);
+         ob.dx = midpoint.x - target.pos.x;
+         ob.dy = midpoint.y - target.pos.y;
+         ob.use(lifespan(ob.duration));
+      }
+   }
+
+   onUpdate("sticky", (ob) => {
+      ob.angle += 22.5;
+      if (ob.target != null) {
+         ob.moveTo(ob.target.pos.x + ob.dx, ob.target.pos.y + ob.dy);
+         ob.collideTimer += dt();
+         if (ob.collideDelay <= ob.collideTimer) {
+            gotHurt(ob.target, ob.damage);
+            ob.collideTimer = 0;
+         }
+         if (!ob.target.exists()) {
+            destroy(ob);
+         }
+      }
+   });
 
    function spawnAlienBullet(spot) {
       const alien = add([
@@ -960,6 +1050,16 @@ function runScene() {
       destroy(attacker);
    });
 
+   onCollide("alien", "sticky", (alien, attacker) => {
+      makeExplosion(math.midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.GREEN);
+      gotHurt(alien, attacker.damage);
+      play("explosion", {
+         volume: 0.0375,
+         detune: rand(0, 1200),
+      });
+      stickTarget(attacker, alien);
+   });
+
    on("hurt", "alien", (alien) => {
       if (alien.hp() <= 0) {
          updateScore(alien.points);
@@ -1094,8 +1194,8 @@ function runScene() {
    function spawnGem() {
       let xpos = rand(Const.blockSize, Const.mapW - Const.blockSize);
       let newColor = choose(Const.ominoColors);
-		// debug
-		//newColor = 'blue';
+      // debug
+      //newColor = 'blue';
       add([
             sprite(`omino_plus_${newColor}`),
             pos(rand(Const.blockSize, Const.mapW - Const.blockSize), rand(Const.blockSize, Const.mapH - Const.blockSize)),
@@ -1117,8 +1217,8 @@ function runScene() {
 
    //wait(rand(2, 6), spawnGem);
    //wait(rand(2, 6), spawnGem);
-	spawnGem();
-	spawnGem();
+   spawnGem();
+   spawnGem();
 
    onUpdate("gem", (gem) => {
       gem.angle += 2;
@@ -1204,6 +1304,9 @@ function runScene() {
       }
       if (attack.is('bullet')) {
          destroy(attack);
+      }
+      if (attack.is('sticky')) {
+         stickTarget(attack, ob);
       }
    });
 
