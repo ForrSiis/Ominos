@@ -4089,82 +4089,22 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         spawnAlienBullet(alien.pos);
       }
     });
-    onCollide("alien", "bullet", (alien, attacker) => {
-      makeExplosion(math_default.midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.GREEN);
-      gotHurt(alien, attacker.damage);
-      destroy(attacker);
+    onCollide("alien", "playerattack", (alien, attack) => {
+      makeExplosion(math_default.midpoint(alien.pos, attack.pos), 3, 3, 3, Color.GREEN);
       play("explosion", {
         volume: 0.0375,
         detune: rand(0, 1200)
       });
-    });
-    onCollide("alien", "laser", (alien, attacker) => {
-      makeExplosion(math_default.midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.GREEN);
-      gotHurt(alien, attacker.damage);
-      play("explosion", {
-        volume: 0.0375,
-        detune: rand(0, 1200)
-      });
-    });
-    onCollide("alien", "missile", (alien, attacker) => {
-      makeExplosion(math_default.midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.GREEN);
-      gotHurt(alien, attacker.damage);
-      explodeAllMissiles();
-      play("explosion", {
-        volume: 0.0375,
-        detune: rand(0, 1200)
-      });
-    });
-    onCollide("alien", "bomb", (alien, attacker) => {
-      makeExplosion(math_default.midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.YELLOW);
-      gotHurt(alien, attacker.damage);
-      play("explosion", {
-        volume: 0.0375,
-        detune: rand(0, 1200)
-      });
-    });
-    onCollide("alien", "field", (alien, attacker) => {
-      makeExplosion(math_default.midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.GREEN);
-      gotHurt(alien, attacker.damage);
-      play("explosion", {
-        volume: 0.0375,
-        detune: rand(0, 1200)
-      });
-    });
-    onCollide("alien", "bouncer", (alien, attacker) => {
-      makeExplosion(math_default.midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.CYAN);
-      gotHurt(alien, attacker.damage);
-      play("explosion", {
-        volume: 0.0375,
-        detune: rand(0, 1200)
-      });
-    });
-    onCollide("alien", "falling", (alien, attacker) => {
-      makeExplosion(math_default.midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.GREEN);
-      gotHurt(alien, attacker.damage);
-      play("explosion", {
-        volume: 0.0375,
-        detune: rand(0, 1200)
-      });
-      destroy(attacker);
-    });
-    onCollide("alien", "seeker", (alien, attacker) => {
-      makeExplosion(math_default.midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.GREEN);
-      gotHurt(alien, attacker.damage);
-      play("explosion", {
-        volume: 0.0375,
-        detune: rand(0, 1200)
-      });
-      destroy(attacker);
-    });
-    onCollide("alien", "sticky", (alien, attacker) => {
-      makeExplosion(math_default.midpoint(alien.pos, attacker.pos), 3, 3, 3, Color.GREEN);
-      gotHurt(alien, attacker.damage);
-      play("explosion", {
-        volume: 0.0375,
-        detune: rand(0, 1200)
-      });
-      stickTarget(attacker, alien);
+      gotHurt(alien, attack.damage);
+      if (attack.is("missile")) {
+        explodeAllMissiles();
+      }
+      if (attack.is("bullet") || attack.is("falling") || attack.is("seeker")) {
+        destroy(attack);
+      }
+      if (attack.is("sticky")) {
+        stickTarget(attack, alien);
+      }
     });
     on("hurt", "alien", (alien) => {
       if (alien.hp() <= 0) {
@@ -4291,6 +4231,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         rotate(0),
         origin("center"),
         opacity(1),
+        lifespan(10),
         "gem",
         {
           spawnDelay: () => {
@@ -4303,8 +4244,8 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       ]);
     }
     __name(spawnGem, "spawnGem");
-    spawnGem();
-    spawnGem();
+    wait(rand(2, 6), spawnGem);
+    wait(rand(2, 6), spawnGem);
     onUpdate("gem", (gem) => {
       gem.angle += 2;
       gem.use(opacity(Math.sin(gem.angle / 45 % Math.PI) + 0.38));
@@ -4314,7 +4255,6 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       destroy(gem);
       updateScore(gem.points);
       player.heal(const_default.damageLevel[gem.lifeGain]);
-      wait(gem.spawnDelay(), spawnGem);
       playerGemsBoost();
       changePlayerOmino(newColor);
     });
@@ -4326,6 +4266,9 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       }
     }
     __name(playerGemsBoost, "playerGemsBoost");
+    on("destroy", "gem", (gem) => {
+      wait(gem.spawnDelay(), spawnGem);
+    });
     const CHANCE_SPAWN_OBSTACLES = 5e-4 * Math.pow(1.05, player.level);
     const MAX_OBSTACLES_W = 5;
     const MAX_OBSTACLES_H = 3;
