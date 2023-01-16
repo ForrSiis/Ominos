@@ -9,6 +9,8 @@ Your color is:
 = magenta = energy field  
 = green = bouncy balls  
 = white = falling pieces  
+= blue = seeker arrows  
+= black = sticky fidgets  
 
 Eat the special symbols on the screen to change shape and color randomly; also to heal and gain points. Use keyboard to move and turn. Your ship will autofire.
 
