@@ -13,7 +13,6 @@ Credits:
 = Arts and music found at opengameart.org, replit.com
 //*/
 
-import kaboom from "kaboom"
 import Const from "./const.js"
 import Omino from "./omino.js"
 import * as scene_title from "./scene_title.js"
@@ -43,6 +42,7 @@ const LOAD_SPRITES = [
     "gaia",
     "asteroid",
     "omino_plus",
+    "omino_seeker",
 ];
 
 const LOAD_WAVS = [
