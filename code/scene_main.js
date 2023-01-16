@@ -151,7 +151,7 @@ function runScene() {
 
     onKeyPress("t", playerTurnRight);
 
-    // SHITTY
+    // SHOLES
     onKeyDown("x", playerMoveLeft);
 
     onKeyDown("v", playerMoveRight);
@@ -163,6 +163,15 @@ function runScene() {
     onKeyPress(",", playerTurnLeft);
 
     onKeyPress(".", playerTurnRight);
+
+    // ARROWS
+    onKeyDown("left", playerMoveLeft);
+
+    onKeyDown("right", playerMoveRight);
+
+    onKeyDown("up", playerMoveUp);
+
+    onKeyDown("down", playerMoveDown);
 
     const BULLET_SPEED = Const.blockSize * 5;
     const LASER_SPEED = Const.blockSize * 8;

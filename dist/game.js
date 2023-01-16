@@ -3333,6 +3333,10 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     onKeyDown("c", playerMoveDown);
     onKeyPress(",", playerTurnLeft);
     onKeyPress(".", playerTurnRight);
+    onKeyDown("left", playerMoveLeft);
+    onKeyDown("right", playerMoveRight);
+    onKeyDown("up", playerMoveUp);
+    onKeyDown("down", playerMoveDown);
     const BULLET_SPEED = const_default.blockSize * 5;
     const LASER_SPEED = const_default.blockSize * 8;
     const MISSILE_SPEED = const_default.blockSize * 6;
