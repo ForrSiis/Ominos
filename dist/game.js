@@ -49,7 +49,7 @@
   Const.playerStartShape = choose2(Const.ominoShapes);
   Const.playerStartColor = choose2(Const.ominoColors);
   if (window.bOminosDebug) {
-    Const.playerStartColor = "black";
+    Const.playerStartColor = "blue";
     Const.playerStartLevel = 0;
   }
   Const.nDirs = Object.keys(Const.direction).length;
@@ -854,7 +854,6 @@
         pos(spot.x, spot.y),
         sprite("omino_seeker"),
         origin("center"),
-        color(Color.BLUE),
         rotate(player.angle),
         scale(0.125),
         area(),
@@ -1283,14 +1282,13 @@
       let xpos = rand(const_default.blockSize, const_default.mapW - const_default.blockSize);
       let newColor = choose(const_default.ominoColors);
       add([
-        sprite("omino_plus"),
+        sprite(`omino_plus_${newColor}`),
         pos(rand(const_default.blockSize, const_default.mapW - const_default.blockSize), rand(const_default.blockSize, const_default.mapH - const_default.blockSize)),
         area(),
         scale(0.25),
         rotate(0),
         origin("center"),
         opacity(1),
-        color(Color[newColor.toUpperCase()]),
         "gem",
         {
           spawnDelay: () => {
@@ -1303,8 +1301,8 @@
       ]);
     }
     __name(spawnGem, "spawnGem");
-    wait(rand(2, 6), spawnGem);
-    wait(rand(2, 6), spawnGem);
+    spawnGem();
+    spawnGem();
     onUpdate("gem", (gem) => {
       gem.angle += 2;
       gem.use(opacity(Math.sin(gem.angle / 45 % Math.PI) + 0.38));
@@ -1480,7 +1478,6 @@
     "spaceship",
     "gaia",
     "asteroid",
-    "omino_plus",
     "omino_seeker"
   ];
   var LOAD_WAVS = [
@@ -1497,7 +1494,8 @@
   ];
   var LOAD_MP3S = [];
   function loadOminos() {
-    const_default.ominoShapes.forEach((shape) => {
+    let shapes = [...const_default.ominoShapes, "plus"];
+    shapes.forEach((shape) => {
       const_default.ominoColors.forEach((color2) => {
         loadSprite(`omino_${shape}_${color2}`, `omino_${shape}_${color2}.png`);
       });
