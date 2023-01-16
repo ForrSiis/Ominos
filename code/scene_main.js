@@ -1204,6 +1204,7 @@ function runScene() {
             rotate(0),
             origin("center"),
             opacity(1),
+            lifespan(10),
             "gem", {
                spawnDelay: () => {
                   return rand(2, 6);
@@ -1215,10 +1216,8 @@ function runScene() {
          ]);
    }
 
-   //wait(rand(2, 6), spawnGem);
-   //wait(rand(2, 6), spawnGem);
-   spawnGem();
-   spawnGem();
+   wait(rand(2, 6), spawnGem);
+   wait(rand(2, 6), spawnGem);
 
    onUpdate("gem", (gem) => {
       gem.angle += 2;
@@ -1231,7 +1230,6 @@ function runScene() {
       destroy(gem);
       updateScore(gem.points);
       player.heal(Const.damageLevel[gem.lifeGain]);
-      wait(gem.spawnDelay(), spawnGem);
       playerGemsBoost();
       changePlayerOmino(newColor);
    });
@@ -1243,6 +1241,10 @@ function runScene() {
          player.gems = 0;
       }
    }
+
+   on("destroy", "gem", (gem) => {
+      wait(gem.spawnDelay(), spawnGem);
+   });
 
    // random obstacles, of random size and speed
    const CHANCE_SPAWN_OBSTACLES = 0.0005 * Math.pow(1.05, player.level);
