@@ -28,11 +28,6 @@ kaboom({
     scale: 1.5,
 });
 
-// hide cursor
-for (const c of document.getElementsByTagName('canvas')) {
-    c.style.cursor = "none";
-}
-
 // load resources
 const LOAD_SPRITES = [
     "stars",

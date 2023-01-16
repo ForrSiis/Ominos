@@ -3194,6 +3194,19 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
 
   // code/scene_main.js
   function runScene2() {
+    function hideCursor() {
+      for (const c of document.getElementsByTagName("canvas")) {
+        c.style.cursor = "none";
+      }
+    }
+    __name(hideCursor, "hideCursor");
+    function showCursor() {
+      for (const c of document.getElementsByTagName("canvas")) {
+        c.style.cursor = "default";
+      }
+    }
+    __name(showCursor, "showCursor");
+    hideCursor();
     const music = play(choose(const_default.playlist), {
       volume: 0.125,
       loop: true
@@ -4202,13 +4215,16 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
             });
           });
         }
-        wait(2, () => {
-          music.stop();
-          go("endGame", player.score);
-        });
+        wait(2, gotoEndGame);
       }
     }
     __name(updatePlayerHealth, "updatePlayerHealth");
+    function gotoEndGame() {
+      showCursor();
+      music.stop();
+      go("endGame", player.score);
+    }
+    __name(gotoEndGame, "gotoEndGame");
     player.onHurt(() => {
       shake(7);
       updatePlayerHealth();
@@ -4419,9 +4435,6 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     height: 480,
     scale: 1.5
   });
-  for (const c of document.getElementsByTagName("canvas")) {
-    c.style.cursor = "none";
-  }
   var LOAD_SPRITES = [
     "stars",
     "gem",
