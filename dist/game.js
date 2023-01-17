@@ -3193,6 +3193,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
   __name(runScene, "runScene");
 
   // code/scene_main.js
+  var log = console.log;
   function runScene2() {
     function hideCursor() {
       for (const c of document.getElementsByTagName("canvas")) {
@@ -3288,7 +3289,9 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         gemsLimit: 10,
         shape: const_default.playerStartShape,
         ominocolor: const_default.playerStartColor,
-        touchDamage: "veryhigh"
+        touchDamage: "veryhigh",
+        turnDelay: 1 / 12,
+        turnTimer: 0
       }
     ]);
     console.log(player);
@@ -3323,14 +3326,22 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     }
     __name(playerMoveDown, "playerMoveDown");
     function playerTurnLeft() {
-      player.angle -= const_default.playerAngleTurn;
-      getPlayerCells(player);
+      if (player.turnDelay <= player.turnTimer) {
+        log(player.turnTimer);
+        player.angle -= const_default.playerAngleTurn;
+        getPlayerCells(player);
+        player.turnTimer = 0;
+      }
     }
     __name(playerTurnLeft, "playerTurnLeft");
     ;
     function playerTurnRight() {
-      player.angle += const_default.playerAngleTurn;
-      getPlayerCells(player);
+      if (player.turnDelay <= player.turnTimer) {
+        log(player.turnTimer);
+        player.angle += const_default.playerAngleTurn;
+        getPlayerCells(player);
+        player.turnTimer = 0;
+      }
     }
     __name(playerTurnRight, "playerTurnRight");
     ;
@@ -3338,12 +3349,16 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     onKeyDown("a", playerMoveRight);
     onKeyDown("o", playerMoveUp);
     onKeyDown("e", playerMoveDown);
+    onKeyDown("s", playerTurnLeft);
+    onKeyDown("t", playerTurnRight);
     onKeyPress("s", playerTurnLeft);
     onKeyPress("t", playerTurnRight);
     onKeyDown("x", playerMoveLeft);
     onKeyDown("v", playerMoveRight);
     onKeyDown("d", playerMoveUp);
     onKeyDown("c", playerMoveDown);
+    onKeyDown(",", playerTurnLeft);
+    onKeyDown(".", playerTurnRight);
     onKeyPress(",", playerTurnLeft);
     onKeyPress(".", playerTurnRight);
     onKeyDown("left", playerMoveLeft);
@@ -3379,6 +3394,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     __name(spawnPlayerExhaust, "spawnPlayerExhaust");
     player.onUpdate(() => {
       let deltaTime = dt();
+      player.turnTimer += deltaTime;
       player.shootTimer += deltaTime;
       player.shapeChangeTimer += deltaTime;
       if (player.shootTimer >= player.shootDelay) {

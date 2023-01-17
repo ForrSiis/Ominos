@@ -6,19 +6,19 @@ let log = console.log;
 
 function runScene() {
 
-	function hideCursor() {
-		for (const c of document.getElementsByTagName('canvas')) {
-			c.style.cursor = "none";
-		}
-	}
+   function hideCursor() {
+      for (const c of document.getElementsByTagName('canvas')) {
+         c.style.cursor = "none";
+      }
+   }
 
-	function showCursor() {
-		for (const c of document.getElementsByTagName('canvas')) {
-			c.style.cursor = "default";
-		}
-	}
+   function showCursor() {
+      for (const c of document.getElementsByTagName('canvas')) {
+         c.style.cursor = "default";
+      }
+   }
 
-	hideCursor();
+   hideCursor();
 
    // play bg music
    const music = play(choose(Const.playlist), {
@@ -106,6 +106,8 @@ function runScene() {
                shape: Const.playerStartShape,
                ominocolor: Const.playerStartColor,
                touchDamage: 'veryhigh',
+               turnDelay: 1 / 12, // N spins / sec
+               turnTimer: 0,
             }
          ]);
    console.log(player);
@@ -144,13 +146,21 @@ function runScene() {
    }
 
    function playerTurnLeft() {
-      player.angle -= Const.playerAngleTurn;
-      getPlayerCells(player);
+      if (player.turnDelay <= player.turnTimer) {
+         log(player.turnTimer);
+         player.angle -= Const.playerAngleTurn;
+         getPlayerCells(player);
+         player.turnTimer = 0;
+      }
    };
 
    function playerTurnRight() {
-      player.angle += Const.playerAngleTurn;
-      getPlayerCells(player);
+      if (player.turnDelay <= player.turnTimer) {
+         log(player.turnTimer);
+         player.angle += Const.playerAngleTurn;
+         getPlayerCells(player);
+         player.turnTimer = 0;
+      }
    };
 
    // BEAKL
@@ -161,6 +171,10 @@ function runScene() {
    onKeyDown("o", playerMoveUp);
 
    onKeyDown("e", playerMoveDown);
+
+   onKeyDown("s", playerTurnLeft);
+
+   onKeyDown("t", playerTurnRight);
 
    onKeyPress("s", playerTurnLeft);
 
@@ -174,6 +188,10 @@ function runScene() {
    onKeyDown("d", playerMoveUp);
 
    onKeyDown("c", playerMoveDown);
+
+   onKeyDown(",", playerTurnLeft);
+
+   onKeyDown(".", playerTurnRight);
 
    onKeyPress(",", playerTurnLeft);
 
@@ -220,6 +238,7 @@ function runScene() {
 
    player.onUpdate(() => {
       let deltaTime = dt();
+      player.turnTimer += deltaTime;
       player.shootTimer += deltaTime;
       player.shapeChangeTimer += deltaTime;
       if (player.shootTimer >= player.shootDelay) {
@@ -1128,7 +1147,7 @@ function runScene() {
    }
 
    function gotoEndGame() {
-		showCursor();
+      showCursor();
       music.stop();
       go("endGame", player.score);
    }
