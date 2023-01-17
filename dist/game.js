@@ -4006,6 +4006,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         ob.collideTimer += dt();
         if (ob.collideDelay <= ob.collideTimer) {
           gotHurt(ob.target, ob.damage);
+          makeExplosion(ob.pos, 3, 3, 3, Color.WHITE);
           ob.collideTimer = 0;
         }
         if (!ob.target.exists()) {
@@ -4450,6 +4451,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     });
     onCollide("obstacle", "playerattack", (ob, attack) => {
       gotHurt(ob, attack.damage);
+      makeExplosion(math_default.midpoint(ob.pos, attack.pos), 3, 3, 3, Color.WHITE);
       if (attack.is("missile")) {
         explodeAllMissiles();
       }

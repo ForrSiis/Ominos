@@ -791,6 +791,7 @@ function runScene() {
             ob.collideTimer += dt();
             if (ob.collideDelay <= ob.collideTimer) {
                 gotHurt(ob.target, ob.damage);
+                makeExplosion(ob.pos, 3, 3, 3, Color.WHITE);
                 ob.collideTimer = 0;
             }
             if (!ob.target.exists()) {
@@ -1279,6 +1280,7 @@ function runScene() {
 
     onCollide("obstacle", "playerattack", (ob, attack) => {
         gotHurt(ob, attack.damage);
+        makeExplosion(math.midpoint(ob.pos, attack.pos), 3, 3, 3, Color.WHITE);
         if (attack.is('missile')) {
             explodeAllMissiles();
         }
