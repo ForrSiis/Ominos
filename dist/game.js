@@ -3065,6 +3065,101 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     return cells;
   }, "getCellPos"));
 
+  // code/gamepad.js.js
+  var Gamepad = {
+    keysRegistered: [
+      "up",
+      "down",
+      "left",
+      "right",
+      ",",
+      ".",
+      "o",
+      "e",
+      "i",
+      "a",
+      "d",
+      "c",
+      "x",
+      "v"
+    ],
+    pollGamepads: () => {
+      var gamepads = navigator.getGamepads ? navigator.getGamepads() : navigator.webkitGetGamepads ? navigator.webkitGetGamepads() : [];
+      for (var i = 0; i < gamepads.length; i++) {
+        if (gamepads[i] != void 0) {
+          var gamepad = gamepads[i];
+          if (Gamepad.calX == null || Gamepad.calY == null) {
+            Gamepad.calibrate(gamepad.axes[0], gamepad.axes[1]);
+          }
+          var x = gamepad.axes[0] - Gamepad.calX;
+          var y = gamepad.axes[1] - Gamepad.calY;
+          var up = gamepad.buttons[12] && gamepad.buttons[12].pressed;
+          var down = gamepad.buttons[13] && gamepad.buttons[13].pressed;
+          var left = gamepad.buttons[10] && gamepad.buttons[10].pressed;
+          var right = gamepad.buttons[11] && gamepad.buttons[11].pressed;
+          if (gamepad.buttons[0].pressed) {
+            var event = new Event("keydown");
+            event.key = ",";
+            canvas.dispatchEvent(event);
+          } else {
+            Gamepad.releaseKey(",");
+          }
+          if (gamepad.buttons[1].pressed) {
+            var event = new Event("keydown");
+            event.key = ".";
+            canvas.dispatchEvent(event);
+          } else {
+            Gamepad.releaseKey(".");
+          }
+          if (gamepad.buttons[8].pressed) {
+            var event = new Event("keydown");
+            event.key = "enter";
+            canvas.dispatchEvent(event);
+          }
+          if (left || x < 0) {
+            var event = new Event("keydown");
+            event.key = "left";
+            canvas.dispatchEvent(event);
+            Gamepad.releaseKey("right");
+          } else if (right || x > 0) {
+            var event = new Event("keydown");
+            event.key = "right";
+            canvas.dispatchEvent(event);
+            Gamepad.releaseKey("left");
+          } else {
+            Gamepad.releaseKey("left");
+            Gamepad.releaseKey("right");
+          }
+          if (up || y < 0) {
+            var event = new Event("keydown");
+            event.key = "up";
+            canvas.dispatchEvent(event);
+            Gamepad.releaseKey("down");
+          } else if (down || y > 0) {
+            var event = new Event("keydown");
+            event.key = "down";
+            canvas.dispatchEvent(event);
+            Gamepad.releaseKey("up");
+          } else {
+            Gamepad.releaseKey("up");
+            Gamepad.releaseKey("down");
+          }
+        }
+      }
+      window.requestAnimationFrame(Gamepad.pollGamepads);
+    },
+    calibrate: (x, y) => {
+      Gamepad.calX = x;
+      Gamepad.calY = y;
+    },
+    releaseKey: (key) => {
+      let event = new Event("keyup");
+      event.key = key;
+      canvas.dispatchEvent(event);
+    }
+  };
+  var gamepad_js_default = Gamepad;
+
   // code/scene_title.js
   function createTitle() {
     let x = 36;
@@ -3157,6 +3252,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
   }
   __name(animateTitle, "animateTitle");
   function runScene() {
+    gamepad_js_default.pollGamepads();
     createTitle();
     setTimeout(animateTitle, 1e3, 2);
     add([
@@ -3186,15 +3282,15 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       origin("center"),
       layer("ui")
     ]);
-    onKeyRelease("enter", () => {
+    onKeyDown("enter", () => {
       go("main");
     });
   }
   __name(runScene, "runScene");
 
   // code/scene_main.js
-  var log = console.log;
   function runScene2() {
+    gamepad_js_default.pollGamepads();
     function hideCursor() {
       for (const c of document.getElementsByTagName("canvas")) {
         c.style.cursor = "none";
@@ -3327,7 +3423,6 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     __name(playerMoveDown, "playerMoveDown");
     function playerTurnLeft() {
       if (player.turnDelay <= player.turnTimer) {
-        log(player.turnTimer);
         player.angle -= const_default.playerAngleTurn;
         getPlayerCells(player);
         player.turnTimer = 0;
@@ -3337,7 +3432,6 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     ;
     function playerTurnRight() {
       if (player.turnDelay <= player.turnTimer) {
-        log(player.turnTimer);
         player.angle += const_default.playerAngleTurn;
         getPlayerCells(player);
         player.turnTimer = 0;
@@ -4409,6 +4503,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
 
   // code/scene_gameover.js
   function runScene3(score) {
+    gamepad_js_default.pollGamepads();
     createTitle();
     setTimeout(animateTitle, 1e3, 2);
     add([
@@ -4438,7 +4533,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       origin("center"),
       layer("ui")
     ]);
-    onKeyRelease("enter", () => {
+    onKeyPress("enter", () => {
       go("main");
     });
   }

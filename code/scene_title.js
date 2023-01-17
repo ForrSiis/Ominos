@@ -1,4 +1,5 @@
 import Const from "./const.js"
+import Gamepad from "./gamepad.js"
 
 function createTitle() {
    // spell out title using ominos
@@ -111,6 +112,7 @@ function animateTitle(frame) {
 }
 
 function runScene() {
+	Gamepad.pollGamepads();
    createTitle();
 	setTimeout(animateTitle, 1000, 2);
 
@@ -144,7 +146,7 @@ function runScene() {
          layer("ui")
       ]);
 
-   onKeyRelease("enter", () => {
+   onKeyDown("enter", () => {
       go("main");
    });
 }

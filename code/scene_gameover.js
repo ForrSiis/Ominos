@@ -1,7 +1,9 @@
 import Const from "./const.js"
+import Gamepad from "./gamepad.js"
 import * as scene_title from "./scene_title.js"
 
 function runScene(score) {
+	Gamepad.pollGamepads();
    scene_title.createTitle();
 	setTimeout(scene_title.animateTitle, 1000, 2);
 
@@ -35,7 +37,7 @@ function runScene(score) {
          layer("ui")
       ]);
 
-   onKeyRelease("enter", () => {
+   onKeyPress("enter", () => {
       go("main");
    });
 }
