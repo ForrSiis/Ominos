@@ -4235,7 +4235,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
           "flatship",
           "alien",
           {
-            shootChance: 125e-5 + 125e-5 * player.level,
+            shootChance: 125e-5 + 5e-5 * player.level,
             touchDamage: "extreme",
             laserDamage: "low",
             points: 200
