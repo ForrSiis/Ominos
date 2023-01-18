@@ -3289,7 +3289,6 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
   __name(runScene, "runScene");
 
   // code/scene_main.js
-  var log = console.log;
   function runScene2() {
     gamepad_js_default.pollGamepads();
     function hideCursor() {
@@ -4211,7 +4210,6 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     let nFlatShips = 4;
     function spawnAlienFlatships() {
       let theSprite = sprite("flat_oval_ship");
-      log(theSprite);
       let w = 30;
       let xy = [
         [w, const_default.mapH / 2],
@@ -4470,7 +4468,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
             origin("center"),
             area(),
             health(24),
-            move(90, const_default.blockSize / 2),
+            move(90, rand(const_default.blockSize / 2, const_default.blockSize)),
             "obstacle",
             {
               touchDamage: "medium",

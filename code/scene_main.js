@@ -1008,7 +1008,6 @@ function runScene() {
     function spawnAlienFlatships() {
         // spawn 4 flat ships at each edge of screen
         let theSprite = sprite("flat_oval_ship");
-        log(theSprite);
         let w = 30;
         let xy = [
             [w, (Const.mapH) / 2],
@@ -1295,7 +1294,7 @@ function runScene() {
                     origin("center"),
                     area(),
                     health(24),
-                    move(90, Const.blockSize / 2),
+                    move(90, rand(Const.blockSize / 2, Const.blockSize)),
                     "obstacle", {
                         touchDamage: 'medium',
                         points: 2,
