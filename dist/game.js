@@ -4208,24 +4208,29 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     __name(spawnAlienElite, "spawnAlienElite");
     let nFlatShips = 4;
     function spawnAlienFlatships() {
-      let theSprite = sprite("flat_oval_ship");
-      let w = 30;
+      let spriteWide = "oval_ship_wide";
+      let spriteTall = "oval_ship_tall";
+      let dw = 30;
       let xy = [
-        [w, const_default.mapH / 2],
-        [const_default.mapW / 2, w],
-        [const_default.mapW - w, const_default.mapH / 2],
-        [const_default.mapW / 2, const_default.mapH - w]
+        [dw, const_default.mapH / 2],
+        [const_default.mapW / 2, dw],
+        [const_default.mapW - dw, const_default.mapH / 2],
+        [const_default.mapW / 2, const_default.mapH - dw]
       ];
       nFlatShips = 4;
       for (let i = 0; i < nFlatShips; i++) {
         let x = xy[i][0];
         let y = xy[i][1];
-        let angle = i * 90;
+        let isWide = i % 2;
+        let theSprite = isWide ? spriteWide : spriteTall;
+        let isFlipX = i == 2;
+        let isFlipY = i == 1;
         add([
-          theSprite,
+          sprite(theSprite, {
+            flipX: isFlipX,
+            flipY: isFlipY
+          }),
           pos(x, y),
-          rotate(angle),
-          scale(1.25),
           area(),
           origin("center"),
           health(60 * Math.pow(1.1, player.level)),
@@ -4246,10 +4251,12 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         wait(rand(12, 24), spawnBoss);
       }
     });
-    const CHANCE_SPAWN_FLATSHIP = 1 / 2;
+    const CHANCE_SPAWN_FLATSHIP = 12 / 12;
     function spawnBoss() {
       let minTime = 12;
       let maxTime = 24;
+      minTime = 0;
+      maxTime = 0;
       if (chance(CHANCE_SPAWN_FLATSHIP)) {
         wait(rand(minTime, maxTime), spawnAlienFlatships);
       } else {
@@ -4257,7 +4264,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       }
     }
     __name(spawnBoss, "spawnBoss");
-    wait(rand(10, 16), spawnBoss);
+    wait(0, spawnBoss);
     onUpdate("alien", (alien) => {
       if (chance(alien.shootChance)) {
         if (alien.bulletDamage) {
@@ -4608,7 +4615,8 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     "gaia",
     "asteroid",
     "omino_seeker",
-    "flat_oval_ship"
+    "oval_ship_tall",
+    "oval_ship_wide"
   ];
   var LOAD_WAVS = [
     "shoot",

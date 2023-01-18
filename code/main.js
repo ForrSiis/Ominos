@@ -38,7 +38,8 @@ const LOAD_SPRITES = [
     "gaia",
     "asteroid",
     "omino_seeker",
-	"flat_oval_ship",
+    "oval_ship_tall",
+    "oval_ship_wide",
 ];
 
 const LOAD_WAVS = [
