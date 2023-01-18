@@ -1050,12 +1050,10 @@ function runScene() {
       }
    });
 
-   const CHANCE_SPAWN_FLATSHIP = 12 / 12;
+   const CHANCE_SPAWN_FLATSHIP = 4 / 12;
    function spawnBoss() {
       let minTime = 12;
       let maxTime = 24;
-      minTime = 0;
-      maxTime = 0;
       if (chance(CHANCE_SPAWN_FLATSHIP)) {
          wait(rand(minTime, maxTime), spawnAlienFlatships);
       } else {
@@ -1063,8 +1061,7 @@ function runScene() {
       }
    }
 
-   //wait(rand(10, 16), spawnBoss);
-   wait(0, spawnBoss);
+   wait(rand(10, 16), spawnBoss);
 
    onUpdate("alien", (alien) => {
       if (chance(alien.shootChance)) {
