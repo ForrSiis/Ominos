@@ -3289,6 +3289,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
   __name(runScene, "runScene");
 
   // code/scene_main.js
+  var log = console.log;
   function runScene2() {
     gamepad_js_default.pollGamepads();
     function hideCursor() {
@@ -4172,17 +4173,13 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
           {
             shootChance: 5e-3 + 5e-4 * player.level,
             touchDamage: "veryhigh",
+            laserDamage: "low",
             points: 30
           }
         ]);
       }
     }
     __name(spawnAlienShooters, "spawnAlienShooters");
-    onUpdate("alienshooter", (alien) => {
-      if (chance(alien.shootChance)) {
-        spawnAlienLaser(alien.pos);
-      }
-    });
     const CHANCE_ELITE_SPAWN_UP = 0.5;
     function spawnAlienElite() {
       let bUp = chance(CHANCE_ELITE_SPAWN_UP);
@@ -4211,10 +4208,67 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       ]);
     }
     __name(spawnAlienElite, "spawnAlienElite");
-    wait(rand(10, 16), spawnAlienElite);
+    let nFlatShips = 4;
+    function spawnAlienFlatships() {
+      let theSprite = sprite("flat_oval_ship");
+      log(theSprite);
+      let w = 30;
+      let xy = [
+        [w, const_default.mapH / 2],
+        [const_default.mapW / 2, w],
+        [const_default.mapW - w, const_default.mapH / 2],
+        [const_default.mapW / 2, const_default.mapH - w]
+      ];
+      nFlatShips = 4;
+      for (let i = 0; i < nFlatShips; i++) {
+        let x = xy[i][0];
+        let y = xy[i][1];
+        let angle = i * 90;
+        add([
+          theSprite,
+          pos(x, y),
+          rotate(angle),
+          scale(1.25),
+          area(),
+          origin("center"),
+          health(60 * Math.pow(1.1, player.level)),
+          "flatship",
+          "alien",
+          {
+            shootChance: 125e-5 + 125e-5 * player.level,
+            touchDamage: "extreme",
+            laserDamage: "low",
+            points: 200
+          }
+        ]);
+      }
+    }
+    __name(spawnAlienFlatships, "spawnAlienFlatships");
+    on("destroy", "flatship", (alien) => {
+      if (!--nFlatShips) {
+        wait(rand(12, 24), spawnBoss);
+      }
+    });
+    const CHANCE_SPAWN_FLATSHIP = 1 / 2;
+    function spawnBoss() {
+      let minTime = 12;
+      let maxTime = 24;
+      if (chance(CHANCE_SPAWN_FLATSHIP)) {
+        wait(rand(minTime, maxTime), spawnAlienFlatships);
+      } else {
+        wait(rand(minTime, maxTime), spawnAlienElite);
+      }
+    }
+    __name(spawnBoss, "spawnBoss");
+    wait(rand(10, 16), spawnBoss);
     onUpdate("alien", (alien) => {
-      if (alien.bulletDamage && chance(alien.shootChance)) {
-        spawnAlienBullet(alien.pos);
+      if (chance(alien.shootChance)) {
+        if (alien.bulletDamage) {
+          spawnAlienBullet(alien.pos);
+        }
+        if (alien.laserDamage) {
+          spawnAlienLaser(alien.pos);
+        }
       }
     });
     onCollide("alien", "playerattack", (alien, attack) => {
@@ -4241,7 +4295,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       }
     });
     on("destroy", "elite", (alien) => {
-      wait(rand(12, 24), spawnAlienElite);
+      spawnBoss();
     });
     add([
       text("SCORE: ", {
@@ -4556,7 +4610,8 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     "spaceship",
     "gaia",
     "asteroid",
-    "omino_seeker"
+    "omino_seeker",
+    "flat_oval_ship"
   ];
   var LOAD_WAVS = [
     "shoot",
