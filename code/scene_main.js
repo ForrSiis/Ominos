@@ -112,7 +112,7 @@ function runScene() {
             turnTimer: 0,
         }
     ]);
-    console.log(player);
+    //console.log(player);
     player.shootDelay *= Math.pow(Const.playerShootLevelMultiplier, player.level);
 
     loadPlayerOmino();
@@ -981,10 +981,10 @@ function runScene() {
     function spawnAlienElite() {
         let bUp = chance(CHANCE_ELITE_SPAWN_UP);
         let theSprite = sprite("gaia");
-        let w = theSprite.width;
-        let h = theSprite.height;
+        let w = 67;
+        let h = 74;
         let y = bUp ? 0 : Const.mapH;
-        let x = rand(w / 2, Const.mapW - w / 2);
+        let x = rand(w, Const.mapW - w);
         let angle = bUp ? 90 : -90;
         add([
             theSprite,

@@ -3390,7 +3390,6 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         turnTimer: 0
       }
     ]);
-    console.log(player);
     player.shootDelay *= Math.pow(const_default.playerShootLevelMultiplier, player.level);
     loadPlayerOmino();
     function playerMoveLeft() {
@@ -4183,10 +4182,10 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     function spawnAlienElite() {
       let bUp = chance(CHANCE_ELITE_SPAWN_UP);
       let theSprite = sprite("gaia");
-      let w = theSprite.width;
-      let h = theSprite.height;
+      let w = 67;
+      let h = 74;
       let y = bUp ? 0 : const_default.mapH;
-      let x = rand(w / 2, const_default.mapW - w / 2);
+      let x = rand(w, const_default.mapW - w);
       let angle = bUp ? 90 : -90;
       add([
         theSprite,
