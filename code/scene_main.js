@@ -1030,7 +1030,7 @@ function runScene() {
                 health(60 * Math.pow(1.1, player.level)),
                 "flatship",
                 "alien", {
-                    shootChance: 0.00125 + (0.00005 * player.level),
+                    shootChance: 0.0044 + (0.0003 * player.level),
                     touchDamage: 'extreme',
                     laserDamage: 'low',
                     points: 200,
