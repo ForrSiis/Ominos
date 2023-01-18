@@ -947,9 +947,9 @@ function runScene() {
         let alienDirection = choose([Const.direction.LEFT, Const.direction.RIGHT]);
         let spriteSize = 40;
         let xpos = [
-            (alienDirection == Const.direction.LEFT ? -spriteSize / 2 : Const.mapW + spriteSize / 2),
+            (alienDirection == Const.direction.LEFT ? -spriteSize * 5 / 12 : Const.mapW + spriteSize * 5 / 12),
             (alienDirection == Const.direction.LEFT ? 0 : Const.mapW),
-            (alienDirection == Const.direction.LEFT ? -spriteSize / 2 : Const.mapW + spriteSize / 2),
+            (alienDirection == Const.direction.LEFT ? -spriteSize * 5 / 12 : Const.mapW + spriteSize * 5 / 12),
         ];
         let ypos = rand(spriteSize, Const.mapH - spriteSize * 3);
 
@@ -967,7 +967,7 @@ function runScene() {
                 move(angle, spriteSize),
                 "alienshooter",
                 "alien", {
-                    shootChance: 0.005 + (0.0005 * player.level),
+                    shootChance: 0.0025 + (0.0005 * player.level),
                     touchDamage: 'veryhigh',
                     laserDamage: 'low',
                     points: 30,
@@ -1224,8 +1224,6 @@ function runScene() {
     function spawnGem() {
         let xpos = rand(Const.blockSize, Const.mapW - Const.blockSize);
         let newColor = choose(Const.ominoColors);
-        // debug
-        //newColor = 'blue';
         add([
             sprite(`omino_plus_${newColor}`),
             pos(rand(Const.blockSize, Const.mapW - Const.blockSize), rand(Const.blockSize, Const.mapH - Const.blockSize)),

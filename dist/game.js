@@ -4150,9 +4150,9 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       let alienDirection = choose([const_default.direction.LEFT, const_default.direction.RIGHT]);
       let spriteSize = 40;
       let xpos = [
-        alienDirection == const_default.direction.LEFT ? -spriteSize / 2 : const_default.mapW + spriteSize / 2,
+        alienDirection == const_default.direction.LEFT ? -spriteSize * 5 / 12 : const_default.mapW + spriteSize * 5 / 12,
         alienDirection == const_default.direction.LEFT ? 0 : const_default.mapW,
-        alienDirection == const_default.direction.LEFT ? -spriteSize / 2 : const_default.mapW + spriteSize / 2
+        alienDirection == const_default.direction.LEFT ? -spriteSize * 5 / 12 : const_default.mapW + spriteSize * 5 / 12
       ];
       let ypos = rand(spriteSize, const_default.mapH - spriteSize * 3);
       let angle = alienDirection == const_default.direction.LEFT ? 0 : 180;
@@ -4169,7 +4169,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
           "alienshooter",
           "alien",
           {
-            shootChance: 5e-3 + 5e-4 * player.level,
+            shootChance: 25e-4 + 5e-4 * player.level,
             touchDamage: "veryhigh",
             laserDamage: "low",
             points: 30
