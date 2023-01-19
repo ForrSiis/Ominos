@@ -4126,8 +4126,8 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
             bulletDamage: "high",
             points: 20,
             speed: ALIEN_BASE_SPEED,
-            amplitude: 3,
-            frequency: 45,
+            amplitude: 18,
+            frequency: 6,
             timer: 0
           }
         ]);
@@ -4251,12 +4251,10 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         wait(rand(12, 24), spawnBoss);
       }
     });
-    const CHANCE_SPAWN_FLATSHIP = 12 / 12;
+    const CHANCE_SPAWN_FLATSHIP = 4 / 12;
     function spawnBoss() {
       let minTime = 12;
       let maxTime = 24;
-      minTime = 0;
-      maxTime = 0;
       if (chance(CHANCE_SPAWN_FLATSHIP)) {
         wait(rand(minTime, maxTime), spawnAlienFlatships);
       } else {
@@ -4264,7 +4262,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       }
     }
     __name(spawnBoss, "spawnBoss");
-    wait(0, spawnBoss);
+    wait(rand(10, 16), spawnBoss);
     onUpdate("alien", (alien) => {
       if (chance(alien.shootChance)) {
         if (alien.bulletDamage) {

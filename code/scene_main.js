@@ -916,8 +916,8 @@ function runScene() {
                   bulletDamage: 'high',
                   points: 20,
                   speed: ALIEN_BASE_SPEED, // wavelength
-                  amplitude: 3, // delta pixels
-                  frequency: 45, // times / seconds
+                  amplitude: 18, // delta pixels
+                  frequency: 6, // times / seconds
                   timer: 0,
                },
             ]);
