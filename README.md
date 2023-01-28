@@ -11,6 +11,7 @@ Your color is:
 = white = falling pieces  
 = blue = seeker arrows  
 = black = sticky fidgets  
+= silver = satellite yoyos  
 
 Eat the PLUS-shaped '+' spinning ominos on the screen to change shape (randomly) and color (matches PLUS omino). They will also heal your shield, increase your movement speed, and gain you 100 points.
 
